@@ -1,0 +1,201 @@
+.shiver-splash {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: flex;
+  overflow: hidden;
+  background: #05070d;
+}
+
+.shiver-splash__logo {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 5;
+  display: flex;
+  width: min(72px, 22vw);
+  transform: translate(-50%, -50%);
+  opacity: 1;
+  animation:
+    0.3s ease-in 1.35s forwards shiver-splash-logo,
+    0.55s ease-in-out 2.9s forwards shiver-splash-off;
+}
+
+.shiver-splash__mark {
+  display: flex;
+  width: 100%;
+  aspect-ratio: 1;
+  align-items: center;
+  justify-content: center;
+  border-radius: 1.05rem;
+  background: linear-gradient(135deg, #536dfe, #8b5cf6);
+  font-size: clamp(1.35rem, 4vw, 1.75rem);
+  font-weight: 700;
+  color: #ffffff;
+  box-shadow: 0 0 40px rgba(83, 109, 254, 0.35);
+}
+
+.shiver-splash__svg,
+.shiver-splash__minimize {
+  position: absolute;
+  inset: 0;
+}
+
+.shiver-splash__svg {
+  z-index: 3;
+}
+
+.shiver-splash__minimize {
+  z-index: 2;
+}
+
+.shiver-splash svg {
+  width: 100%;
+  height: 100%;
+}
+
+.shiver-splash__svg rect {
+  fill: #536dfe;
+  clip-path: polygon(45vw 40vh, 55vw 40vh, 55vw 60vh, 45vw 60vh);
+  animation: 0.7s ease-in 2.45s forwards shiver-splash-expand;
+}
+
+.shiver-splash__minimize rect {
+  fill: #05070d;
+  clip-path: polygon(0 0, 100vw 0, 100vw 100vh, 0 100vh);
+  animation:
+    0.2s ease-out 0.9s forwards shiver-splash-scale,
+    1.2s ease-out 1.1s forwards shiver-splash-hide;
+}
+
+.shiver-splash__text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 7;
+  display: flex;
+  width: min(90vw, 420px);
+  transform: translate(-50%, -50%);
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.35rem;
+  opacity: 0;
+  text-align: left;
+  animation: 0.55s ease-in-out 3.3s forwards shiver-splash-on;
+}
+
+.shiver-splash__wordmark,
+.shiver-splash__tag {
+  width: 100%;
+  margin: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  font-weight: 600;
+  color: #05070d;
+}
+
+.shiver-splash__wordmark {
+  font-size: clamp(2.1rem, 7vw, 3.4rem);
+  letter-spacing: 0.08em;
+  line-height: 1;
+  animation: 0.35s steps(40, end) 3.35s both shiver-splash-type;
+}
+
+.shiver-splash__tag {
+  font-size: clamp(1.05rem, 3vw, 1.4rem);
+  letter-spacing: 0.32em;
+  line-height: 1.1;
+  animation: 0.5s steps(40, end) 3.35s both shiver-splash-type2;
+}
+
+.shiver-splash--exit {
+  animation: 0.55s ease-in-out forwards shiver-splash-fade-out;
+}
+
+@keyframes shiver-splash-scale {
+  to {
+    clip-path: polygon(45vw 40vh, 55vw 40vh, 55vw 60vh, 45vw 60vh);
+  }
+}
+
+@keyframes shiver-splash-hide {
+  to {
+    fill: #0000;
+  }
+}
+
+@keyframes shiver-splash-off {
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes shiver-splash-on {
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes shiver-splash-logo {
+  to {
+    filter: brightness(0);
+  }
+}
+
+@keyframes shiver-splash-type {
+  0% {
+    width: 0;
+  }
+}
+
+@keyframes shiver-splash-type2 {
+  0%,
+  45% {
+    width: 0;
+  }
+
+  to {
+    width: 100%;
+  }
+}
+
+@keyframes shiver-splash-expand {
+  25% {
+    clip-path: polygon(0 0, 55vw 40vh, 55vw 60vh, 45vw 60vh);
+    fill: #dbe4ff;
+  }
+
+  50% {
+    clip-path: polygon(0 0, 100vw 0, 55vw 60vh, 45vw 60vh);
+    fill: #536dfe;
+  }
+
+  75% {
+    clip-path: polygon(0 0, 100vw 0, 55vw 60vh, 0 100vh);
+    fill: #c4b5fd;
+  }
+
+  to {
+    clip-path: polygon(0 0, 100vw 0, 100vw 100vh, 0 100vh);
+    fill: #536dfe;
+  }
+}
+
+@keyframes shiver-splash-fade-out {
+  to {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .shiver-splash,
+  .shiver-splash__logo,
+  .shiver-splash__svg rect,
+  .shiver-splash__minimize rect,
+  .shiver-splash__text,
+  .shiver-splash__wordmark,
+  .shiver-splash__tag {
+    animation: none;
+  }
+}
