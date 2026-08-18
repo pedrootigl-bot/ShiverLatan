@@ -1,36 +1,79 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Shiver — landing da ferramenta
 
-## Getting Started
+Landing em tela cheia da **corretora Shiver**. O site apresenta a ferramenta que auxilia o trader na **hora de compra e venda**, reunindo tendência, momentum e volatilidade no mesmo painel.
 
-First, run the development server:
+A ferramenta **não opera sozinha**: não é robô e não dispara ordem. Quem decide e quem opera é o trader.
+
+## Como rodar
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Abra [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+npm run build   # produção
+npm run start   # servir o build
+npm run lint
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Node 20+ recomendado. Pacote gerenciador: npm.
 
-## Learn More
+## O que é este site
 
-To learn more about Next.js, take a look at the following resources:
+A home **não rola a página**. É um deck de 6 slides: roda, trackpad, swipe, setas ou o menu trocam a seção com transição GSAP. O botão voltar do navegador também troca o slide.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+| Slide | Âncora | Conteúdo |
+|---|---|---|
+| 01 | `#inicio` | Mercado / Clareza — visual com celular |
+| 02 | `#beneficios` | Três sinais (tendência, momentum, volatilidade) |
+| 03 | `#como-funciona` | Caos × Clareza |
+| 04 | `#ferramenta` | Painel da ferramenta |
+| 05 | `#metodo` | Como lemos o mercado |
+| 06 | `#faq` | FAQ, CTA e rodapé legal |
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Páginas extras: `/termos` e `/privacidade`.
 
-## Deploy on Vercel
+O CTA **Conheça a ferramenta** aponta para `#ferramenta` até existir URL de conta, demo ou produto da Shiver.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Stack
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- Next.js 16 (App Router) e React 19
+- TypeScript
+- Tailwind CSS 4
+- GSAP (transição entre slides e menu mobile)
+- Poppins (400 / 600 / 700 / 800)
+
+## Estrutura
+
+```
+app/                 rotas, layout, metadata
+components/deck/     slides e o Deck
+components/          header, preloader, ambient, CardNav
+lib/                 CTA, lista de slides, motions
+public/              imagens
+```
+
+## Linha editorial
+
+Dizer: auxilia o timing; tendência, momentum e volatilidade no mesmo painel; quem opera é você.
+
+Não dizer: “Shiver não é corretora”; “robô opera por você”; garantia de lucro ou de timing perfeito.
+
+Números e gráficos da landing são mock — não simular cota ao vivo.
+
+Tese completa: `documents/tese-produto-shiver.md` (na pasta do workspace, um nível acima deste app).
+
+## Acessibilidade e movimento
+
+`prefers-reduced-motion` desliga transições do deck, idle e abertura do FAQ. Há skip link para o conteúdo.
+
+## Documentação
+
+Na pasta `documents/` do workspace:
+
+- `tese-produto-shiver.md` — posicionamento fechado com o cliente
+- `presentation-slider.md` — comportamento do deck
+- `otimizacao-landing.md` — o que já foi otimizado e o que falta
