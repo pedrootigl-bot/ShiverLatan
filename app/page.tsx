@@ -1,27 +1,29 @@
 import Header from "@/components/Header";
-import Hero from "@/components/Hero";
-import HowItWorks from "@/components/HowItWorks";
-import ProductPreview from "@/components/ProductPreview";
-import FAQ from "@/components/FAQ";
-import FinalCTA from "@/components/FinalCTA";
-import Footer from "@/components/Footer";
-import Testimonials from "@/components/Testimonials";
 import Ambient from "@/components/Ambient";
+import Preloader from "@/components/Preloader";
+import Deck from "@/components/deck/Deck";
+import SlideIntro from "@/components/deck/SlideIntro";
+import SlidePillars from "@/components/deck/SlidePillars";
+import SlideHow from "@/components/deck/SlideHow";
+import SlideTool from "@/components/deck/SlideTool";
+import SlideMethod from "@/components/deck/SlideMethod";
+import SlideCloser from "@/components/deck/SlideCloser";
 
 export default function Home() {
   return (
-    <main className="relative min-h-screen bg-[var(--background)] text-[var(--text)]">
-      <Ambient />
-      <div className="relative z-10">
+    <Preloader>
+      <main id="conteudo" className="relative text-[var(--text)]">
+        <Ambient />
         <Header />
-        <Hero />
-        <HowItWorks />
-        <ProductPreview />
-        <Testimonials />
-        <FAQ />
-        <FinalCTA />
-        <Footer />
-      </div>
-    </main>
+        <Deck>
+          <SlideIntro />
+          <SlidePillars />
+          <SlideHow />
+          <SlideTool />
+          <SlideMethod />
+          <SlideCloser />
+        </Deck>
+      </main>
+    </Preloader>
   );
 }

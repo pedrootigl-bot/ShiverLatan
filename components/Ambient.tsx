@@ -16,11 +16,12 @@ export default function Ambient() {
     }
 
     const finePointer = window.matchMedia("(pointer: fine)").matches;
+    const wideScreen = window.matchMedia("(min-width: 1024px)").matches;
     const reducedMotion = window.matchMedia(
       "(prefers-reduced-motion: reduce)",
     ).matches;
 
-    if (!finePointer || reducedMotion) {
+    if (!finePointer || !wideScreen || reducedMotion) {
       glow.style.display = "none";
       return;
     }
@@ -56,7 +57,7 @@ export default function Ambient() {
     <div
       ref={glowRef}
       aria-hidden
-      className="pointer-events-none fixed top-0 left-0 z-0 h-[360px] w-[360px] rounded-full bg-[radial-gradient(circle,rgba(83,109,254,0.14)_0%,transparent_70%)] opacity-80"
+      className="pointer-events-none fixed top-0 left-0 z-0 h-[360px] w-[360px] rounded-full bg-[radial-gradient(circle,rgba(232,121,249,0.22)_0%,transparent_70%)] opacity-80"
     />
   );
 }

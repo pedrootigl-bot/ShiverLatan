@@ -1,16 +1,17 @@
-import Preloader from "@/components/Preloader";
 import type { Metadata, Viewport } from "next";
-import { Geist } from "next/font/google";
+import { Poppins } from "next/font/google";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
+const poppins = Poppins({
+  variable: "--font-poppins",
+  subsets: ["latin", "latin-ext"],
+  display: "swap",
+  weight: ["400", "600", "700", "800"],
 });
 
-const title = "Shiver — Leitura clara do mercado";
+const title = "Shiver — Auxílio na hora de comprar e vender";
 const description =
-  "Ferramenta de análise para traders: dados, contexto e sinais em um só lugar. Shiver não executa operações e não promete resultado financeiro.";
+  "Ferramenta da corretora Shiver para auxiliar o trader na hora de compra e venda. Tendência, momentum e volatilidade no mesmo painel. A ferramenta não opera sozinha.";
 
 export const metadata: Metadata = {
   title: {
@@ -22,10 +23,10 @@ export const metadata: Metadata = {
   authors: [{ name: "Shiver" }],
   keywords: [
     "Shiver",
-    "análise de mercado",
+    "corretora",
     "ferramenta para traders",
-    "leitura de mercado",
-    "dashboard de trading",
+    "hora de compra e venda",
+    "tendência momentum volatilidade",
   ],
   robots: {
     index: true,
@@ -39,7 +40,7 @@ export const metadata: Metadata = {
     siteName: "Shiver",
   },
   twitter: {
-    card: "summary",
+    card: "summary_large_image",
     title,
     description,
   },
@@ -48,16 +49,27 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   themeColor: "#05070d",
   colorScheme: "dark",
+  viewportFit: "cover",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="pt-BR"
-      className={`${geistSans.variable} h-full antialiased`}
+      className={`${poppins.variable} h-full antialiased`}
+      suppressHydrationWarning
     >
       <body className="flex min-h-full flex-col font-sans">
-        <Preloader>{children}</Preloader>
+        <script
+          dangerouslySetInnerHTML={{
+            __html:
+              'try{if(sessionStorage.getItem("shiver-preloader-seen")==="1")document.documentElement.classList.add("splash-seen")}catch(e){}',
+          }}
+        />
+        <a href="#conteudo" className="skip-link">
+          Ir para o conteúdo
+        </a>
+        {children}
       </body>
     </html>
   );

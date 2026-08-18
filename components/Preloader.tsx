@@ -3,6 +3,8 @@
 import { useLayoutEffect, useState, type ReactNode } from "react";
 import "./Preloader.css";
 
+const STORAGE_KEY = "shiver-preloader-seen";
+
 type PreloaderProps = {
   children: ReactNode;
   brandText?: string;
@@ -12,32 +14,39 @@ type PreloaderProps = {
 export default function Preloader({
   children,
   brandText = "SHIVER",
-  tagline = "ANÁLISE",
+  tagline = "CORRETORA",
 }: PreloaderProps) {
   const [visible, setVisible] = useState(true);
   const [exiting, setExiting] = useState(false);
 
   useLayoutEffect(() => {
-    document.body.style.overflow = "hidden";
-
     const prefersReducedMotion = window.matchMedia(
       "(prefers-reduced-motion: reduce)",
     ).matches;
+    const alreadySeen =
+      window.sessionStorage.getItem(STORAGE_KEY) === "1" ||
+      document.documentElement.classList.contains("splash-seen");
 
-    if (prefersReducedMotion) {
+    if (prefersReducedMotion || alreadySeen) {
+      document.documentElement.classList.add("splash-seen");
       document.body.style.overflow = "";
-      setVisible(false);
+      window.dispatchEvent(new Event("shiver:preloader-done"));
       return;
     }
 
+    document.body.style.overflow = "hidden";
+
     const exitTimer = window.setTimeout(() => {
       setExiting(true);
-    }, 4200);
+    }, 1350);
 
     const doneTimer = window.setTimeout(() => {
+      window.sessionStorage.setItem(STORAGE_KEY, "1");
+      document.documentElement.classList.add("splash-seen");
       document.body.style.overflow = "";
       setVisible(false);
-    }, 4700);
+      window.dispatchEvent(new Event("shiver:preloader-done"));
+    }, 1700);
 
     return () => {
       window.clearTimeout(exitTimer);

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { DECK_SLIDE_EVENT } from "@/lib/slides";
 
 type LiveValueProps = {
   value: number;
@@ -30,24 +31,25 @@ export default function LiveValue({
 
   useEffect(() => {
     const element = ref.current;
-    if (!element) {
+    if (!element || started) {
       return;
     }
 
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setStarted(true);
-          observer.unobserve(element);
-        }
-      },
-      { threshold: 0.2 },
-    );
+    const slide = element.closest<HTMLElement>("[data-slide]");
 
-    observer.observe(element);
+    const tryStart = () => {
+      if (slide?.classList.contains("is-visible")) {
+        setStarted(true);
+      }
+    };
 
-    return () => observer.disconnect();
-  }, []);
+    tryStart();
+    window.addEventListener(DECK_SLIDE_EVENT, tryStart);
+
+    return () => {
+      window.removeEventListener(DECK_SLIDE_EVENT, tryStart);
+    };
+  }, [started]);
 
   useEffect(() => {
     if (!started) {

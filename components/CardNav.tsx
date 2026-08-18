@@ -1,8 +1,10 @@
 "use client";
 
-import { useLayoutEffect, useRef, useState, type KeyboardEvent, type ReactNode } from "react";
+import { useLayoutEffect, useEffect, useRef, useState, type ReactNode } from "react";
 import { gsap } from "gsap";
 import "./CardNav.css";
+import { CTA_HREF, CTA_LABEL } from "@/lib/cta";
+import { DECK_SLIDE_EVENT } from "@/lib/slides";
 
 type CardNavLink = {
   label: string;
@@ -31,273 +33,273 @@ export type CardNavProps = {
   ctaHref?: string;
 };
 
-function ArrowIcon() {
-  return (
-    <svg
-      width="14"
-      height="14"
-      viewBox="0 0 24 24"
-      fill="none"
-      aria-hidden="true"
-    >
-      <path
-        d="M7 17L17 7M17 7H9M17 7V15"
-        stroke="currentColor"
-        strokeWidth="1.8"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
-}
+const CLOSED_SIZE = 44;
+const HOVER_SIZE = 52;
+const OPEN_WIDTH = 260;
+const CLOSED_RADIUS = 12;
+const OPEN_RADIUS = 16;
 
 export default function CardNav({
   logo,
   items,
   className = "",
-  ease = "power3.out",
   baseColor = "#0b0f19",
-  menuColor = "#ffffff",
   buttonBgColor = "#536dfe",
   buttonTextColor = "#ffffff",
-  ctaLabel = "Conhecer ferramenta",
-  ctaHref = "#comecar",
+  ctaLabel = CTA_LABEL,
+  ctaHref = CTA_HREF,
 }: CardNavProps) {
-  const [isHamburgerOpen, setIsHamburgerOpen] = useState(false);
-  const [isExpanded, setIsExpanded] = useState(false);
-  const navRef = useRef<HTMLElement | null>(null);
-  const cardsRef = useRef<HTMLDivElement[]>([]);
-  const tlRef = useRef<gsap.core.Timeline | null>(null);
+  const [isOpen, setIsOpen] = useState(false);
+  const toggleRef = useRef<HTMLDivElement>(null);
+  const barsRef = useRef<HTMLDivElement>(null);
+  const closeRef = useRef<HTMLButtonElement>(null);
+  const linksRef = useRef<HTMLElement>(null);
+  const isOpenRef = useRef(false);
 
-  const calculateHeight = () => {
-    const navEl = navRef.current;
-    if (!navEl) {
-      return 260;
+  useLayoutEffect(() => {
+    isOpenRef.current = isOpen;
+  }, [isOpen]);
+
+  useLayoutEffect(() => {
+    const toggle = toggleRef.current;
+    const closeButton = closeRef.current;
+    const links = linksRef.current;
+
+    if (!toggle || !closeButton || !links) {
+      return;
     }
 
-    const isMobile = window.matchMedia("(max-width: 768px)").matches;
-    if (isMobile) {
-      const contentEl = navEl.querySelector(".card-nav-content") as HTMLElement | null;
-      if (contentEl) {
-        const wasVisible = contentEl.style.visibility;
-        const wasPointerEvents = contentEl.style.pointerEvents;
-        const wasPosition = contentEl.style.position;
-        const wasHeight = contentEl.style.height;
+    gsap.set(toggle, {
+      width: CLOSED_SIZE,
+      height: CLOSED_SIZE,
+      borderRadius: CLOSED_RADIUS,
+    });
+    gsap.set(closeButton, { autoAlpha: 0 });
+    gsap.set(links, { autoAlpha: 0 });
+    gsap.set(links.querySelectorAll("a"), { y: -10, autoAlpha: 0 });
+  }, []);
 
-        contentEl.style.visibility = "visible";
-        contentEl.style.pointerEvents = "auto";
-        contentEl.style.position = "static";
-        contentEl.style.height = "auto";
-        contentEl.offsetHeight;
+  const canHover = () =>
+    window.matchMedia("(hover: hover) and (pointer: fine)").matches;
 
-        const topBar = 60;
-        const padding = 16;
-        const contentHeight = contentEl.scrollHeight;
-
-        contentEl.style.visibility = wasVisible;
-        contentEl.style.pointerEvents = wasPointerEvents;
-        contentEl.style.position = wasPosition;
-        contentEl.style.height = wasHeight;
-
-        return topBar + contentHeight + padding;
-      }
+  const onToggleEnter = () => {
+    const toggle = toggleRef.current;
+    if (!toggle || isOpenRef.current || !canHover()) {
+      return;
     }
 
-    return 260;
+    gsap.to(toggle, {
+      width: HOVER_SIZE,
+      height: HOVER_SIZE,
+      duration: 0.2,
+      ease: "power2.out",
+    });
   };
 
-  const createTimeline = () => {
-    const navEl = navRef.current;
-    if (!navEl) {
-      return null;
+  const onToggleLeave = () => {
+    const toggle = toggleRef.current;
+    if (!toggle || isOpenRef.current || !canHover()) {
+      return;
     }
 
-    gsap.set(navEl, { height: 60, overflow: "hidden" });
-    gsap.set(cardsRef.current, { y: 50, opacity: 0 });
-
-    const tl = gsap.timeline({ paused: true });
-
-    tl.to(navEl, {
-      height: calculateHeight,
-      duration: 0.4,
-      ease,
+    gsap.to(toggle, {
+      width: CLOSED_SIZE,
+      height: CLOSED_SIZE,
+      duration: 0.2,
+      ease: "power2.out",
     });
+  };
 
-    tl.to(
-      cardsRef.current,
-      { y: 0, opacity: 1, duration: 0.4, ease, stagger: 0.08 },
-      "-=0.1",
+  const openMenu = () => {
+    const toggle = toggleRef.current;
+    const bars = barsRef.current;
+    const closeButton = closeRef.current;
+    const links = linksRef.current;
+    if (!toggle || !bars || !closeButton || !links) {
+      return;
+    }
+
+    const prefersReducedMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+
+    setIsOpen(true);
+    isOpenRef.current = true;
+    gsap.killTweensOf([toggle, closeButton, links, ...links.querySelectorAll("a")]);
+    gsap.set(bars, { autoAlpha: 0 });
+
+    const nav = toggle.closest(".blob-nav");
+    const openWidth = Math.min(
+      OPEN_WIDTH,
+      Math.max(CLOSED_SIZE, (nav?.clientWidth ?? window.innerWidth) - 12),
+    );
+    const linkCount = links.querySelectorAll("a").length;
+    const openHeight = Math.min(
+      44 + 36 + linkCount * 40,
+      Math.round(window.innerHeight * 0.62),
     );
 
-    return tl;
+    if (prefersReducedMotion) {
+      gsap.set(toggle, {
+        width: openWidth,
+        height: openHeight,
+        borderRadius: OPEN_RADIUS,
+      });
+      gsap.set(closeButton, { autoAlpha: 1 });
+      gsap.set(links, { autoAlpha: 1 });
+      gsap.set(links.querySelectorAll("a"), { y: 0, autoAlpha: 1 });
+      return;
+    }
+
+    gsap.to(toggle, {
+      width: openWidth,
+      height: openHeight,
+      borderRadius: OPEN_RADIUS,
+      duration: 0.2,
+      delay: 0.22,
+      ease: "power2.out",
+    });
+
+    gsap.to(closeButton, { autoAlpha: 1, duration: 0.15, delay: 0.45 });
+    gsap.set(links, { autoAlpha: 1, delay: 0.5 });
+    gsap.to(links.querySelectorAll("a"), {
+      y: 0,
+      autoAlpha: 1,
+      duration: 0.2,
+      stagger: 0.04,
+      delay: 0.5,
+      ease: "power2.out",
+    });
   };
 
-  useLayoutEffect(() => {
-    const tl = createTimeline();
-    tlRef.current = tl;
+  const closeMenu = (event?: { stopPropagation?: () => void }) => {
+    event?.stopPropagation?.();
+
+    const toggle = toggleRef.current;
+    const bars = barsRef.current;
+    const closeButton = closeRef.current;
+    const links = linksRef.current;
+    if (!toggle || !bars || !closeButton || !links || !isOpenRef.current) {
+      return;
+    }
+
+    gsap.killTweensOf([toggle, closeButton, links, ...links.querySelectorAll("a")]);
+    isOpenRef.current = false;
+    setIsOpen(false);
+
+    gsap.to(links.querySelectorAll("a"), {
+      y: -8,
+      autoAlpha: 0,
+      duration: 0.12,
+      stagger: 0.02,
+    });
+    gsap.to(links, { autoAlpha: 0, duration: 0.12 });
+    gsap.to(closeButton, { autoAlpha: 0, duration: 0.12 });
+
+    gsap.to(toggle, {
+      width: CLOSED_SIZE,
+      height: CLOSED_SIZE,
+      borderRadius: CLOSED_RADIUS,
+      duration: 0.2,
+      ease: "power2.inOut",
+      onComplete: () => {
+        gsap.set(bars, { autoAlpha: 1 });
+      },
+    });
+  };
+
+  useEffect(() => {
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape" && isOpenRef.current) {
+        closeMenu();
+      }
+    };
+
+    const onSlide = () => {
+      if (isOpenRef.current) {
+        closeMenu();
+      }
+    };
+
+    window.addEventListener("keydown", onKey);
+    window.addEventListener(DECK_SLIDE_EVENT, onSlide);
 
     return () => {
-      tl?.kill();
-      tlRef.current = null;
+      window.removeEventListener("keydown", onKey);
+      window.removeEventListener(DECK_SLIDE_EVENT, onSlide);
     };
-    // Recreate when easing or items change, matching the original CardNav timeline setup.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [ease, items]);
-
-  useLayoutEffect(() => {
-    const handleResize = () => {
-      const isDesktop = window.matchMedia("(min-width: 768px)").matches;
-
-      if (isDesktop) {
-        setIsHamburgerOpen(false);
-        setIsExpanded(false);
-        gsap.set(navRef.current, { height: 60 });
-        return;
-      }
-
-      if (!tlRef.current) {
-        return;
-      }
-
-      if (isExpanded) {
-        const newHeight = calculateHeight();
-        gsap.set(navRef.current, { height: newHeight });
-
-        tlRef.current.kill();
-        const newTl = createTimeline();
-        if (newTl) {
-          newTl.progress(1);
-          tlRef.current = newTl;
-        }
-      } else {
-        tlRef.current.kill();
-        const newTl = createTimeline();
-        if (newTl) {
-          tlRef.current = newTl;
-        }
-      }
-    };
-
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isExpanded]);
+  }, []);
 
   const toggleMenu = () => {
-    const tl = tlRef.current;
-    if (!tl) {
+    if (isOpenRef.current) {
+      closeMenu();
       return;
     }
 
-    if (!isExpanded) {
-      setIsHamburgerOpen(true);
-      setIsExpanded(true);
-      tl.play(0);
-      return;
+    openMenu();
+  };
+
+  const seen = new Set<string>();
+  const menuLinks = [
+    ...items.flatMap((item) => item.links),
+    { label: ctaLabel, href: ctaHref, ariaLabel: ctaLabel },
+  ].filter((link) => {
+    const key = `${link.href}-${link.label}`;
+    if (seen.has(key)) {
+      return false;
     }
-
-    setIsHamburgerOpen(false);
-    tl.eventCallback("onReverseComplete", () => setIsExpanded(false));
-    tl.reverse();
-  };
-
-  const closeMenu = () => {
-    const tl = tlRef.current;
-    if (!tl || !isExpanded) {
-      return;
-    }
-
-    setIsHamburgerOpen(false);
-    tl.eventCallback("onReverseComplete", () => setIsExpanded(false));
-    tl.reverse();
-  };
-
-  const handleHamburgerKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
-    if (event.key === "Enter" || event.key === " ") {
-      event.preventDefault();
-      toggleMenu();
-    }
-  };
-
-  const handleNavLinkClick = () => {
-    closeMenu();
-  };
-
-  const setCardRef = (index: number) => (element: HTMLDivElement | null) => {
-    if (element) {
-      cardsRef.current[index] = element;
-    }
-  };
+    seen.add(key);
+    return true;
+  });
 
   return (
     <div className={`card-nav-container ${className}`.trim()}>
-      <nav
-        ref={navRef}
-        className={`card-nav ${isExpanded ? "open" : ""}`}
-        style={{ backgroundColor: baseColor }}
-      >
-        <div className="card-nav-top">
-          <div
-            className={`hamburger-menu ${isHamburgerOpen ? "open" : ""}`}
+      <nav className="blob-nav" style={{ backgroundColor: baseColor }}>
+        <div className="blob-nav__brand">{logo}</div>
+
+        <div
+          ref={toggleRef}
+          className={`blob-nav__toggle${isOpen ? " is-open" : ""}`}
+          style={{ backgroundColor: buttonBgColor, color: buttonTextColor }}
+          onMouseEnter={onToggleEnter}
+          onMouseLeave={onToggleLeave}
+        >
+          <button
+            type="button"
+            className="blob-nav__hit"
+            aria-label={isOpen ? "Fechar menu" : "Abrir menu"}
+            aria-expanded={isOpen}
+            aria-controls="menu-mobile"
             onClick={toggleMenu}
-            onKeyDown={handleHamburgerKeyDown}
-            role="button"
-            aria-label={isExpanded ? "Fechar menu" : "Abrir menu"}
-            aria-expanded={isExpanded}
-            tabIndex={0}
-            style={{ color: menuColor }}
-          >
-            <div className="hamburger-line" />
-            <div className="hamburger-line" />
+          />
+
+          <div ref={barsRef} className="blob-nav__bars" aria-hidden>
+            <span />
+            <span />
+            <span />
           </div>
 
-          <div className="logo-container">{logo}</div>
-
-          <a
-            href={ctaHref}
-            className="card-nav-cta-button"
-            style={{ backgroundColor: buttonBgColor, color: buttonTextColor }}
-            onClick={handleNavLinkClick}
+          <button
+            ref={closeRef}
+            type="button"
+            className="blob-nav__close"
+            onClick={closeMenu}
           >
-            {ctaLabel}
-          </a>
-        </div>
+            ×
+          </button>
 
-        <div className="card-nav-content" aria-hidden={!isExpanded}>
-          {(items || []).slice(0, 3).map((item, index) => (
-            <div
-              key={`${item.label}-${index}`}
-              className="nav-card"
-              ref={setCardRef(index)}
-              style={{ backgroundColor: item.bgColor, color: item.textColor }}
-            >
-              {item.href ? (
-                <a
-                  href={item.href}
-                  className="nav-card-label"
-                  onClick={handleNavLinkClick}
-                >
-                  {item.label}
-                </a>
-              ) : (
-                <div className="nav-card-label">{item.label}</div>
-              )}
-              <div className="nav-card-links">
-                {item.links?.map((link) => (
-                  <a
-                    key={link.label}
-                    className="nav-card-link"
-                    href={link.href}
-                    aria-label={link.ariaLabel}
-                    onClick={handleNavLinkClick}
-                  >
-                    <ArrowIcon />
-                    {link.label}
-                  </a>
-                ))}
-              </div>
-            </div>
-          ))}
+          <nav ref={linksRef} id="menu-mobile" className="blob-nav__links" aria-hidden={!isOpen}>
+            {menuLinks.map((link) => (
+              <a
+                key={`${link.href}-${link.label}`}
+                href={link.href}
+                aria-label={link.ariaLabel}
+                onClick={closeMenu}
+              >
+                {link.label}
+              </a>
+            ))}
+          </nav>
         </div>
       </nav>
     </div>
