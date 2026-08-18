@@ -15,12 +15,13 @@ export default function SlideIntro() {
             Tendência, momentum e volatilidade em um só painel. A ferramenta
             auxilia a hora de compra e venda — quem opera é você.
           </p>
-          <a href={CTA_HREF} className="deck-cta btn-shine deck-enter">
-            {CTA_LABEL}
-          </a>
         </div>
 
         <IntroVisual />
+
+        <a href={CTA_HREF} className="deck-cta btn-shine deck-enter">
+          {CTA_LABEL}
+        </a>
       </div>
     </section>
   );
