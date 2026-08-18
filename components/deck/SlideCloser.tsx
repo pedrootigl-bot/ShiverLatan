@@ -1,5 +1,6 @@
 import { CTA_HREF, CTA_LABEL } from "@/lib/cta";
 import FaqAccordion from "@/components/deck/FaqAccordion";
+import { RISK_DISCLAIMER, ROUTES, SITE_YEAR } from "@/lib/config";
 
 const questions = [
   {
@@ -36,7 +37,7 @@ const questions = [
 
 export default function SlideCloser() {
   return (
-    <section id="faq" data-slide="5" className="deck-slide deck-slide--faq">
+    <section id="faq" data-slide="6" className="deck-slide deck-slide--faq">
       <div id="comecar" className="absolute top-0 left-0 h-px w-px" />
       <div className="deck-slide__layout">
         <div className="deck-slide__copy">
@@ -53,10 +54,11 @@ export default function SlideCloser() {
             {CTA_LABEL}
           </a>
           <div className="deck-footer deck-enter">
-            <p>© 2026 Shiver. A ferramenta auxilia o trader.</p>
+            <p>© {SITE_YEAR} Shiver. A ferramenta auxilia o trader.</p>
+            <p className="deck-disclaimer">{RISK_DISCLAIMER}</p>
             <p className="mt-2 flex flex-wrap gap-4">
-              <a href="/termos">Termos</a>
-              <a href="/privacidade">Privacidade</a>
+              <a href={ROUTES.termos}>Termos</a>
+              <a href={ROUTES.privacidade}>Privacidade</a>
             </p>
           </div>
         </div>

@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Poppins } from "next/font/google";
+import { SEO, SITE_LOCALE, SITE_NAME, SITE_URL, PRELOADER } from "@/lib/config";
 import "./globals.css";
 
 const poppins = Poppins({
@@ -9,40 +10,35 @@ const poppins = Poppins({
   weight: ["400", "600", "700", "800"],
 });
 
-const title = "Shiver — Auxílio na hora de comprar e vender";
-const description =
-  "Ferramenta da corretora Shiver para auxiliar o trader na hora de compra e venda. Tendência, momentum e volatilidade no mesmo painel. A ferramenta não opera sozinha.";
-
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
   title: {
-    default: title,
-    template: "%s · Shiver",
+    default: SEO.title,
+    template: `%s · ${SITE_NAME}`,
   },
-  description,
-  applicationName: "Shiver",
-  authors: [{ name: "Shiver" }],
-  keywords: [
-    "Shiver",
-    "corretora",
-    "ferramenta para traders",
-    "hora de compra e venda",
-    "tendência momentum volatilidade",
-  ],
+  description: SEO.description,
+  applicationName: SITE_NAME,
+  authors: [{ name: SITE_NAME }],
+  keywords: [...SEO.keywords],
   robots: {
     index: true,
     follow: true,
   },
+  alternates: {
+    canonical: "/",
+  },
   openGraph: {
-    title,
-    description,
-    locale: "pt_BR",
+    title: SEO.title,
+    description: SEO.description,
+    locale: SITE_LOCALE,
     type: "website",
-    siteName: "Shiver",
+    siteName: SITE_NAME,
+    url: "/",
   },
   twitter: {
     card: "summary_large_image",
-    title,
-    description,
+    title: SEO.title,
+    description: SEO.description,
   },
 };
 
@@ -62,8 +58,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       <body className="flex min-h-full flex-col font-sans">
         <script
           dangerouslySetInnerHTML={{
-            __html:
-              'try{if(sessionStorage.getItem("shiver-preloader-seen")==="1")document.documentElement.classList.add("splash-seen")}catch(e){}',
+            __html: `try{if(sessionStorage.getItem(${JSON.stringify(PRELOADER.storageKey)})==="1")document.documentElement.classList.add("splash-seen")}catch(e){}`,
           }}
         />
         <a href="#conteudo" className="skip-link">

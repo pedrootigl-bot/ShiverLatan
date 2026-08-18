@@ -20,7 +20,7 @@ const principles = [
 
 export default function SlideMethod() {
   return (
-    <section id="metodo" data-slide="4" className="deck-slide deck-slide--method">
+    <section id="metodo" data-slide="5" className="deck-slide deck-slide--method">
       <div className="deck-slide__layout">
         <div className="deck-slide__copy">
           <p className="deck-eyebrow deck-enter">Método</p>
@@ -37,6 +37,7 @@ export default function SlideMethod() {
         <div className="deck-visual deck-visual--steps flex flex-col gap-4">
           {principles.map((principle) => (
             <article key={principle.index} className="deck-stat deck-enter">
+              <span className="deck-stat__neon" aria-hidden />
               <div>
                 <p className="text-[11px] font-semibold tracking-[0.22em] text-[#e879f9] uppercase">
                   {principle.index}

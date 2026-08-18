@@ -13,6 +13,7 @@ html.is-deck #inicio,
 html.is-deck #beneficios,
 html.is-deck #como-funciona,
 html.is-deck #ferramenta,
+html.is-deck #cenario,
 html.is-deck #metodo,
 html.is-deck #faq,
 html.is-deck #comecar {
@@ -331,6 +332,14 @@ html.is-deck #comecar {
 
 .deck-slide--tool.is-revealed .deck-title__outline {
   animation: title-clip 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.16s both;
+}
+
+.deck-slide--scenario.is-revealed .deck-title__fill {
+  animation: scenario-text-in 0.82s cubic-bezier(0.22, 1, 0.36, 1) 0.38s both;
+}
+
+.deck-slide--scenario.is-revealed .deck-title__outline {
+  animation: scenario-text-in 0.82s cubic-bezier(0.22, 1, 0.36, 1) 0.48s both;
 }
 
 .deck-slide--how.is-revealed .deck-title__x {
@@ -740,15 +749,15 @@ html.is-deck #comecar {
   }
 }
 
-@keyframes tool-pulse {
+@keyframes card-breathe {
   0%,
   100% {
-    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.08);
+    box-shadow: 0 8px 22px rgba(124, 155, 255, 0);
   }
   50% {
     box-shadow:
-      0 0 0 1px rgba(116, 136, 255, 0.28),
-      0 18px 40px rgba(83, 109, 254, 0.12);
+      0 0 16px rgba(232, 121, 249, 0.07),
+      0 10px 26px rgba(124, 155, 255, 0.08);
   }
 }
 
@@ -802,7 +811,15 @@ html.is-deck #comecar {
   }
 }
 
+@property --method-neon {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+
 .deck-stat {
+  position: relative;
+  isolation: isolate;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -811,6 +828,64 @@ html.is-deck #comecar {
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 1.25rem;
   background: rgba(8, 11, 19, 0.72);
+  transition:
+    border-color 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+.deck-slide--method .deck-stat:hover,
+.deck-slide--method .deck-stat:focus-within {
+  border-color: rgba(232, 121, 249, 0.28);
+  box-shadow:
+    0 0 22px rgba(232, 121, 249, 0.16),
+    0 0 36px rgba(124, 155, 255, 0.1);
+}
+
+.deck-stat__neon {
+  position: absolute;
+  inset: -1px;
+  z-index: 1;
+  border-radius: inherit;
+  padding: 1.5px;
+  pointer-events: none;
+  opacity: 0;
+  background: conic-gradient(
+    from var(--method-neon),
+    transparent 0deg,
+    transparent 248deg,
+    rgba(34, 211, 238, 0) 268deg,
+    #22d3ee 300deg,
+    #7c9bff 332deg,
+    #e879f9 350deg,
+    #ffffff 360deg
+  );
+  filter: drop-shadow(0 0 8px rgba(232, 121, 249, 0.55));
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  transition: opacity 0.22s ease;
+}
+
+.deck-slide--method .deck-stat:hover .deck-stat__neon,
+.deck-slide--method .deck-stat:focus-within .deck-stat__neon {
+  opacity: 1;
+  animation: method-neon-spin 1.55s linear infinite;
+}
+
+.deck-stat > div {
+  position: relative;
+  z-index: 2;
+}
+
+@keyframes method-neon-spin {
+  to {
+    --method-neon: 360deg;
+  }
 }
 
 .deck-stat h3,
@@ -999,6 +1074,33 @@ html.is-deck #comecar {
   animation: spark-fade 0.9s ease-out 0.35s both;
 }
 
+.deck-slide.is-visible .signal-card,
+.deck-slide.is-visible .deck-panel,
+.deck-slide.is-visible .deck-stat {
+  animation: card-breathe 6.4s ease-in-out infinite;
+}
+
+.deck-slide.is-visible .signal-card:nth-child(2),
+.deck-slide.is-visible .deck-panel:nth-child(2),
+.deck-slide.is-visible .deck-stat:nth-child(2) {
+  animation-delay: 1.2s;
+  animation-duration: 6.9s;
+}
+
+.deck-slide.is-visible .signal-card:nth-child(3),
+.deck-slide.is-visible .deck-stat:nth-child(3) {
+  animation-delay: 2.4s;
+  animation-duration: 7.3s;
+}
+
+.deck-slide.is-visible .signal-card:hover,
+.deck-slide.is-visible .signal-card:focus-visible,
+.deck-slide.is-visible .deck-panel:hover,
+.deck-slide.is-visible .deck-stat:hover,
+.deck-slide.is-visible .deck-stat:focus-within {
+  animation-play-state: paused;
+}
+
 .deck-panel {
   overflow: hidden;
   border: 1px solid rgba(255, 255, 255, 0.1);
@@ -1101,6 +1203,299 @@ html.is-deck #comecar {
 
 .deck-footer a:hover {
   color: #ffffff;
+}
+
+.deck-disclaimer {
+  margin: 0.65rem 0 0;
+  max-width: 28rem;
+  color: rgba(161, 161, 170, 0.78);
+  font-size: 0.68rem;
+  line-height: 1.45;
+}
+
+.scenario-kicker {
+  margin: 0.55rem 0 0;
+  color: rgba(255, 255, 255, 0.88);
+  font-family: var(--font-poppins), sans-serif;
+  font-size: clamp(1.15rem, 3.2vw, 1.7rem);
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  line-height: 1.1;
+}
+
+.deck-slide--scenario .scenario-text {
+  opacity: 0;
+}
+
+.deck-slide--scenario.is-revealed .deck-eyebrow.scenario-text {
+  animation: scenario-text-in 0.78s cubic-bezier(0.22, 1, 0.36, 1) 0.3s both;
+}
+
+.deck-slide--scenario.is-revealed .scenario-kicker {
+  animation: scenario-text-in 0.78s cubic-bezier(0.22, 1, 0.36, 1) 0.56s both;
+}
+
+.deck-slide--scenario.is-revealed .deck-lead.scenario-text {
+  animation: scenario-text-in 0.82s cubic-bezier(0.22, 1, 0.36, 1) 0.66s both;
+}
+
+.deck-slide--scenario.is-revealed .scenario-note {
+  animation: scenario-text-in 0.82s cubic-bezier(0.22, 1, 0.36, 1) 0.78s both;
+}
+
+.deck-slide--scenario.is-revealed .scenario-board__hud {
+  animation: scenario-text-in 0.75s cubic-bezier(0.22, 1, 0.36, 1) 0.3s both;
+}
+
+.deck-slide--scenario.is-revealed .scenario-board__legend {
+  animation: scenario-text-in 0.75s cubic-bezier(0.22, 1, 0.36, 1) 0.38s both;
+}
+
+.deck-slide--scenario.is-revealed .scenario-board__caption {
+  animation: scenario-text-in 0.7s cubic-bezier(0.22, 1, 0.36, 1) 1.35s both;
+}
+
+.deck-slide--scenario .deck-lead {
+  max-width: 40ch;
+}
+
+.scenario-note {
+  margin: 1.1rem 0 0;
+  max-width: 38ch;
+  color: rgba(180, 184, 199, 0.9);
+  font-size: 0.82rem;
+  line-height: 1.65;
+}
+
+.scenario-board {
+  position: relative;
+  width: 100%;
+  min-width: 0;
+}
+
+.scenario-board__hud {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  margin: 0;
+  color: rgb(113 113 122);
+  font-size: 0.68rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.scenario-board__hud strong {
+  color: #ffffff;
+  font-size: clamp(1.35rem, 2.4vw, 1.85rem);
+  font-weight: 600;
+  letter-spacing: -0.04em;
+  text-transform: none;
+}
+
+.scenario-board__legend {
+  margin: 0.75rem 0 0;
+  color: rgb(161 161 170);
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.scenario-board__signals {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.7rem 0.7rem;
+  margin-top: 0.5rem;
+}
+
+.scenario-signal {
+  min-width: 0;
+  opacity: 0;
+}
+
+.scenario-signal__label {
+  display: block;
+  color: rgb(113 113 122);
+  font-size: 0.62rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.scenario-signal__value {
+  display: block;
+  margin-top: 0.2rem;
+  font-family: var(--font-poppins), sans-serif;
+  font-size: clamp(1.15rem, 2.4vw, 1.7rem);
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  line-height: 1.1;
+}
+
+.scenario-signal__meaning {
+  display: block;
+  margin-top: 0.35rem;
+  color: rgb(180 184 199);
+  font-size: 0.72rem;
+  font-weight: 400;
+  letter-spacing: 0;
+  line-height: 1.4;
+  text-transform: none;
+}
+
+.scenario-signal[data-tone="blue"] .scenario-signal__value {
+  color: #9bb6ff;
+}
+
+.scenario-signal[data-tone="purple"] .scenario-signal__value {
+  color: #f0abfc;
+}
+
+.scenario-signal[data-tone="amber"] .scenario-signal__value {
+  color: #fde68a;
+}
+
+.scenario-signal__spark {
+  display: block;
+  width: 100%;
+  height: 2rem;
+  margin-top: 0.25rem;
+}
+
+.scenario-signal .sparkline-stroke {
+  stroke-dasharray: 240;
+}
+
+.scenario-board__converge {
+  display: block;
+  width: 100%;
+  height: 3.6rem;
+  margin-top: 0.1rem;
+  overflow: visible;
+}
+
+.scenario-board__path {
+  fill: none;
+  stroke-width: 1.35;
+  stroke-linecap: round;
+  stroke-dasharray: 420;
+  stroke-dashoffset: 420;
+}
+
+.scenario-board__path[data-tone="blue"] {
+  stroke: #7c9bff;
+}
+
+.scenario-board__path[data-tone="purple"] {
+  stroke: #e879f9;
+}
+
+.scenario-board__path[data-tone="amber"] {
+  stroke: #fbbf24;
+}
+
+.scenario-board__node {
+  fill: #ffffff;
+  opacity: 0;
+  filter: drop-shadow(0 0 8px rgba(232, 121, 249, 0.85));
+}
+
+.scenario-board__focus {
+  margin: 0.15rem auto 0;
+  max-width: 28rem;
+  color: #ffffff;
+  font-size: clamp(0.88rem, 1.6vw, 1.05rem);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.45;
+  text-align: center;
+  text-wrap: pretty;
+  opacity: 0;
+}
+
+.scenario-board__chart {
+  position: relative;
+  height: 9.5rem;
+  margin-top: 0.7rem;
+  overflow: hidden;
+  opacity: 0;
+  mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.2), #000 18%, #000 82%, transparent);
+}
+
+.scenario-board__caption {
+  margin: 0.4rem 0 0;
+  color: rgb(113 113 122);
+  font-size: 0.72rem;
+  line-height: 1.45;
+}
+
+.deck-slide--scenario.is-revealed .scenario-signal {
+  animation: scenario-text-in 0.75s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.deck-slide--scenario.is-revealed .scenario-signal:nth-child(1) {
+  animation-delay: 0.42s;
+}
+
+.deck-slide--scenario.is-revealed .scenario-signal:nth-child(2) {
+  animation-delay: 0.54s;
+}
+
+.deck-slide--scenario.is-revealed .scenario-signal:nth-child(3) {
+  animation-delay: 0.66s;
+}
+
+.deck-slide--scenario.is-revealed .scenario-signal:nth-child(1) .sparkline-stroke {
+  animation: spark-draw 1s ease-out 0.58s both;
+}
+
+.deck-slide--scenario.is-revealed .scenario-signal:nth-child(2) .sparkline-stroke {
+  animation: spark-draw 1s ease-out 0.7s both;
+}
+
+.deck-slide--scenario.is-revealed .scenario-signal:nth-child(3) .sparkline-stroke {
+  animation: spark-draw 1s ease-out 0.82s both;
+}
+
+.deck-slide--scenario.is-revealed .scenario-signal .sparkline-fill {
+  animation: spark-fade 0.85s ease-out 0.7s both;
+}
+
+.deck-slide--scenario.is-revealed .scenario-board__path {
+  animation: scenario-draw 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.85s both;
+}
+
+.deck-slide--scenario.is-revealed .scenario-board__node {
+  animation: spark-fade 0.4s ease 1.5s both;
+}
+
+.deck-slide--scenario.is-revealed .scenario-board__focus {
+  animation: scenario-text-in 0.75s cubic-bezier(0.22, 1, 0.36, 1) 1.25s both;
+}
+
+.deck-slide--scenario.is-revealed .scenario-board__chart {
+  animation: spark-fade 0.9s ease 0.12s both;
+}
+
+@keyframes scenario-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes scenario-text-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 20px, 0);
+    filter: blur(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+    filter: blur(0);
+  }
 }
 
 @media (min-width: 1024px) {
@@ -1206,6 +1601,24 @@ html.is-deck #comecar {
     align-items: end;
   }
 
+  .deck-slide--scenario {
+    overflow-y: hidden;
+  }
+
+  .deck-slide--scenario .deck-slide__layout {
+    grid-template-columns: minmax(0, 0.78fr) minmax(0, 1.22fr);
+    align-items: center;
+    gap: 1.75rem;
+  }
+
+  .deck-slide--scenario .scenario-board__chart {
+    height: 11.75rem;
+  }
+
+  .deck-slide--scenario .scenario-board__converge {
+    height: 4.15rem;
+  }
+
   .deck-slide--method .deck-slide__layout {
     grid-template-columns: 1fr;
     align-items: start;
@@ -1265,28 +1678,8 @@ html.is-deck #comecar {
     animation: deck-float 7.4s ease-in-out 1.05s infinite;
   }
 
-  .deck-slide--how.is-visible .deck-panel:first-child {
-    animation: how-drift 7.6s ease-in-out infinite;
-  }
-
-  .deck-slide--how.is-visible .deck-panel:last-child {
-    animation: deck-float-alt 6.4s ease-in-out infinite;
-  }
-
-  .deck-slide--tool.is-visible .deck-panel {
-    animation: tool-pulse 6.8s ease-in-out infinite;
-  }
-
-  .deck-slide--method.is-visible .deck-stat:nth-child(odd) {
-    animation: method-shift 7.2s ease-in-out infinite;
-  }
-
-  .deck-slide--method.is-visible .deck-stat:nth-child(even) {
-    animation: deck-float-alt 6.6s ease-in-out infinite;
-  }
-
-  .deck-slide--faq.is-visible .deck-panel {
-    animation: faq-lift 8.4s ease-in-out infinite;
+  .deck-slide--scenario.is-visible .scenario-board {
+    animation: deck-float 7.4s ease-in-out infinite;
   }
 
   .deck-slide.is-visible .deck-orb {
@@ -1332,6 +1725,18 @@ html.is-deck #comecar {
   .signal-card {
     padding: 0.9rem 1rem 0.9rem 0.85rem;
   }
+
+  .scenario-board__chart {
+    height: 7.75rem;
+  }
+
+  .scenario-board__converge {
+    height: 3rem;
+  }
+
+  .scenario-signal__value {
+    font-size: 1.05rem;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -1350,6 +1755,8 @@ html.is-deck #comecar {
   .deck-slide.is-visible .intro-visual__hover,
   .deck-slide.is-visible .deck-stat,
   .deck-slide.is-visible .deck-panel,
+  .deck-slide.is-visible .signal-card,
+  .deck-slide.is-visible .scenario-board,
   .deck-scroll::after,
   .deck-index,
   .signal-card__pulse,
@@ -1391,6 +1798,30 @@ html.is-deck #comecar {
     transform: none !important;
   }
 
+  .scenario-signal,
+  .scenario-board__path,
+  .scenario-board__node,
+  .scenario-board__focus,
+  .scenario-board__chart,
+  .scenario-text,
+  .scenario-kicker,
+  .scenario-note,
+  .scenario-signal .sparkline-stroke,
+  .scenario-signal .sparkline-fill {
+    opacity: 1 !important;
+    animation: none !important;
+    transform: none !important;
+    filter: none !important;
+  }
+
+  .scenario-board__path {
+    stroke-dashoffset: 0 !important;
+  }
+
+  .scenario-signal .sparkline-stroke {
+    stroke-dashoffset: 0 !important;
+  }
+
   .deck-faq-item__panel,
   .deck-faq-item__inner p,
   .deck-faq-item__icon {
@@ -1400,5 +1831,16 @@ html.is-deck #comecar {
   .deck-faq-item.is-open .deck-faq-item__inner p {
     opacity: 1;
     transform: none;
+  }
+
+  .deck-stat__neon {
+    animation: none !important;
+    filter: none !important;
+    background: linear-gradient(
+      135deg,
+      #22d3ee,
+      #7c9bff 45%,
+      #e879f9
+    );
   }
 }

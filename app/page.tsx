@@ -6,6 +6,7 @@ import SlideIntro from "@/components/deck/SlideIntro";
 import SlidePillars from "@/components/deck/SlidePillars";
 import SlideHow from "@/components/deck/SlideHow";
 import SlideTool from "@/components/deck/SlideTool";
+import SlideScenario from "@/components/deck/SlideScenario";
 import SlideMethod from "@/components/deck/SlideMethod";
 import SlideCloser from "@/components/deck/SlideCloser";
 
@@ -20,6 +21,7 @@ export default function Home() {
           <SlidePillars />
           <SlideHow />
           <SlideTool />
+          <SlideScenario />
           <SlideMethod />
           <SlideCloser />
         </Deck>

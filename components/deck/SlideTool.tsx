@@ -1,11 +1,10 @@
 import CandleChart from "@/components/CandleChart";
 import LiveValue from "@/components/LiveValue";
-
-const metrics = [
-  { label: "Tendência", value: "Alta", detail: "+18.4%" },
-  { label: "Momentum", value: "Forte", detail: "74%" },
-  { label: "Volatilidade", value: "Moderada", detail: "42%" },
-];
+import {
+  MOCK_PAIR,
+  MOCK_PRICE,
+  MOCK_TOOL_METRICS,
+} from "@/lib/mock-market-data";
 
 export default function SlideTool() {
   return (
@@ -27,15 +26,15 @@ export default function SlideTool() {
           <div className="deck-panel p-5 md:p-6">
             <div>
               <p className="text-[11px] tracking-[0.18em] text-zinc-500 uppercase">
-                BTC / USD
+                {MOCK_PAIR}
               </p>
               <p className="font-headline mt-1 text-2xl font-semibold tracking-tight md:text-3xl">
-                <LiveValue value={67432.1} prefix="$" decimals={2} />
+                <LiveValue value={MOCK_PRICE} prefix="$" decimals={2} />
               </p>
             </div>
 
             <div className="mt-5 grid grid-cols-3 gap-2">
-              {metrics.map((metric) => (
+              {MOCK_TOOL_METRICS.map((metric) => (
                 <div
                   key={metric.label}
                   className="rounded-xl border border-white/10 bg-white/[0.03] px-3 py-3"

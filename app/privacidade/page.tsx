@@ -1,7 +1,23 @@
+import type { Metadata } from "next";
 import LegalPage from "@/components/LegalPage";
+import { ROUTES, SEO } from "@/lib/config";
 
-export const metadata = {
-  title: "Privacidade",
+export const metadata: Metadata = {
+  title: SEO.privacidadeTitle,
+  description: SEO.privacidadeDescription,
+  alternates: {
+    canonical: ROUTES.privacidade,
+  },
+  openGraph: {
+    title: SEO.privacidadeTitle,
+    description: SEO.privacidadeDescription,
+    url: ROUTES.privacidade,
+    type: "website",
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
 };
 
 export default function PrivacidadePage() {

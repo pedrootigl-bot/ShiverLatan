@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { track } from "@/lib/analytics";
 
 type FaqItem = {
   question: string;
@@ -30,7 +31,15 @@ export default function FaqAccordion({ items }: FaqAccordionProps) {
               className="deck-faq-item__trigger"
               aria-expanded={open}
               aria-controls={panelId}
-              onClick={() => setOpenIndex(open ? null : index)}
+              onClick={() => {
+                if (open) {
+                  setOpenIndex(null);
+                  return;
+                }
+
+                setOpenIndex(index);
+                track("faq_open", { question: item.question, index });
+              }}
             >
               <span className="text-sm font-semibold text-zinc-100">
                 {item.question}

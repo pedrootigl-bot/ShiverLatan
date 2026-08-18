@@ -3,6 +3,7 @@ export const SLIDE_MOTIONS = [
   "cover",
   "fadeScale",
   "wipe",
+  "fadeScale",
   "tilt",
   "zoom",
 ] as const;

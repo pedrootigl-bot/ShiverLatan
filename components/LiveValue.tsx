@@ -9,6 +9,7 @@ type LiveValueProps = {
   suffix?: string;
   decimals?: number;
   className?: string;
+  startDelay?: number;
 };
 
 function formatValue(value: number, decimals: number) {
@@ -24,6 +25,7 @@ export default function LiveValue({
   suffix = "",
   decimals = 0,
   className = "",
+  startDelay = 0,
 }: LiveValueProps) {
   const ref = useRef<HTMLSpanElement>(null);
   const [display, setDisplay] = useState(0);
@@ -36,9 +38,10 @@ export default function LiveValue({
     }
 
     const slide = element.closest<HTMLElement>("[data-slide]");
+    const readyClass = startDelay > 0 ? "is-revealed" : "is-visible";
 
     const tryStart = () => {
-      if (slide?.classList.contains("is-visible")) {
+      if (slide?.classList.contains(readyClass)) {
         setStarted(true);
       }
     };
@@ -46,10 +49,21 @@ export default function LiveValue({
     tryStart();
     window.addEventListener(DECK_SLIDE_EVENT, tryStart);
 
+    const observer =
+      startDelay > 0 && slide ? new MutationObserver(tryStart) : null;
+
+    if (observer && slide) {
+      observer.observe(slide, {
+        attributes: true,
+        attributeFilter: ["class"],
+      });
+    }
+
     return () => {
       window.removeEventListener(DECK_SLIDE_EVENT, tryStart);
+      observer?.disconnect();
     };
-  }, [started]);
+  }, [started, startDelay]);
 
   useEffect(() => {
     if (!started) {
@@ -69,9 +83,9 @@ export default function LiveValue({
     }
 
     let frame = 0;
-    const start = performance.now();
-    const duration = 900;
     const from = 0;
+    const duration = 900;
+    let start = 0;
 
     const tick = (now: number) => {
       const progress = Math.min((now - start) / duration, 1);
@@ -83,10 +97,23 @@ export default function LiveValue({
       }
     };
 
-    frame = requestAnimationFrame(tick);
+    const begin = () => {
+      start = performance.now();
+      frame = requestAnimationFrame(tick);
+    };
 
-    return () => cancelAnimationFrame(frame);
-  }, [started, value]);
+    const timeout =
+      startDelay > 0 ? window.setTimeout(begin, startDelay) : 0;
+
+    if (startDelay <= 0) {
+      begin();
+    }
+
+    return () => {
+      window.clearTimeout(timeout);
+      cancelAnimationFrame(frame);
+    };
+  }, [started, startDelay, value]);
 
   return (
     <span ref={ref} className={`tabular-nums ${className}`.trim()}>

@@ -28,6 +28,7 @@ const items: CardNavItem[] = [
     textColor: "#dbe1ff",
     links: [
       { label: "Painel", href: "#ferramenta", ariaLabel: "Conhecer a ferramenta" },
+      { label: "Cenário", href: "#cenario", ariaLabel: "Ver leitura em cenário real" },
       { label: "Método", href: "#metodo", ariaLabel: "Ver o método" },
     ],
   },
@@ -47,6 +48,7 @@ const sectionIds = [
   "beneficios",
   "como-funciona",
   "ferramenta",
+  "cenario",
   "metodo",
   "faq",
 ] as const;
@@ -124,7 +126,7 @@ export default function Header() {
               </span>
             </a>
 
-            <nav className="flex min-w-0 items-center gap-5 text-[13px] xl:gap-8 xl:text-sm" aria-label="Seções">
+            <nav className="flex min-w-0 items-center gap-4 text-[13px] xl:gap-6 xl:text-sm" aria-label="Seções">
               <a
                 href="#beneficios"
                 className={`${navClass(active, "beneficios")} whitespace-nowrap`}
@@ -145,6 +147,13 @@ export default function Header() {
                 aria-current={active === "ferramenta" ? "true" : undefined}
               >
                 Ferramenta
+              </a>
+              <a
+                href="#cenario"
+                className={`${navClass(active, "cenario")} whitespace-nowrap`}
+                aria-current={active === "cenario" ? "true" : undefined}
+              >
+                Cenário
               </a>
               <a
                 href="#metodo"

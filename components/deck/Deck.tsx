@@ -2,6 +2,18 @@
 
 import { useLayoutEffect, useRef, useState, type ReactNode } from "react";
 import { gsap } from "gsap";
+import { track } from "@/lib/analytics";
+import { CTA_HREF, HASH_ALIASES } from "@/lib/config";
+import {
+  goTo as requestSlide,
+  lockDeck,
+  next as requestNext,
+  previous as requestPrevious,
+  setActiveSlide,
+  unlockDeck,
+  type DeckGoDetail,
+  type DeckOrigin,
+} from "@/lib/deck-nav";
 import { buildSlideMotion } from "@/lib/slide-motion";
 import {
   DECK_GO_EVENT,
@@ -11,13 +23,6 @@ import {
   slideIndexFromHash,
 } from "@/lib/slides";
 import "./Presentation.css";
-
-type DeckGoDetail = {
-  index: number;
-  fromScroll?: boolean;
-};
-
-type GoToOrigin = "scroll" | "jump";
 
 function pad(value: number) {
   return String(value).padStart(2, "0");
@@ -155,6 +160,7 @@ export default function Deck({ children }: { children: ReactNode }) {
     }
 
     let current = slideIndexFromHash(window.location.hash);
+    setActiveSlide(current);
     let animating = false;
     let touchY = 0;
     let activeTimeline: gsap.core.Timeline | null = null;
@@ -163,7 +169,9 @@ export default function Deck({ children }: { children: ReactNode }) {
     const sync = (index: number, history: "replace" | "push" | "none" = "replace") => {
       current = index;
       setActive(index);
+      setActiveSlide(index);
       const id = SLIDES[index]?.id ?? "inicio";
+      track("slide_view", { id, index });
       window.dispatchEvent(
         new CustomEvent(DECK_SLIDE_EVENT, { detail: { id, index } }),
       );
@@ -251,7 +259,7 @@ export default function Deck({ children }: { children: ReactNode }) {
 
     const goTo = (
       next: number,
-      origin: GoToOrigin = "jump",
+      origin: DeckOrigin = "jump",
       fromHistory = false,
     ) => {
       if (next < 0 || next >= slides.length || next === current) {
@@ -267,6 +275,7 @@ export default function Deck({ children }: { children: ReactNode }) {
         gsap.killTweensOf(slides);
         viewport.classList.remove("is-animating");
         animating = false;
+        unlockDeck();
       }
 
       const outgoing = slides[current];
@@ -288,10 +297,12 @@ export default function Deck({ children }: { children: ReactNode }) {
         incoming.classList.add("is-visible");
         showInstant(next, fromHistory ? "none" : "push");
         pinSlideScroll(incoming, toBottom);
+        unlockDeck();
         return;
       }
 
       animating = true;
+      lockDeck((preset.duration + 0.4) * 1000);
       viewport.classList.add("is-animating");
       outgoing.classList.remove("is-visible", "is-revealed");
       incoming.classList.add("is-visible", "is-revealed");
@@ -332,6 +343,7 @@ export default function Deck({ children }: { children: ReactNode }) {
           viewport.classList.remove("is-animating");
           animating = false;
           activeTimeline = null;
+          unlockDeck();
         },
       });
 
@@ -384,6 +396,7 @@ export default function Deck({ children }: { children: ReactNode }) {
           { x: -180, y: 28, scale: 1.04 },
           { x: -40, y: 80, scale: 0.9 },
           { x: -120, y: -24, scale: 1.08 },
+          { x: -70, y: 36, scale: 0.94 },
           { x: -200, y: 64, scale: 0.96 },
         ];
         const shift = shifts[next] ?? shifts[0];
@@ -428,7 +441,7 @@ export default function Deck({ children }: { children: ReactNode }) {
         return;
       }
 
-      goTo(detail.index, detail.fromScroll ? "scroll" : "jump");
+      goTo(detail.index, detail.origin ?? "jump", Boolean(detail.fromHistory));
     };
 
     const onWheel = (event: WheelEvent) => {
@@ -441,16 +454,16 @@ export default function Deck({ children }: { children: ReactNode }) {
       }
 
       event.preventDefault();
-      if (animating || Math.abs(event.deltaY) < 16) {
+      if (Math.abs(event.deltaY) < 16) {
         return;
       }
 
       if (event.deltaY > 0) {
-        goTo(current + 1, "scroll");
+        requestNext();
         return;
       }
 
-      goTo(current - 1, "scroll");
+      requestPrevious();
     };
 
     const onKey = (event: KeyboardEvent) => {
@@ -462,7 +475,7 @@ export default function Deck({ children }: { children: ReactNode }) {
         case "ArrowDown":
         case "PageDown":
           event.preventDefault();
-          goTo(current + 1, "scroll");
+          requestNext();
           break;
         case " ":
           if (
@@ -472,20 +485,20 @@ export default function Deck({ children }: { children: ReactNode }) {
             break;
           }
           event.preventDefault();
-          goTo(current + 1, "scroll");
+          requestNext();
           break;
         case "ArrowUp":
         case "PageUp":
           event.preventDefault();
-          goTo(current - 1, "scroll");
+          requestPrevious();
           break;
         case "Home":
           event.preventDefault();
-          goTo(0);
+          requestSlide(0);
           break;
         case "End":
           event.preventDefault();
-          goTo(slides.length - 1);
+          requestSlide(slides.length - 1);
           break;
         default:
           break;
@@ -497,7 +510,7 @@ export default function Deck({ children }: { children: ReactNode }) {
     };
 
     const onTouchEnd = (event: TouchEvent) => {
-      if (isMenuOpen() || animating) {
+      if (isMenuOpen()) {
         return;
       }
 
@@ -513,11 +526,11 @@ export default function Deck({ children }: { children: ReactNode }) {
       }
 
       if (deltaY > 0) {
-        goTo(current + 1, "scroll");
+        requestNext();
         return;
       }
 
-      goTo(current - 1, "scroll");
+      requestPrevious();
     };
 
     const onClick = (event: MouseEvent) => {
@@ -531,35 +544,41 @@ export default function Deck({ children }: { children: ReactNode }) {
         return;
       }
 
-      const next = slideIndexFromHash(href);
+      const nextIndex = slideIndexFromHash(href);
       const id = href.slice(1);
-      if (id !== "comecar" && !SLIDES.some((slide) => slide.id === id)) {
+      if (!(id in HASH_ALIASES) && !SLIDES.some((slide) => slide.id === id)) {
         return;
       }
 
       event.preventDefault();
-      goTo(next);
+      if (href === CTA_HREF) {
+        track("cta_click", { href });
+      }
+      requestSlide(nextIndex);
     };
 
-    const onPopState = () => {
-      goTo(slideIndexFromHash(window.location.hash), "jump", true);
+    const onHashNav = () => {
+      requestSlide(slideIndexFromHash(window.location.hash), "jump", true);
     };
 
     window.addEventListener(DECK_GO_EVENT, onGo);
     window.addEventListener("wheel", onWheel, { passive: false });
     window.addEventListener("keydown", onKey);
-    window.addEventListener("popstate", onPopState);
+    window.addEventListener("popstate", onHashNav);
+    window.addEventListener("hashchange", onHashNav);
     viewport.addEventListener("touchstart", onTouchStart, { passive: true });
     viewport.addEventListener("touchend", onTouchEnd, { passive: true });
     document.addEventListener("click", onClick);
 
     return () => {
+      unlockDeck();
       gsap.killTweensOf(slides);
       window.removeEventListener("shiver:preloader-done", startIntro);
       window.removeEventListener(DECK_GO_EVENT, onGo);
       window.removeEventListener("wheel", onWheel);
       window.removeEventListener("keydown", onKey);
-      window.removeEventListener("popstate", onPopState);
+      window.removeEventListener("popstate", onHashNav);
+      window.removeEventListener("hashchange", onHashNav);
       viewport.removeEventListener("touchstart", onTouchStart);
       viewport.removeEventListener("touchend", onTouchEnd);
       document.removeEventListener("click", onClick);
@@ -587,13 +606,7 @@ export default function Deck({ children }: { children: ReactNode }) {
             className={index === active ? "is-active" : undefined}
             aria-current={index === active ? "true" : undefined}
             aria-label={slide.label}
-            onClick={() =>
-              window.dispatchEvent(
-                new CustomEvent<DeckGoDetail>(DECK_GO_EVENT, {
-                  detail: { index },
-                }),
-              )
-            }
+            onClick={() => requestSlide(index)}
           />
         ))}
       </nav>
@@ -606,13 +619,7 @@ export default function Deck({ children }: { children: ReactNode }) {
           type="button"
           className="deck-scroll"
           aria-label={isLast ? "Voltar ao início" : "Ir para o próximo slide"}
-          onClick={() =>
-            window.dispatchEvent(
-              new CustomEvent<DeckGoDetail>(DECK_GO_EVENT, {
-                detail: { index: isLast ? 0 : active + 1 },
-              }),
-            )
-          }
+          onClick={() => (isLast ? requestSlide(0) : requestNext())}
         >
           {isLast ? "Topo" : "Scroll"}
         </button>

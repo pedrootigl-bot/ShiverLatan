@@ -1,7 +1,23 @@
+import type { Metadata } from "next";
 import LegalPage from "@/components/LegalPage";
+import { ROUTES, SEO } from "@/lib/config";
 
-export const metadata = {
-  title: "Termos de uso",
+export const metadata: Metadata = {
+  title: SEO.termosTitle,
+  description: SEO.termosDescription,
+  alternates: {
+    canonical: ROUTES.termos,
+  },
+  openGraph: {
+    title: SEO.termosTitle,
+    description: SEO.termosDescription,
+    url: ROUTES.termos,
+    type: "website",
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
 };
 
 export default function TermosPage() {

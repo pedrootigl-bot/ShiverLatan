@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { MOCK_INTRO_CHIPS } from "@/lib/mock-market-data";
 
 export default function IntroVisual() {
   return (
@@ -25,12 +26,12 @@ export default function IntroVisual() {
       </div>
 
       <p className="intro-visual__chip intro-visual__chip--top deck-enter">
-        Tendência
-        <strong>Alta</strong>
+        {MOCK_INTRO_CHIPS[0].label}
+        <strong>{MOCK_INTRO_CHIPS[0].value}</strong>
       </p>
       <p className="intro-visual__chip intro-visual__chip--side deck-enter">
-        Momentum
-        <strong>Forte</strong>
+        {MOCK_INTRO_CHIPS[1].label}
+        <strong>{MOCK_INTRO_CHIPS[1].value}</strong>
       </p>
     </div>
   );
