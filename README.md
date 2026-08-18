@@ -1,79 +1,288 @@
-# Shiver — landing da ferramenta
+# Shiver — Landing da Ferramenta
 
-Landing em tela cheia da **corretora Shiver**. O site apresenta a ferramenta que auxilia o trader na **hora de compra e venda**, reunindo tendência, momentum e volatilidade no mesmo painel.
+Landing page imersiva da **Shiver**, criada para apresentar uma ferramenta de apoio à tomada de decisão do trader.
 
-A ferramenta **não opera sozinha**: não é robô e não dispara ordem. Quem decide e quem opera é o trader.
+A experiência reúne sinais de **tendência, momentum e volatilidade** em um único painel, ajudando o usuário a interpretar melhor o mercado antes de uma operação.
 
-## Como rodar
+> A ferramenta é exclusivamente analítica. Ela **não opera automaticamente, não executa ordens e não funciona como robô**. A decisão final continua sendo sempre do trader.
 
-```bash
-npm install
-npm run dev
+---
+
+## Sobre o projeto
+
+A landing foi construída como uma experiência em **tela cheia**, sem rolagem tradicional.
+
+Em vez de uma página convencional, a navegação funciona como um deck interativo composto por **6 seções**, com transições animadas entre cada etapa da apresentação.
+
+O usuário pode navegar utilizando:
+
+* Scroll do mouse
+* Trackpad
+* Swipe no mobile
+* Setas do teclado
+* Menu de navegação
+* Botão voltar/avançar do navegador
+
+As transições são controladas com **GSAP**, criando uma experiência mais próxima de uma apresentação interativa do que de uma landing page tradicional.
+
+---
+
+## Estrutura da experiência
+
+| Slide | Âncora           | Conteúdo                                            |
+| ----- | ---------------- | --------------------------------------------------- |
+| 01    | `#inicio`        | Mercado × Clareza — apresentação visual com celular |
+| 02    | `#beneficios`    | Tendência, momentum e volatilidade                  |
+| 03    | `#como-funciona` | Caos × Clareza                                      |
+| 04    | `#ferramenta`    | Preview do painel da ferramenta                     |
+| 05    | `#metodo`        | Como interpretamos o mercado                        |
+| 06    | `#faq`           | FAQ, CTA final e informações legais                 |
+
+Também existem as páginas:
+
+```text
+/termos
+/privacidade
 ```
 
-Abra [http://localhost:3000](http://localhost:3000).
+Atualmente, o CTA principal **“Conheça a ferramenta”** direciona para:
 
-```bash
-npm run build   # produção
-npm run start   # servir o build
-npm run lint
+```text
+#ferramenta
 ```
 
-Node 20+ recomendado. Pacote gerenciador: npm.
+Esse destino é temporário até existir uma URL definitiva para conta, demo ou acesso ao produto.
 
-## O que é este site
-
-A home **não rola a página**. É um deck de 6 slides: roda, trackpad, swipe, setas ou o menu trocam a seção com transição GSAP. O botão voltar do navegador também troca o slide.
-
-| Slide | Âncora | Conteúdo |
-|---|---|---|
-| 01 | `#inicio` | Mercado / Clareza — visual com celular |
-| 02 | `#beneficios` | Três sinais (tendência, momentum, volatilidade) |
-| 03 | `#como-funciona` | Caos × Clareza |
-| 04 | `#ferramenta` | Painel da ferramenta |
-| 05 | `#metodo` | Como lemos o mercado |
-| 06 | `#faq` | FAQ, CTA e rodapé legal |
-
-Páginas extras: `/termos` e `/privacidade`.
-
-O CTA **Conheça a ferramenta** aponta para `#ferramenta` até existir URL de conta, demo ou produto da Shiver.
+---
 
 ## Stack
 
-- Next.js 16 (App Router) e React 19
-- TypeScript
-- Tailwind CSS 4
-- GSAP (transição entre slides e menu mobile)
-- Poppins (400 / 600 / 700 / 800)
+O projeto utiliza:
 
-## Estrutura
+* **Next.js 16** — App Router
+* **React 19**
+* **TypeScript**
+* **Tailwind CSS 4**
+* **GSAP** — transições do deck e interações mobile
+* **Poppins** — pesos `400`, `600`, `700` e `800`
+* **npm** — gerenciamento de dependências
 
+Recomendado:
+
+```text
+Node.js 20+
 ```
-app/                 rotas, layout, metadata
-components/deck/     slides e o Deck
-components/          header, preloader, ambient, CardNav
-lib/                 CTA, lista de slides, motions
-public/              imagens
+
+---
+
+## Como executar
+
+Clone o projeto e instale as dependências:
+
+```bash
+npm install
 ```
 
-## Linha editorial
+Inicie o ambiente de desenvolvimento:
 
-Dizer: auxilia o timing; tendência, momentum e volatilidade no mesmo painel; quem opera é você.
+```bash
+npm run dev
+```
 
-Não dizer: “Shiver não é corretora”; “robô opera por você”; garantia de lucro ou de timing perfeito.
+A aplicação estará disponível em:
 
-Números e gráficos da landing são mock — não simular cota ao vivo.
+```text
+http://localhost:3000
+```
 
-Tese completa: `documents/tese-produto-shiver.md` (na pasta do workspace, um nível acima deste app).
+### Outros comandos
 
-## Acessibilidade e movimento
+Gerar build de produção:
 
-`prefers-reduced-motion` desliga transições do deck, idle e abertura do FAQ. Há skip link para o conteúdo.
+```bash
+npm run build
+```
 
-## Documentação
+Executar o build:
 
-Na pasta `documents/` do workspace:
+```bash
+npm run start
+```
 
-- `tese-produto-shiver.md` — posicionamento fechado com o cliente
-- `presentation-slider.md` — comportamento do deck
-- `otimizacao-landing.md` — o que já foi otimizado e o que falta
+Verificar problemas de lint:
+
+```bash
+npm run lint
+```
+
+---
+
+## Estrutura do projeto
+
+```text
+app/
+├── rotas
+├── layout
+└── metadata
+
+components/
+├── deck/
+│   ├── slides
+│   └── Deck
+│
+├── Header
+├── Preloader
+├── Ambient
+└── CardNav
+
+lib/
+├── CTA
+├── configuração dos slides
+└── motions
+
+public/
+└── imagens e assets
+```
+
+### Diretórios principais
+
+**`app/`**
+Responsável pelas rotas, layouts, metadata e páginas da aplicação.
+
+**`components/deck/`**
+Contém a estrutura principal da experiência em slides.
+
+**`components/`**
+Componentes reutilizáveis de interface e navegação.
+
+**`lib/`**
+Configurações, animações, CTA e dados compartilhados.
+
+**`public/`**
+Assets públicos utilizados pela landing.
+
+---
+
+## Posicionamento do produto
+
+A comunicação da landing deve reforçar que a ferramenta **auxilia a leitura do mercado**, mas não substitui a decisão do trader.
+
+### Comunicação recomendada
+
+Utilizar conceitos como:
+
+* Auxilia na leitura do timing
+* Tendência, momentum e volatilidade no mesmo painel
+* Mais clareza para interpretar o mercado
+* Informações centralizadas para apoiar decisões
+* Quem decide e executa a operação é o trader
+
+### Evitar
+
+Não utilizar mensagens como:
+
+* “Robô que opera por você”
+* “Operações automáticas”
+* “Lucro garantido”
+* “Timing perfeito”
+* “Sinais infalíveis”
+* Garantias de resultado financeiro
+
+Também não comunicar que a **Shiver não é corretora**, pois isso entra em conflito com o posicionamento definido para o projeto.
+
+---
+
+## Dados e gráficos
+
+Os valores, indicadores e gráficos apresentados na landing são **mockups demonstrativos**.
+
+Eles existem apenas para ilustrar a experiência da ferramenta.
+
+A landing não deve simular:
+
+* Cotações em tempo real
+* Resultados reais de operações
+* Rentabilidade garantida
+* Performance fictícia apresentada como real
+
+---
+
+## Acessibilidade
+
+O projeto respeita:
+
+```css
+prefers-reduced-motion
+```
+
+Quando essa preferência está habilitada no sistema operacional, são reduzidas ou desativadas animações como:
+
+* Transições entre slides
+* Idle animations
+* Animações do FAQ
+
+Também existe um **skip link** para permitir acesso direto ao conteúdo principal por teclado.
+
+---
+
+## Documentação complementar
+
+A documentação estratégica e técnica está localizada em:
+
+```text
+documents/
+```
+
+Arquivos principais:
+
+```text
+tese-produto-shiver.md
+```
+
+Posicionamento e tese do produto definidos para a landing.
+
+```text
+presentation-slider.md
+```
+
+Documentação sobre o comportamento e navegação do deck.
+
+```text
+otimizacao-landing.md
+```
+
+Registro das otimizações já realizadas e pontos ainda pendentes.
+
+A tese completa do produto também pode ser encontrada em:
+
+```text
+documents/tese-produto-shiver.md
+```
+
+no workspace acima da aplicação.
+
+---
+
+## Objetivo
+
+O projeto busca apresentar a ferramenta de forma **premium, direta e visual**, fugindo da estrutura tradicional de landing pages composta apenas por header, hero, cards, testimonials e footer.
+
+A experiência foi pensada para conduzir o usuário por uma narrativa:
+
+```text
+Mercado
+↓
+Problema
+↓
+Sinais
+↓
+Clareza
+↓
+Ferramenta
+↓
+Método
+↓
+Conversão
+```
+
+O objetivo final é transformar uma ferramenta analítica complexa em uma apresentação simples, moderna e fácil de compreender.
