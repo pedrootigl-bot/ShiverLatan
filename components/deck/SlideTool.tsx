@@ -16,10 +16,6 @@ export default function SlideTool() {
               <span className="deck-title__fill">Uma</span>
               <span className="deck-title__outline">Visão</span>
             </h2>
-            <p className="deck-lead deck-enter">
-              O painel reúne tendência, momentum e volatilidade para o timing.
-              A ferramenta auxilia; quem opera é você.
-            </p>
         </div>
 
         <div className="deck-visual deck-enter">
@@ -53,6 +49,11 @@ export default function SlideTool() {
             </div>
           </div>
         </div>
+
+        <p className="deck-lead deck-enter">
+          O painel reúne tendência, momentum e volatilidade para o timing.
+          A ferramenta auxilia; quem opera é você.
+        </p>
       </div>
     </section>
   );

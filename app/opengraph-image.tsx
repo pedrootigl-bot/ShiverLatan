@@ -37,7 +37,7 @@ export default function OpenGraphImage() {
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              background: "linear-gradient(135deg, #536dfe 0%, #8b5cf6 100%)",
+              background: "linear-gradient(135deg, #38bdf8 0%, #2563eb 100%)",
               fontSize: "24px",
               fontWeight: 700,
             }}

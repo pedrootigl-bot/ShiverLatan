@@ -11,7 +11,7 @@ export default function Error({
       id="conteudo"
       className="flex min-h-screen flex-col items-center justify-center bg-[#05070d] px-6 text-center text-white"
     >
-      <p className="text-xs font-semibold tracking-[0.22em] text-[#e879f9] uppercase">
+      <p className="text-xs font-semibold tracking-[0.22em] text-[#38bdf8] uppercase">
         Erro
       </p>
       <h1 className="mt-4 text-3xl font-bold tracking-tight">
@@ -22,7 +22,7 @@ export default function Error({
       </p>
       <button
         type="button"
-        className="mt-8 rounded-full bg-gradient-to-r from-[#e879f9] to-[#7c9bff] px-5 py-2.5 text-sm font-semibold text-white"
+        className="mt-8 rounded-full bg-gradient-to-r from-[#38bdf8] to-[#2563eb] px-5 py-2.5 text-sm font-semibold text-white"
         onClick={() => reset()}
       >
         Tentar de novo

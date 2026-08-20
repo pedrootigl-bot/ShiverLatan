@@ -35,7 +35,7 @@ const items: CardNavItem[] = [
   {
     label: "Começar",
     href: "#comecar",
-    bgColor: "#e879f9",
+    bgColor: "#38bdf8",
     textColor: "#ffffff",
     links: [
       { label: "FAQ", href: "#faq", ariaLabel: "Ver perguntas frequentes" },
@@ -57,7 +57,7 @@ type SectionId = (typeof sectionIds)[number];
 
 function navClass(active: SectionId | "", id: SectionId) {
   return active === id
-    ? "text-white"
+    ? "text-[#38bdf8]"
     : "text-zinc-400 transition hover:text-white";
 }
 
@@ -94,7 +94,7 @@ export default function Header() {
           <CardNav
             logo={
               <a href="#inicio">
-                <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-[#7c9bff] to-[#e879f9] text-sm font-bold text-white shadow-[0_0_18px_rgba(232,121,249,0.4)]">
+                <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-[#38bdf8] to-[#2563eb] text-sm font-bold text-white shadow-[0_0_18px_rgba(56,189,248,0.45)]">
                   S
                 </span>
                 <span className="font-headline text-sm font-bold tracking-[0.1em] text-white">
@@ -105,7 +105,7 @@ export default function Header() {
             items={items}
             baseColor="#0b0f19"
             menuColor="#ffffff"
-            buttonBgColor="#e879f9"
+            buttonBgColor="#38bdf8"
             buttonTextColor="#ffffff"
             ctaLabel={CTA_LABEL}
             ctaHref={CTA_HREF}
@@ -118,7 +118,7 @@ export default function Header() {
         <div className="bg-gradient-to-b from-[#05070d]/75 to-transparent">
           <div className="mx-auto flex h-[76px] max-w-7xl items-center justify-between gap-4 px-6">
             <a href="#inicio" className="flex min-w-0 items-center gap-3" aria-label="Shiver — início">
-              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-[#7c9bff] to-[#e879f9] font-bold text-white shadow-[0_0_25px_rgba(232,121,249,0.4)]">
+              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-[#38bdf8] to-[#2563eb] font-bold text-white shadow-[0_0_25px_rgba(56,189,248,0.45)]">
                 S
               </div>
               <span className="font-headline text-lg font-bold tracking-[0.08em] text-white">
@@ -174,7 +174,7 @@ export default function Header() {
             <div className="flex shrink-0 items-center gap-3">
               <a
                 href={CTA_HREF}
-                className="btn-shine btn-dopamine rounded-full bg-gradient-to-r from-[#e879f9] to-[#7c9bff] px-4 py-2 text-xs font-semibold whitespace-nowrap text-white xl:px-5 xl:py-2.5 xl:text-sm"
+                className="btn-shine btn-dopamine rounded-full bg-gradient-to-r from-[#38bdf8] to-[#2563eb] px-4 py-2 text-xs font-semibold whitespace-nowrap text-white xl:px-5 xl:py-2.5 xl:text-sm"
               >
                 {CTA_LABEL}
               </a>

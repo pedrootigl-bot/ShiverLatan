@@ -40,12 +40,6 @@ export default function Preloader({ children }: PreloaderProps) {
 
       finished = true;
 
-      try {
-        window.sessionStorage.setItem(PRELOADER.storageKey, "1");
-      } catch {
-        // ignore quota / private mode
-      }
-
       document.documentElement.classList.add("splash-seen");
       document.body.style.overflow = "";
       setVisible(false);
@@ -55,19 +49,10 @@ export default function Preloader({ children }: PreloaderProps) {
     const prefersReducedMotion = window.matchMedia(
       "(prefers-reduced-motion: reduce)",
     ).matches;
-    let alreadySeen = false;
-
-    try {
-      alreadySeen =
-        window.sessionStorage.getItem(PRELOADER.storageKey) === "1" ||
-        document.documentElement.classList.contains("splash-seen");
-    } catch {
-      alreadySeen = document.documentElement.classList.contains("splash-seen");
-    }
 
     const failsafe = window.setTimeout(finish, PRELOADER.failsafeMs);
 
-    if (prefersReducedMotion || alreadySeen) {
+    if (prefersReducedMotion) {
       finish();
       return () => {
         window.clearTimeout(failsafe);
@@ -139,7 +124,7 @@ export default function Preloader({ children }: PreloaderProps) {
                 {CANDLES.map((candle, index) => {
                   const mid = 46;
                   const bodyTop = candle.up ? mid - candle.body : mid;
-                  const color = candle.up ? "#22d3ee" : "#e879f9";
+                  const color = candle.up ? "#22d3ee" : "#2563eb";
 
                   return (
                     <g

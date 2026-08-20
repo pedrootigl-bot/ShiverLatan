@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Poppins } from "next/font/google";
-import { SEO, SITE_LOCALE, SITE_NAME, SITE_URL, PRELOADER } from "@/lib/config";
+import { SEO, SITE_LOCALE, SITE_NAME, SITE_URL } from "@/lib/config";
 import "./globals.css";
 
 const poppins = Poppins({
@@ -56,11 +56,6 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       suppressHydrationWarning
     >
       <body className="flex min-h-full flex-col font-sans">
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `try{if(sessionStorage.getItem(${JSON.stringify(PRELOADER.storageKey)})==="1")document.documentElement.classList.add("splash-seen")}catch(e){}`,
-          }}
-        />
         <a href="#conteudo" className="skip-link">
           Ir para o conteúdo
         </a>

@@ -22,15 +22,6 @@ export default function SlideScenario() {
             <span className="deck-title__outline">o cenário</span>
           </h2>
           <p className="scenario-kicker scenario-text">antes de decidir</p>
-          <p className="deck-lead scenario-text">
-            A ferramenta mostra três coisas sobre o mercado, no mesmo lugar:
-            para onde o preço está indo, com quanta força, e o quanto ele está
-            oscilando. Assim você vê a situação agora — e decide se opera.
-          </p>
-          <p className="scenario-note scenario-text">
-            Ela não prevê o futuro e não diz o que comprar ou vender. Só
-            organiza o que está acontecendo. Quem decide e quem opera é você.
-          </p>
         </div>
 
         <div
@@ -111,6 +102,16 @@ export default function SlideScenario() {
             momento.
           </p>
         </div>
+
+        <p className="deck-lead scenario-text">
+          A ferramenta mostra três coisas sobre o mercado, no mesmo lugar:
+          para onde o preço está indo, com quanta força, e o quanto ele está
+          oscilando. Assim você vê a situação agora — e decide se opera.
+        </p>
+        <p className="scenario-note scenario-text">
+          Ela não prevê o futuro e não diz o que comprar ou vender. Só
+          organiza o que está acontecendo. Quem decide e quem opera é você.
+        </p>
       </div>
     </section>
   );

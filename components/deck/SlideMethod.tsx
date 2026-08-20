@@ -28,10 +28,6 @@ export default function SlideMethod() {
             <span className="deck-title__fill">Como</span>
             <span className="deck-title__outline">Lemos</span>
           </h2>
-          <p className="deck-lead deck-enter">
-            O painel descreve o cenário para auxiliar o momento. A decisão, o
-            risco e a ordem continuam sendo seus.
-          </p>
         </div>
 
         <div className="deck-visual deck-visual--steps flex flex-col gap-4">
@@ -39,7 +35,7 @@ export default function SlideMethod() {
             <article key={principle.index} className="deck-stat deck-enter">
               <span className="deck-stat__neon" aria-hidden />
               <div>
-                <p className="text-[11px] font-semibold tracking-[0.22em] text-[#e879f9] uppercase">
+                <p className="text-[11px] font-semibold tracking-[0.22em] text-[#38bdf8] uppercase">
                   {principle.index}
                 </p>
                 <h3 className="mt-2 text-xl font-semibold text-white">
@@ -52,6 +48,11 @@ export default function SlideMethod() {
             </article>
           ))}
         </div>
+
+        <p className="deck-lead deck-enter">
+          O painel descreve o cenário para auxiliar o momento. A decisão, o
+          risco e a ordem continuam sendo seus.
+        </p>
       </div>
     </section>
   );

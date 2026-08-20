@@ -23,10 +23,6 @@ export default function SlideHow() {
               </span>
               <span className="deck-title__outline">Clareza</span>
             </h2>
-            <p className="deck-lead deck-enter">
-              Dados brutos viram uma leitura só. A ferramenta organiza o
-              cenário. Quem compra e vende é você.
-            </p>
         </div>
 
         <div className="deck-visual deck-visual--split grid gap-4">
@@ -44,7 +40,7 @@ export default function SlideHow() {
           </article>
 
           <article className="deck-panel how-card how-card--clarity overflow-hidden p-6">
-            <p className="text-[11px] font-semibold tracking-[0.28em] text-[#e879f9] uppercase">
+            <p className="text-[11px] font-semibold tracking-[0.28em] text-[#38bdf8] uppercase">
               Clareza
             </p>
             <ul className="mt-4 space-y-2">
@@ -56,6 +52,11 @@ export default function SlideHow() {
             </ul>
           </article>
         </div>
+
+        <p className="deck-lead deck-enter">
+          Dados brutos viram uma leitura só. A ferramenta organiza o
+          cenário. Quem compra e vende é você.
+        </p>
       </div>
     </section>
   );

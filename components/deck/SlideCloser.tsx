@@ -65,7 +65,7 @@ export default function SlideCloser() {
 
         <div className="deck-visual deck-enter">
           <div className="deck-panel p-5 md:p-6">
-            <p className="text-[11px] font-semibold tracking-[0.22em] text-[#e879f9] uppercase">
+            <p className="text-[11px] font-semibold tracking-[0.22em] text-[#38bdf8] uppercase">
               FAQ
             </p>
             <FaqAccordion items={questions} />

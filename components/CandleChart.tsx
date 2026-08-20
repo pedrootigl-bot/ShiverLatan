@@ -51,28 +51,28 @@ const PRESETS = {
     candles: buildCandles(52, 26, 36, 360, 1.35),
     width: 11,
     up: "#22d3ee",
-    down: "#e879f9",
+    down: "#2563eb",
   },
   panel: {
     viewBox: "0 0 900 300",
     candles: buildCandles(38, 22, 18, 210, 1.05),
     width: 9,
     up: "#22d3ee",
-    down: "#e879f9",
+    down: "#2563eb",
   },
   clarity: {
     viewBox: "0 0 640 260",
     candles: buildCandles(24, 24, 20, 175, 1.7),
     width: 10,
     up: "#67e8f9",
-    down: "#e879f9",
+    down: "#2563eb",
   },
   slide: {
     viewBox: "0 0 520 280",
     candles: buildCandles(20, 24, 18, 198, 1.55),
     width: 11,
     up: "#67e8f9",
-    down: "#e879f9",
+    down: "#2563eb",
   },
 } as const;
 
@@ -97,7 +97,7 @@ export default function CandleChart({
       <defs>
         <linearGradient id={lineId} x1="0" x2="1">
           <stop offset="0%" stopColor="#22d3ee" />
-          <stop offset="100%" stopColor="#e879f9" />
+          <stop offset="100%" stopColor="#2563eb" />
         </linearGradient>
       </defs>
 
@@ -153,7 +153,7 @@ type SparklineProps = {
 
 const SPARK_COLORS = {
   blue: "#22d3ee",
-  purple: "#e879f9",
+  purple: "#38bdf8",
   amber: "#fbbf24",
 } as const;
 

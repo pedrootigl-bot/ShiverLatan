@@ -13,10 +13,10 @@
 --text: #ffffff;
 --text-muted: #a5b0c9;
 
---primary: #7c9bff;
---primary-light: #a8bbff;
+--primary: #38bdf8;
+--primary-light: #7dd3fc;
 
---accent: #e879f9;
+--accent: #38bdf8;
 
 --border: rgba(255, 255, 255, 0.08);
 
@@ -65,7 +65,7 @@ body{
 }
 
 ::selection {
-  background: rgba(232, 121, 249, 0.45);
+  background: rgba(56, 189, 248, 0.45);
   color: #ffffff;
 }
 
@@ -74,7 +74,7 @@ body{
 }
 
 :focus-visible {
-  outline: 2px solid #e879f9;
+  outline: 2px solid #38bdf8;
   outline-offset: 3px;
 }
 
@@ -84,7 +84,7 @@ body{
   top: -5rem;
   z-index: 400;
   border-radius: 999px;
-  background: #e879f9;
+  background: #38bdf8;
   color: #ffffff;
   padding: 0.65rem 1.1rem;
   font-size: 0.875rem;
@@ -120,7 +120,7 @@ html.splash-seen .shiver-splash {
   padding: 1px;
   background: radial-gradient(
     140px circle at var(--glow-x) var(--glow-y),
-    #e879f9 0%,
+    #38bdf8 0%,
     #7c9bff 32%,
     transparent 68%
   );
@@ -245,7 +245,7 @@ html.splash-seen .shiver-splash {
 
 @keyframes glow-breathe {
   0%, 100% { box-shadow: 0 0 25px rgba(83, 109, 254, 0.2); }
-  50% { box-shadow: 0 0 42px rgba(139, 92, 246, 0.38); }
+  50% { box-shadow: 0 0 42px rgba(56, 189, 248, 0.38); }
 }
 
 @keyframes gradient-shift {
@@ -298,7 +298,7 @@ html.splash-seen .shiver-splash {
 
 @keyframes cta-glow {
   0%, 100% { box-shadow: 0 0 35px rgba(83, 109, 254, 0.28), 0 0 0 0 rgba(83, 109, 254, 0.18); }
-  50% { box-shadow: 0 0 70px rgba(139, 92, 246, 0.55), 0 0 0 10px rgba(83, 109, 254, 0); }
+  50% { box-shadow: 0 0 70px rgba(56, 189, 248, 0.55), 0 0 0 10px rgba(83, 109, 254, 0); }
 }
 
 @keyframes ticker-marquee {
@@ -704,7 +704,7 @@ details[open] p {
 .cta-horizon {
   background:
     radial-gradient(ellipse 78% 90% at 50% 120%, rgba(83, 109, 254, 0.22), transparent 58%),
-    radial-gradient(ellipse 42% 50% at 50% 100%, rgba(139, 92, 246, 0.16), transparent 52%);
+    radial-gradient(ellipse 42% 50% at 50% 100%, rgba(56, 189, 248, 0.16), transparent 52%);
 }
 
 .product-stage {

@@ -13,7 +13,7 @@ export default function LegalPage({ title, updated, children }: LegalPageProps) 
       <header className="border-b border-white/[0.06]">
         <div className="mx-auto flex h-[72px] max-w-3xl items-center justify-between px-6">
           <Link href="/#inicio" className="flex items-center gap-3">
-            <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-[#536dfe] to-[#8b5cf6] font-bold">
+            <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-[#38bdf8] to-[#2563eb] font-bold">
               S
             </span>
             <span className="font-headline text-lg font-bold tracking-[0.08em]">SHIVER</span>

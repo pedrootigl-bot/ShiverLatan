@@ -44,7 +44,7 @@ export default function CardNav({
   items,
   className = "",
   baseColor = "#0b0f19",
-  buttonBgColor = "#536dfe",
+  buttonBgColor = "#38bdf8",
   buttonTextColor = "#ffffff",
   ctaLabel = CTA_LABEL,
   ctaHref = CTA_HREF,

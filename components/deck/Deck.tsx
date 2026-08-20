@@ -6,6 +6,7 @@ import { track } from "@/lib/analytics";
 import { CTA_HREF, HASH_ALIASES } from "@/lib/config";
 import {
   goTo as requestSlide,
+  isDeckLocked,
   lockDeck,
   next as requestNext,
   previous as requestPrevious,
@@ -46,17 +47,26 @@ function isMenuOpen() {
   return Boolean(document.querySelector(".blob-nav__toggle.is-open"));
 }
 
+function canOverflowScroll(value: string) {
+  return value === "auto" || value === "scroll" || value === "overlay";
+}
+
 function canScroll(element: HTMLElement, deltaY: number) {
-  const max = element.scrollHeight - element.clientHeight;
-  if (max <= 1) {
+  const style = window.getComputedStyle(element);
+  if (!canOverflowScroll(style.overflowY) && !canOverflowScroll(style.overflow)) {
     return false;
   }
 
-  if (deltaY > 0 && element.scrollTop < max - 1) {
+  const max = element.scrollHeight - element.clientHeight;
+  if (max <= 4) {
+    return false;
+  }
+
+  if (deltaY > 0 && element.scrollTop < max - 2) {
     return true;
   }
 
-  if (deltaY < 0 && element.scrollTop > 1) {
+  if (deltaY < 0 && element.scrollTop > 2) {
     return true;
   }
 
@@ -86,6 +96,11 @@ function scrollableFromEvent(event: Event, deltaY: number) {
 function pinSlideScroll(slide: HTMLElement, toBottom: boolean) {
   void slide.offsetHeight;
 
+  if (slide.classList.contains("deck-slide--intro")) {
+    slide.scrollTop = 0;
+    return;
+  }
+
   if (toBottom) {
     slide.scrollTop = Math.max(0, slide.scrollHeight - slide.clientHeight);
     const faq = slide.querySelector<HTMLElement>(".deck-faq");
@@ -108,11 +123,11 @@ function motionPreset() {
   if (compact) {
     return {
       compact: true,
-      duration: 0.58,
-      travel: 56,
-      contentFrom: 22,
-      stagger: 0.045,
-      contentDelay: 0.05,
+      duration: 0.48,
+      travel: 44,
+      contentFrom: 16,
+      stagger: 0.03,
+      contentDelay: 0.04,
       easeIn: "power2.in",
       easeOut: "power2.out",
     };
@@ -120,11 +135,11 @@ function motionPreset() {
 
   return {
     compact: false,
-    duration: 0.9,
-    travel: 108,
-    contentFrom: 36,
-    stagger: 0.075,
-    contentDelay: 0.12,
+    duration: 0.68,
+    travel: 84,
+    contentFrom: 24,
+    stagger: 0.05,
+    contentDelay: 0.08,
     easeIn: "power2.in",
     easeOut: "power3.out",
   };
@@ -176,7 +191,7 @@ export default function Deck({ children }: { children: ReactNode }) {
         new CustomEvent(DECK_SLIDE_EVENT, { detail: { id, index } }),
       );
 
-      const url = `#${id}`;
+      const url = `${window.location.pathname}${window.location.search}#${id}`;
       if (history === "push") {
         window.history.pushState({ index }, "", url);
         return;
@@ -194,7 +209,7 @@ export default function Deck({ children }: { children: ReactNode }) {
         y: 0,
         scale: 1,
         rotation: 0,
-        clipPath: "none",
+        clipPath: "inset(0% 0% 0% 0%)",
         force3D: true,
       });
       slide.classList.toggle("is-visible", visible);
@@ -202,7 +217,11 @@ export default function Deck({ children }: { children: ReactNode }) {
         slide.classList.remove("is-revealed");
       }
       slide.setAttribute("aria-hidden", visible ? "false" : "true");
-      slide.inert = !visible;
+      if (visible) {
+        slide.removeAttribute("inert");
+      } else {
+        slide.setAttribute("inert", "");
+      }
       slide.style.pointerEvents = visible ? "auto" : "none";
       slide.style.zIndex = visible ? "2" : "1";
     };
@@ -262,49 +281,68 @@ export default function Deck({ children }: { children: ReactNode }) {
       origin: DeckOrigin = "jump",
       fromHistory = false,
     ) => {
-      if (next < 0 || next >= slides.length || next === current) {
+      const target = Number(next);
+      if (!Number.isInteger(target) || target < 0 || target >= slides.length) {
+        return;
+      }
+
+      if (target === current) {
+        const slide = slides[target];
+        if (origin === "jump" && slide) {
+          restSlide(slide, true);
+          resetEnter(slide, true);
+          slide.classList.remove("is-revealed");
+          void slide.offsetWidth;
+          slide.classList.add("is-visible", "is-revealed");
+        }
         return;
       }
 
       if (animating) {
-        if (!fromHistory) {
-          return;
-        }
-
         activeTimeline?.kill();
+        activeTimeline = null;
         gsap.killTweensOf(slides);
         viewport.classList.remove("is-animating");
         animating = false;
-        unlockDeck();
+        slides.forEach((slide, slideIndex) => {
+          restSlide(slide, slideIndex === current);
+          resetEnter(slide, slideIndex === current);
+        });
       }
 
       const outgoing = slides[current];
-      const incoming = slides[next];
-      const direction = next > current ? 1 : -1;
+      const incoming = slides[target];
+      const direction = target > current ? 1 : -1;
       const preset = motionPreset();
-      const motion = buildSlideMotion(next, direction, preset);
+      const motion = buildSlideMotion(target, direction, preset);
 
       incoming.style.pointerEvents = "auto";
       incoming.style.zIndex = "3";
       outgoing.style.zIndex = "2";
-      incoming.inert = false;
+      incoming.removeAttribute("inert");
       incoming.setAttribute("aria-hidden", "false");
+      void incoming.offsetHeight;
 
-      const toBottom = origin === "scroll" && direction < 0;
+      const toBottom =
+        origin === "scroll" &&
+        direction < 0 &&
+        !incoming.classList.contains("deck-slide--intro");
 
       if (reducedMotion) {
         outgoing.classList.remove("is-visible", "is-revealed");
         incoming.classList.add("is-visible");
-        showInstant(next, fromHistory ? "none" : "push");
+        showInstant(target, fromHistory ? "none" : "push");
         pinSlideScroll(incoming, toBottom);
         unlockDeck();
         return;
       }
 
       animating = true;
-      lockDeck((preset.duration + 0.4) * 1000);
+      lockDeck((preset.duration + 0.18) * 1000);
       viewport.classList.add("is-animating");
       outgoing.classList.remove("is-visible", "is-revealed");
+      incoming.classList.remove("is-revealed");
+      void incoming.offsetWidth;
       incoming.classList.add("is-visible", "is-revealed");
       pinSlideScroll(incoming, toBottom);
       if (toBottom) {
@@ -319,6 +357,7 @@ export default function Deck({ children }: { children: ReactNode }) {
       gsap.killTweensOf(incomingEnter);
 
       gsap.set(incoming, {
+        autoAlpha: 1,
         ...motion.inFrom,
         force3D: true,
       });
@@ -333,11 +372,12 @@ export default function Deck({ children }: { children: ReactNode }) {
           restSlide(outgoing, false);
           resetEnter(outgoing, false);
           gsap.set(incoming, {
+            autoAlpha: 1,
             x: 0,
             y: 0,
             scale: 1,
             rotation: 0,
-            clipPath: "none",
+            clipPath: "inset(0% 0% 0% 0%)",
           });
           incoming.style.zIndex = "2";
           viewport.classList.remove("is-animating");
@@ -399,7 +439,7 @@ export default function Deck({ children }: { children: ReactNode }) {
           { x: -70, y: 36, scale: 0.94 },
           { x: -200, y: 64, scale: 0.96 },
         ];
-        const shift = shifts[next] ?? shifts[0];
+        const shift = shifts[target] ?? shifts[0];
         gsap.to(nebula, {
           x: shift.x * amount,
           y: shift.y * amount,
@@ -410,7 +450,7 @@ export default function Deck({ children }: { children: ReactNode }) {
         });
       }
 
-      sync(next, fromHistory ? "none" : "push");
+      sync(target, fromHistory ? "none" : "push");
     };
 
     const startIntro = () => {
@@ -454,7 +494,7 @@ export default function Deck({ children }: { children: ReactNode }) {
       }
 
       event.preventDefault();
-      if (Math.abs(event.deltaY) < 16) {
+      if (isDeckLocked() || Math.abs(event.deltaY) < 16) {
         return;
       }
 
@@ -474,6 +514,7 @@ export default function Deck({ children }: { children: ReactNode }) {
       switch (event.key) {
         case "ArrowDown":
         case "PageDown":
+        case "ArrowRight":
           event.preventDefault();
           requestNext();
           break;
@@ -489,6 +530,7 @@ export default function Deck({ children }: { children: ReactNode }) {
           break;
         case "ArrowUp":
         case "PageUp":
+        case "ArrowLeft":
           event.preventDefault();
           requestPrevious();
           break;
@@ -606,6 +648,7 @@ export default function Deck({ children }: { children: ReactNode }) {
             className={index === active ? "is-active" : undefined}
             aria-current={index === active ? "true" : undefined}
             aria-label={slide.label}
+            title={slide.label}
             onClick={() => requestSlide(index)}
           />
         ))}

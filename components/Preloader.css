@@ -20,7 +20,7 @@
     radial-gradient(1.5px 1.5px at 27% 11%, rgba(56, 189, 248, 0.55), transparent),
     radial-gradient(1px 1px at 31% 73%, rgba(255, 255, 255, 0.22), transparent),
     radial-gradient(1px 1px at 36% 33%, rgba(255, 255, 255, 0.14), transparent),
-    radial-gradient(1.5px 1.5px at 36% 12%, rgba(244, 114, 182, 0.55), transparent),
+    radial-gradient(1.5px 1.5px at 36% 12%, rgba(56, 189, 248, 0.55), transparent),
     radial-gradient(1px 1px at 41% 88%, rgba(255, 255, 255, 0.2), transparent),
     radial-gradient(1px 1px at 44% 41%, rgba(255, 255, 255, 0.16), transparent),
     radial-gradient(1px 1px at 48% 6%, rgba(255, 255, 255, 0.28), transparent),
@@ -33,7 +33,7 @@
     radial-gradient(1px 1px at 76% 9%, rgba(255, 255, 255, 0.18), transparent),
     radial-gradient(1px 1px at 81% 61%, rgba(255, 255, 255, 0.28), transparent),
     radial-gradient(1px 1px at 86% 35%, rgba(255, 255, 255, 0.16), transparent),
-    radial-gradient(1.5px 1.5px at 91% 12%, rgba(232, 121, 249, 0.75), transparent),
+    radial-gradient(1.5px 1.5px at 91% 12%, rgba(56, 189, 248, 0.75), transparent),
     radial-gradient(1px 1px at 8% 88%, rgba(255, 255, 255, 0.22), transparent),
     radial-gradient(1px 1px at 94% 78%, rgba(255, 255, 255, 0.2), transparent),
     radial-gradient(1px 1px at 97% 51%, rgba(255, 255, 255, 0.14), transparent);
@@ -76,20 +76,20 @@
 .shiver-splash__bg::after {
   background-image:
     radial-gradient(1.5px 1.5px at 8% 22%, rgba(56, 189, 248, 0.42), transparent),
-    radial-gradient(1.5px 1.5px at 16% 68%, rgba(232, 121, 249, 0.4), transparent),
+    radial-gradient(1.5px 1.5px at 16% 68%, rgba(56, 189, 248, 0.4), transparent),
     radial-gradient(2px 2px at 24% 14%, rgba(255, 255, 255, 0.28), transparent),
     radial-gradient(1.5px 1.5px at 34% 52%, rgba(124, 155, 255, 0.38), transparent),
     radial-gradient(1px 1px at 39% 8%, rgba(34, 211, 238, 0.45), transparent),
-    radial-gradient(1.5px 1.5px at 46% 76%, rgba(244, 114, 182, 0.4), transparent),
+    radial-gradient(1.5px 1.5px at 46% 76%, rgba(56, 189, 248, 0.4), transparent),
     radial-gradient(1px 1px at 53% 31%, rgba(56, 189, 248, 0.35), transparent),
-    radial-gradient(2px 2px at 58% 91%, rgba(232, 121, 249, 0.32), transparent),
+    radial-gradient(2px 2px at 58% 91%, rgba(56, 189, 248, 0.32), transparent),
     radial-gradient(1.5px 1.5px at 64% 18%, rgba(168, 187, 255, 0.42), transparent),
     radial-gradient(1px 1px at 72% 55%, rgba(34, 211, 238, 0.38), transparent),
-    radial-gradient(1.5px 1.5px at 79% 41%, rgba(232, 121, 249, 0.36), transparent),
+    radial-gradient(1.5px 1.5px at 79% 41%, rgba(56, 189, 248, 0.36), transparent),
     radial-gradient(1px 1px at 85% 73%, rgba(56, 189, 248, 0.4), transparent),
-    radial-gradient(1.5px 1.5px at 90% 6%, rgba(244, 114, 182, 0.38), transparent),
+    radial-gradient(1.5px 1.5px at 90% 6%, rgba(56, 189, 248, 0.38), transparent),
     radial-gradient(1.5px 1.5px at 13% 47%, rgba(34, 211, 238, 0.32), transparent),
-    radial-gradient(1px 1px at 28% 86%, rgba(232, 121, 249, 0.3), transparent),
+    radial-gradient(1px 1px at 28% 86%, rgba(56, 189, 248, 0.3), transparent),
     radial-gradient(1.5px 1.5px at 74% 83%, rgba(56, 189, 248, 0.36), transparent);
 }
 
@@ -101,7 +101,7 @@
   height: min(78vw, 820px);
   border-radius: 50%;
   background:
-    radial-gradient(circle at 42% 38%, rgba(232, 121, 249, 0.42), transparent 58%),
+    radial-gradient(circle at 42% 38%, rgba(56, 189, 248, 0.42), transparent 58%),
     radial-gradient(circle at 68% 72%, rgba(56, 189, 248, 0.22), transparent 56%);
   opacity: 0;
   transform: scale(0.92);
@@ -119,7 +119,7 @@
 
 .shiver-splash__eyebrow {
   margin: 0 0 1rem;
-  color: #f0abfc;
+  color: #38bdf8;
   font-size: 0.68rem;
   font-weight: 600;
   letter-spacing: 0.28em;
@@ -142,12 +142,12 @@
   align-items: center;
   justify-content: center;
   border-radius: 0.9rem;
-  background: linear-gradient(135deg, #7c9bff, #e879f9);
+  background: linear-gradient(135deg, #38bdf8, #2563eb);
   color: #ffffff;
   font-family: var(--font-poppins), sans-serif;
   font-size: 1.15rem;
   font-weight: 800;
-  box-shadow: 0 0 28px rgba(232, 121, 249, 0.4);
+  box-shadow: 0 0 28px rgba(56, 189, 248, 0.4);
   opacity: 0;
   animation: shiver-splash-mark 0.72s cubic-bezier(0.22, 1, 0.36, 1) 0.28s both;
 }
@@ -175,6 +175,7 @@
 .shiver-splash__outline {
   color: transparent;
   -webkit-text-stroke: 1.6px rgba(255, 255, 255, 0.94);
+  text-stroke: 1.6px rgba(255, 255, 255, 0.94);
   opacity: 0;
   animation: shiver-splash-rise 0.86s cubic-bezier(0.22, 1, 0.36, 1) 0.52s both;
 }
@@ -237,8 +238,8 @@
 }
 
 .shiver-splash__axis[data-tone="purple"]::before {
-  background: #f0abfc;
-  color: #e879f9;
+  background: #7dd3fc;
+  color: #38bdf8;
 }
 
 .shiver-splash__axis[data-tone="amber"] {
@@ -304,8 +305,8 @@
   z-index: 3;
   height: 2px;
   width: 0;
-  background: linear-gradient(90deg, #22d3ee, #7c9bff, #e879f9);
-  box-shadow: 0 0 16px rgba(232, 121, 249, 0.45);
+  background: linear-gradient(90deg, #22d3ee, #60a5fa, #2563eb);
+  box-shadow: 0 0 16px rgba(56, 189, 248, 0.45);
   animation: shiver-splash-bar 2.05s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
@@ -402,6 +403,7 @@
 @media (min-width: 1024px) {
   .shiver-splash__outline {
     -webkit-text-stroke-width: 2.2px;
+    text-stroke-width: 2.2px;
   }
 
   .shiver-splash__mark {

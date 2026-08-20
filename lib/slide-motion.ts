@@ -44,29 +44,8 @@ function assertNever(value: never): never {
   throw new Error(`Motion não tratada: ${String(value)}`);
 }
 
-export function resolveSlideMotion(
-  index: number,
-  compact: boolean,
-): SlideMotionId {
-  const motion = SLIDE_MOTIONS[index] ?? "rise";
-
-  if (!compact) {
-    return motion;
-  }
-
-  switch (motion) {
-    case "tilt":
-      return "cover";
-    case "zoom":
-      return "fadeScale";
-    case "rise":
-    case "cover":
-    case "fadeScale":
-    case "wipe":
-      return motion;
-    default:
-      return assertNever(motion);
-  }
+export function resolveSlideMotion(): SlideMotionId {
+  return "rise";
 }
 
 function compactReverseRise(preset: MotionPreset): SlideMotion {
@@ -96,7 +75,7 @@ function compactReverseRise(preset: MotionPreset): SlideMotion {
 }
 
 export function buildSlideMotion(
-  index: number,
+  _index: number,
   direction: number,
   preset: MotionPreset,
 ): SlideMotion {
@@ -104,7 +83,7 @@ export function buildSlideMotion(
     return compactReverseRise(preset);
   }
 
-  const id = resolveSlideMotion(index, preset.compact);
+  const id = resolveSlideMotion();
   const travel = preset.travel;
   const from = preset.contentFrom;
 

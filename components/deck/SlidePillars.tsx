@@ -11,16 +11,17 @@ export default function SlidePillars() {
               <span className="deck-title__fill">Três</span>
               <span className="deck-title__outline">Sinais</span>
             </h2>
-            <p className="deck-lead deck-enter">
-              Direção, força e amplitude no mesmo lugar — para decidir o
-              momento com mais contexto, sem espalhar o olhar em várias telas.
-            </p>
-            <a href={CTA_HREF} className="deck-cta btn-shine deck-enter">
-              {CTA_LABEL}
-            </a>
         </div>
 
         <SignalBoard />
+
+        <p className="deck-lead deck-enter">
+          Direção, força e amplitude no mesmo lugar — para decidir o
+          momento com mais contexto, sem espalhar o olhar em várias telas.
+        </p>
+        <a href={CTA_HREF} className="deck-cta btn-shine deck-enter">
+          {CTA_LABEL}
+        </a>
       </div>
     </section>
   );

@@ -14,13 +14,13 @@ export default function IntroVisual() {
         <div className="intro-visual__hover">
           <Image
             className="intro-visual__hand"
-            src="/images/intro-hand-phone.png"
+            src="/images/intro-hand-v2.png"
             alt=""
             width={432}
-            height={577}
+            height={578}
             priority
             quality={80}
-            sizes="(min-width: 1024px) 360px, 205px"
+            sizes="(min-width: 1024px) 360px, 46vw"
           />
         </div>
       </div>

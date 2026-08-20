@@ -21,7 +21,6 @@ export const HASH_ALIASES: Record<string, string> = {
 };
 
 export const PRELOADER = {
-  storageKey: "shiver-preloader-v2",
   exitMs: 2100,
   doneMs: 2550,
   failsafeMs: 3400,
