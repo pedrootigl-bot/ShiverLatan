@@ -3,7 +3,6 @@
 import { useLayoutEffect, useEffect, useRef, useState, type ReactNode } from "react";
 import { gsap } from "gsap";
 import "./CardNav.css";
-import { CTA_HREF, CTA_LABEL } from "@/lib/cta";
 import { DECK_SLIDE_EVENT } from "@/lib/slides";
 
 type CardNavLink = {
@@ -29,8 +28,6 @@ export type CardNavProps = {
   menuColor?: string;
   buttonBgColor?: string;
   buttonTextColor?: string;
-  ctaLabel?: string;
-  ctaHref?: string;
 };
 
 const CLOSED_SIZE = 44;
@@ -46,8 +43,6 @@ export default function CardNav({
   baseColor = "#0b0f19",
   buttonBgColor = "#38bdf8",
   buttonTextColor = "#ffffff",
-  ctaLabel = CTA_LABEL,
-  ctaHref = CTA_HREF,
 }: CardNavProps) {
   const [isOpen, setIsOpen] = useState(false);
   const toggleRef = useRef<HTMLDivElement>(null);
@@ -240,10 +235,7 @@ export default function CardNav({
   };
 
   const seen = new Set<string>();
-  const menuLinks = [
-    ...items.flatMap((item) => item.links),
-    { label: ctaLabel, href: ctaHref, ariaLabel: ctaLabel },
-  ].filter((link) => {
+  const menuLinks = items.flatMap((item) => item.links).filter((link) => {
     const key = `${link.href}-${link.label}`;
     if (seen.has(key)) {
       return false;

@@ -10,50 +10,61 @@ const CardNav = dynamic(() => import("@/components/CardNav"), {
   ssr: false,
 });
 
-const items: CardNavItem[] = [
+const NAV_SECTIONS = [
   {
-    label: "Produto",
+    id: "beneficios",
+    label: "Benefícios",
     href: "#beneficios",
-    bgColor: "#7c9bff",
-    textColor: "#ffffff",
-    links: [
-      { label: "Benefícios", href: "#beneficios", ariaLabel: "Ver benefícios" },
-      { label: "Como funciona", href: "#como-funciona", ariaLabel: "Ver como funciona" },
-    ],
+    ariaLabel: "Ver benefícios",
   },
   {
+    id: "como-funciona",
+    label: "Como funciona",
+    href: "#como-funciona",
+    ariaLabel: "Ver como funciona",
+  },
+  {
+    id: "ferramenta",
     label: "Ferramenta",
     href: "#ferramenta",
-    bgColor: "#12172a",
-    textColor: "#dbe1ff",
-    links: [
-      { label: "Painel", href: "#ferramenta", ariaLabel: "Conhecer a ferramenta" },
-      { label: "Cenário", href: "#cenario", ariaLabel: "Ver leitura em cenário real" },
-      { label: "Método", href: "#metodo", ariaLabel: "Ver o método" },
-    ],
+    ariaLabel: "Conhecer a ferramenta",
   },
   {
-    label: "Começar",
-    href: "#comecar",
-    bgColor: "#38bdf8",
+    id: "cenario",
+    label: "Cenário",
+    href: "#cenario",
+    ariaLabel: "Ver leitura em cenário real",
+  },
+  {
+    id: "metodo",
+    label: "Método",
+    href: "#metodo",
+    ariaLabel: "Ver o método",
+  },
+  {
+    id: "faq",
+    label: "FAQ",
+    href: "#faq",
+    ariaLabel: "Ver perguntas frequentes",
+  },
+] as const;
+
+const items: CardNavItem[] = [
+  {
+    label: "Seções",
+    bgColor: "#7c9bff",
     textColor: "#ffffff",
-    links: [
-      { label: "FAQ", href: "#faq", ariaLabel: "Ver perguntas frequentes" },
-      { label: "Conheça a ferramenta", href: "#ferramenta", ariaLabel: "Conhecer a ferramenta" },
-    ],
+    links: NAV_SECTIONS.map((section) => ({
+      label: section.label,
+      href: section.href,
+      ariaLabel: section.ariaLabel,
+    })),
   },
 ];
 
-const sectionIds = [
-  "beneficios",
-  "como-funciona",
-  "ferramenta",
-  "cenario",
-  "metodo",
-  "faq",
-] as const;
+const sectionIds = NAV_SECTIONS.map((section) => section.id);
 
-type SectionId = (typeof sectionIds)[number];
+type SectionId = (typeof NAV_SECTIONS)[number]["id"];
 
 function navClass(active: SectionId | "", id: SectionId) {
   return active === id
@@ -107,8 +118,6 @@ export default function Header() {
             menuColor="#ffffff"
             buttonBgColor="#38bdf8"
             buttonTextColor="#ffffff"
-            ctaLabel={CTA_LABEL}
-            ctaHref={CTA_HREF}
             ease="power3.out"
           />
         ) : null}
@@ -116,8 +125,8 @@ export default function Header() {
 
       <div className="pointer-events-auto hidden w-full lg:block">
         <div className="bg-gradient-to-b from-[#05070d]/75 to-transparent">
-          <div className="mx-auto flex h-[76px] max-w-7xl items-center justify-between gap-4 px-6">
-            <a href="#inicio" className="flex min-w-0 items-center gap-3" aria-label="Shiver — início">
+          <div className="grid h-[76px] w-full grid-cols-[1fr_auto_1fr] items-center gap-4 px-6">
+            <a href="#inicio" className="flex min-w-0 items-center gap-3 justify-self-start" aria-label="Shiver — início">
               <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-[#38bdf8] to-[#2563eb] font-bold text-white shadow-[0_0_25px_rgba(56,189,248,0.45)]">
                 S
               </div>
@@ -127,58 +136,24 @@ export default function Header() {
             </a>
 
             <nav className="flex min-w-0 items-center gap-4 text-[13px] xl:gap-6 xl:text-sm" aria-label="Seções">
-              <a
-                href="#beneficios"
-                className={`${navClass(active, "beneficios")} whitespace-nowrap`}
-                aria-current={active === "beneficios" ? "true" : undefined}
-              >
-                Benefícios
-              </a>
-              <a
-                href="#como-funciona"
-                className={`${navClass(active, "como-funciona")} whitespace-nowrap`}
-                aria-current={active === "como-funciona" ? "true" : undefined}
-              >
-                Como funciona
-              </a>
-              <a
-                href="#ferramenta"
-                className={`${navClass(active, "ferramenta")} whitespace-nowrap`}
-                aria-current={active === "ferramenta" ? "true" : undefined}
-              >
-                Ferramenta
-              </a>
-              <a
-                href="#cenario"
-                className={`${navClass(active, "cenario")} whitespace-nowrap`}
-                aria-current={active === "cenario" ? "true" : undefined}
-              >
-                Cenário
-              </a>
-              <a
-                href="#metodo"
-                className={`${navClass(active, "metodo")} whitespace-nowrap`}
-                aria-current={active === "metodo" ? "true" : undefined}
-              >
-                Método
-              </a>
-              <a
-                href="#faq"
-                className={`${navClass(active, "faq")} whitespace-nowrap`}
-                aria-current={active === "faq" ? "true" : undefined}
-              >
-                FAQ
-              </a>
+              {NAV_SECTIONS.map((section) => (
+                <a
+                  key={section.id}
+                  href={section.href}
+                  className={`${navClass(active, section.id)} whitespace-nowrap`}
+                  aria-current={active === section.id ? "true" : undefined}
+                >
+                  {section.label}
+                </a>
+              ))}
             </nav>
 
-            <div className="flex shrink-0 items-center gap-3">
-              <a
-                href={CTA_HREF}
-                className="btn-shine btn-dopamine rounded-full bg-gradient-to-r from-[#38bdf8] to-[#2563eb] px-4 py-2 text-xs font-semibold whitespace-nowrap text-white xl:px-5 xl:py-2.5 xl:text-sm"
-              >
-                {CTA_LABEL}
-              </a>
-            </div>
+            <a
+              href={CTA_HREF}
+              className="btn-shine btn-dopamine inline-flex shrink-0 items-center justify-center justify-self-end rounded-full bg-gradient-to-r from-[#38bdf8] to-[#2563eb] px-4 py-2 text-center text-xs font-semibold whitespace-nowrap text-white xl:px-5 xl:py-2.5 xl:text-sm"
+            >
+              {CTA_LABEL}
+            </a>
           </div>
         </div>
       </div>
