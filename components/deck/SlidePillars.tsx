@@ -8,6 +8,9 @@ export default function SlidePillars() {
         <div className="deck-slide__copy">
             <p className="deck-eyebrow deck-enter">Três eixos</p>
             <h2 className="deck-title">
+              <span className="sr-only">
+                Três sinais para o trader: tendência, momentum e volatilidade.{" "}
+              </span>
               <span className="deck-title__fill">Três</span>
               <span className="deck-title__outline">Sinais</span>
             </h2>

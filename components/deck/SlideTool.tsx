@@ -13,6 +13,10 @@ export default function SlideTool() {
         <div className="deck-slide__copy">
             <p className="deck-eyebrow deck-enter">A ferramenta</p>
             <h2 className="deck-title deck-title--compact">
+              <span className="sr-only">
+                Painel da ferramenta Shiver com tendência, momentum e
+                volatilidade.{" "}
+              </span>
               <span className="deck-title__fill">Uma</span>
               <span className="deck-title__outline">Visão</span>
             </h2>

@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
+import JsonLd from "@/components/JsonLd";
 import LegalPage from "@/components/LegalPage";
 import { ROUTES, SEO } from "@/lib/config";
+import { legalJsonLd } from "@/lib/json-ld";
 
 export const metadata: Metadata = {
   title: SEO.termosTitle,
@@ -22,7 +24,9 @@ export const metadata: Metadata = {
 
 export default function TermosPage() {
   return (
-    <LegalPage title="Termos de uso" updated="18 de agosto de 2026">
+    <>
+      <JsonLd data={legalJsonLd("termos")} />
+      <LegalPage title="Termos de uso" updated="24 de agosto de 2026">
       <p>
         A Shiver é uma corretora. Estes termos descrevem o uso desta landing e
         da ferramenta apresentada aqui: um painel que auxilia o trader na hora
@@ -44,6 +48,7 @@ export default function TermosPage() {
         atualizar este texto quando o produto avançar. O uso continuado da
         página após a publicação implica ciência da versão vigente.
       </p>
-    </LegalPage>
+      </LegalPage>
+    </>
   );
 }

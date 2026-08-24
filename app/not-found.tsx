@@ -3,6 +3,11 @@ import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "Página não encontrada",
+  description: "Esse endereço não existe na landing da Shiver.",
+  robots: {
+    index: false,
+    follow: true,
+  },
 };
 
 export default function NotFound() {

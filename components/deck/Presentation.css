@@ -28,6 +28,30 @@ html.is-deck #comecar {
   overflow: hidden;
 }
 
+html.is-deck.is-crawler,
+html.is-deck.is-crawler body {
+  height: auto;
+  overflow: auto;
+  overscroll-behavior: auto;
+}
+
+.deck-viewport.is-crawler {
+  height: auto;
+  overflow: visible;
+}
+
+.deck-viewport.is-crawler .deck-slide {
+  position: relative;
+  inset: auto;
+  height: auto;
+  min-height: 100svh;
+  opacity: 1 !important;
+  visibility: visible !important;
+  clip-path: none !important;
+  transform: none !important;
+  pointer-events: auto !important;
+}
+
 .deck-bg {
   position: fixed;
   inset: 0;

@@ -8,6 +8,9 @@ export default function SlideIntro() {
         <div className="deck-slide__copy">
           <p className="deck-eyebrow deck-enter">Corretora Shiver</p>
           <h1 className="deck-title">
+            <span className="sr-only">
+              Shiver, corretora e ferramenta para traders.{" "}
+            </span>
             <span className="deck-title__fill">Mercado</span>
             <span className="deck-title__outline">Clareza</span>
           </h1>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useLayoutEffect, useState, type ReactNode } from "react";
+import { isSearchCrawler } from "@/lib/crawler";
 import { PRELOADER } from "@/lib/config";
 import "./Preloader.css";
 
@@ -52,7 +53,7 @@ export default function Preloader({ children }: PreloaderProps) {
 
     const failsafe = window.setTimeout(finish, PRELOADER.failsafeMs);
 
-    if (prefersReducedMotion) {
+    if (prefersReducedMotion || isSearchCrawler()) {
       finish();
       return () => {
         window.clearTimeout(failsafe);

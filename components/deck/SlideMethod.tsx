@@ -25,6 +25,10 @@ export default function SlideMethod() {
         <div className="deck-slide__copy">
           <p className="deck-eyebrow deck-enter">Método</p>
           <h2 className="deck-title deck-title--compact">
+            <span className="sr-only">
+              Método da ferramenta Shiver: menos ruído, mais contexto, decisão
+              do trader.{" "}
+            </span>
             <span className="deck-title__fill">Como</span>
             <span className="deck-title__outline">Lemos</span>
           </h2>

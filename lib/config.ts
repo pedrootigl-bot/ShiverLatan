@@ -27,16 +27,20 @@ export const PRELOADER = {
 } as const;
 
 export const SEO = {
-  title: "Shiver — Auxílio na hora de comprar e vender",
+  title: "Shiver | Ferramenta para traders | Hora de comprar e vender",
   description:
-    "Ferramenta da corretora Shiver para auxiliar o trader na hora de compra e venda. Tendência, momentum e volatilidade no mesmo painel. A ferramenta não opera sozinha.",
+    "Ferramenta da corretora Shiver para auxiliar o trader na hora de compra e venda. Tendência, momentum e volatilidade no mesmo painel. Sem robô: quem opera é você.",
   keywords: [
     "Shiver",
-    "corretora",
+    "corretora Shiver",
     "ferramenta para traders",
     "hora de compra e venda",
     "tendência momentum volatilidade",
+    "painel para traders",
+    "timing de mercado",
+    "análise de mercado",
   ],
+  ogAlt: "Shiver — auxílio na hora de comprar e vender",
   termosTitle: "Termos de uso",
   termosDescription:
     "Termos de uso da landing Shiver: a corretora, a ferramenta de auxílio ao trader e o que a prévia desta página apresenta.",

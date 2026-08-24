@@ -4,6 +4,7 @@ import { useLayoutEffect, useRef, useState, type ReactNode } from "react";
 import { gsap } from "gsap";
 import { track } from "@/lib/analytics";
 import { CTA_HREF, HASH_ALIASES } from "@/lib/config";
+import { isSearchCrawler } from "@/lib/crawler";
 import {
   goTo as requestSlide,
   isDeckLocked,
@@ -172,6 +173,37 @@ export default function Deck({ children }: { children: ReactNode }) {
 
     if (slides.length === 0) {
       return () => root.classList.remove("is-deck");
+    }
+
+    if (isSearchCrawler()) {
+      root.classList.add("is-crawler");
+      viewport.classList.add("is-crawler");
+      slides.forEach((slide) => {
+        gsap.set(slide, {
+          autoAlpha: 1,
+          x: 0,
+          y: 0,
+          scale: 1,
+          rotation: 0,
+          clipPath: "none",
+        });
+        gsap.set(enterNodes(slide), {
+          autoAlpha: 1,
+          x: 0,
+          y: 0,
+          scale: 1,
+          rotation: 0,
+        });
+        slide.classList.add("is-visible", "is-revealed");
+        slide.setAttribute("aria-hidden", "false");
+        slide.removeAttribute("inert");
+        slide.style.pointerEvents = "auto";
+        slide.style.zIndex = "1";
+      });
+
+      return () => {
+        root.classList.remove("is-deck", "is-crawler");
+      };
     }
 
     let current = slideIndexFromHash(window.location.hash);

@@ -19,13 +19,26 @@ export const metadata: Metadata = {
   description: SEO.description,
   applicationName: SITE_NAME,
   authors: [{ name: SITE_NAME }],
+  creator: SITE_NAME,
+  publisher: SITE_NAME,
+  category: "finance",
   keywords: [...SEO.keywords],
   robots: {
     index: true,
     follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
+    },
   },
   alternates: {
     canonical: "/",
+    languages: {
+      "pt-BR": "/",
+    },
   },
   openGraph: {
     title: SEO.title,
@@ -34,12 +47,38 @@ export const metadata: Metadata = {
     type: "website",
     siteName: SITE_NAME,
     url: "/",
+    images: [
+      {
+        url: "/opengraph-image",
+        width: 1200,
+        height: 630,
+        alt: SEO.ogAlt,
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: SEO.title,
     description: SEO.description,
+    images: [
+      {
+        url: "/opengraph-image",
+        alt: SEO.ogAlt,
+      },
+    ],
   },
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
+  },
+  ...(process.env.GOOGLE_SITE_VERIFICATION
+    ? {
+        verification: {
+          google: process.env.GOOGLE_SITE_VERIFICATION,
+        },
+      }
+    : {}),
 };
 
 export const viewport: Viewport = {

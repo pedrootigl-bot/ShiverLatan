@@ -25,7 +25,18 @@ export default function LegalPage({ title, updated, children }: LegalPageProps) 
       </header>
 
       <article className="mx-auto max-w-3xl px-6 py-16">
-        <p className="text-xs font-semibold tracking-[0.2em] text-[#7488ff] uppercase">
+        <nav aria-label="Navegação estrutural" className="text-sm text-zinc-500">
+          <ol className="flex flex-wrap items-center gap-2">
+            <li>
+              <Link href="/" className="transition hover:text-white">
+                Início
+              </Link>
+            </li>
+            <li aria-hidden="true">/</li>
+            <li className="text-zinc-300">{title}</li>
+          </ol>
+        </nav>
+        <p className="mt-8 text-xs font-semibold tracking-[0.2em] text-[#7488ff] uppercase">
           Legal
         </p>
         <h1 className="font-headline mt-4 text-4xl font-bold tracking-tight">{title}</h1>

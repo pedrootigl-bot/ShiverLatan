@@ -17,6 +17,9 @@ export default function SlideHow() {
         <div className="deck-slide__copy">
             <p className="deck-eyebrow deck-enter">Como funciona</p>
             <h2 className="deck-title deck-title--split">
+              <span className="sr-only">
+                Como a ferramenta da Shiver organiza o timing de compra e venda.{" "}
+              </span>
               <span className="deck-title__fill">Caos</span>
               <span className="deck-title__x" aria-hidden>
                 x

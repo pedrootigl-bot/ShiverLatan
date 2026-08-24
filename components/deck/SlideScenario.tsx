@@ -18,6 +18,9 @@ export default function SlideScenario() {
         <div className="deck-slide__copy">
           <p className="deck-eyebrow scenario-text">Na prática</p>
           <h2 className="deck-title deck-title--compact">
+            <span className="sr-only">
+              Entenda o cenário de mercado antes de decidir a compra ou a venda.{" "}
+            </span>
             <span className="deck-title__fill">Entenda</span>
             <span className="deck-title__outline">o cenário</span>
           </h2>

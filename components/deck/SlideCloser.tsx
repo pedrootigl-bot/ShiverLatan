@@ -1,39 +1,7 @@
 import { CTA_HREF, CTA_LABEL } from "@/lib/cta";
 import FaqAccordion from "@/components/deck/FaqAccordion";
 import { RISK_DISCLAIMER, ROUTES, SITE_YEAR } from "@/lib/config";
-
-const questions = [
-  {
-    question: "O que é a Shiver?",
-    answer:
-      "Shiver é a corretora. Esta página apresenta a ferramenta que auxilia o trader na hora de compra e venda, com tendência, momentum e volatilidade no mesmo painel.",
-  },
-  {
-    question: "A ferramenta opera sozinha?",
-    answer:
-      "Não. Ela não é robô e não dispara ordens. Auxilia a sua leitura; quem decide e quem opera é você.",
-  },
-  {
-    question: "De onde vêm os dados?",
-    answer:
-      "A prévia desta landing usa números ilustrativos. No produto, as fontes serão documentadas na interface.",
-  },
-  {
-    question: "A inteligência artificial opera por mim?",
-    answer:
-      "Não. Os insights descrevem o que o painel está lendo. Não são ordem automática nem garantia de resultado.",
-  },
-  {
-    question: "Quanto vai custar?",
-    answer:
-      "O preço ainda não foi definido. Conhecer a prévia não gera cobrança.",
-  },
-  {
-    question: "Quando estará disponível?",
-    answer:
-      "Ainda não há data. Mais informações sobre acesso serão divulgadas nesta página.",
-  },
-];
+import { FAQ_ITEMS } from "@/lib/faq";
 
 export default function SlideCloser() {
   return (
@@ -43,6 +11,10 @@ export default function SlideCloser() {
         <div className="deck-slide__copy">
           <p className="deck-eyebrow deck-enter">Começar</p>
           <h2 className="deck-title deck-title--compact">
+            <span className="sr-only">
+              Perguntas frequentes sobre a corretora Shiver e a ferramenta para
+              traders.{" "}
+            </span>
             <span className="deck-title__fill">À frente</span>
             <span className="deck-title__outline">do mercado</span>
           </h2>
@@ -68,7 +40,7 @@ export default function SlideCloser() {
             <p className="text-[11px] font-semibold tracking-[0.22em] text-[#38bdf8] uppercase">
               FAQ
             </p>
-            <FaqAccordion items={questions} />
+            <FaqAccordion items={FAQ_ITEMS} />
           </div>
         </div>
       </div>
