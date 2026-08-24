@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { CTA_HREF, CTA_LABEL } from "@/lib/cta";
 import FaqAccordion from "@/components/deck/FaqAccordion";
 import { RISK_DISCLAIMER, ROUTES, SITE_YEAR } from "@/lib/config";
@@ -5,7 +6,7 @@ import { FAQ_ITEMS } from "@/lib/faq";
 
 export default function SlideCloser() {
   return (
-    <section id="faq" data-slide="6" className="deck-slide deck-slide--faq">
+    <section id="faq" data-slide="7" className="deck-slide deck-slide--faq">
       <div id="comecar" className="absolute top-0 left-0 h-px w-px" />
       <div className="deck-slide__layout">
         <div className="deck-slide__copy">
@@ -29,8 +30,8 @@ export default function SlideCloser() {
             <p>© {SITE_YEAR} Shiver. A ferramenta auxilia o trader.</p>
             <p className="deck-disclaimer">{RISK_DISCLAIMER}</p>
             <p className="mt-2 flex flex-wrap gap-4">
-              <a href={ROUTES.termos}>Termos</a>
-              <a href={ROUTES.privacidade}>Privacidade</a>
+              <Link href={ROUTES.termos}>Termos</Link>
+              <Link href={ROUTES.privacidade}>Privacidade</Link>
             </p>
           </div>
         </div>

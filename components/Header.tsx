@@ -42,6 +42,12 @@ const NAV_SECTIONS = [
     ariaLabel: "Ver o método",
   },
   {
+    id: "planos",
+    label: "Planos",
+    href: "#planos",
+    ariaLabel: "Ver planos Grátis e VIP",
+  },
+  {
     id: "faq",
     label: "FAQ",
     href: "#faq",
@@ -135,7 +141,7 @@ export default function Header() {
               </span>
             </a>
 
-            <nav className="flex min-w-0 items-center gap-4 text-[13px] xl:gap-6 xl:text-sm" aria-label="Seções">
+            <nav className="flex min-w-0 items-center gap-3 text-[12px] xl:gap-5 xl:text-sm" aria-label="Seções">
               {NAV_SECTIONS.map((section) => (
                 <a
                   key={section.id}

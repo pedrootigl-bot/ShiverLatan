@@ -5,6 +5,7 @@ export const SLIDE_MOTIONS = [
   "wipe",
   "fadeScale",
   "tilt",
+  "cover",
   "zoom",
 ] as const;
 

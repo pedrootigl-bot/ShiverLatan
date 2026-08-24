@@ -469,6 +469,7 @@ export default function Deck({ children }: { children: ReactNode }) {
           { x: -40, y: 80, scale: 0.9 },
           { x: -120, y: -24, scale: 1.08 },
           { x: -70, y: 36, scale: 0.94 },
+          { x: -150, y: -18, scale: 1.02 },
           { x: -200, y: 64, scale: 0.96 },
         ];
         const shift = shifts[target] ?? shifts[0];

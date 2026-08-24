@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Poppins } from "next/font/google";
+import BfcacheHmr from "@/components/BfcacheHmr";
 import { SEO, SITE_LOCALE, SITE_NAME, SITE_URL } from "@/lib/config";
 import "./globals.css";
 
@@ -95,6 +96,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       suppressHydrationWarning
     >
       <body className="flex min-h-full flex-col font-sans">
+        {process.env.NODE_ENV === "development" ? <BfcacheHmr /> : null}
         <a href="#conteudo" className="skip-link">
           Ir para o conteúdo
         </a>

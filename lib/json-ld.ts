@@ -49,10 +49,25 @@ export function softwareJsonLd() {
     url: SITE_URL,
     description: SEO.description,
     offers: {
-      "@type": "Offer",
-      price: "0",
+      "@type": "AggregateOffer",
       priceCurrency: "BRL",
+      lowPrice: "0",
+      offerCount: 2,
       availability: "https://schema.org/PreOrder",
+      offers: [
+        {
+          "@type": "Offer",
+          name: "Grátis",
+          price: "0",
+          priceCurrency: "BRL",
+        },
+        {
+          "@type": "Offer",
+          name: "VIP",
+          availability: "https://schema.org/PreOrder",
+          priceCurrency: "BRL",
+        },
+      ],
     },
     featureList: [
       "Tendência",

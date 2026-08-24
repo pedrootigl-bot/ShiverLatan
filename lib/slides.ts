@@ -7,6 +7,7 @@ export const SLIDES = [
   { id: "ferramenta", label: "Ferramenta" },
   { id: "cenario", label: "Cenário" },
   { id: "metodo", label: "Método" },
+  { id: "planos", label: "Planos" },
   { id: "faq", label: "FAQ" },
 ] as const;
 

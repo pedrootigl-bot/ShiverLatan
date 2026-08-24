@@ -9,6 +9,7 @@ import SlideHow from "@/components/deck/SlideHow";
 import SlideTool from "@/components/deck/SlideTool";
 import SlideScenario from "@/components/deck/SlideScenario";
 import SlideMethod from "@/components/deck/SlideMethod";
+import SlidePlans from "@/components/deck/SlidePlans";
 import SlideCloser from "@/components/deck/SlideCloser";
 import { homeJsonLd } from "@/lib/json-ld";
 
@@ -26,6 +27,7 @@ export default function Home() {
           <SlideTool />
           <SlideScenario />
           <SlideMethod />
+          <SlidePlans />
           <SlideCloser />
         </Deck>
       </main>

@@ -27,7 +27,7 @@ export const FAQ_ITEMS: FaqItem[] = [
   {
     question: "Quanto vai custar?",
     answer:
-      "O preço ainda não foi definido. Conhecer a prévia não gera cobrança.",
+      "Há o plano Grátis, para começar no painel, e o VIP, com leitura mais completa do cenário. O valor do VIP ainda não foi definido. Conhecer a prévia não gera cobrança.",
   },
   {
     question: "Quando estará disponível?",

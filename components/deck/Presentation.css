@@ -15,6 +15,7 @@ html.is-deck #como-funciona,
 html.is-deck #ferramenta,
 html.is-deck #cenario,
 html.is-deck #metodo,
+html.is-deck #planos,
 html.is-deck #faq,
 html.is-deck #comecar {
   scroll-margin-top: 0;
@@ -542,6 +543,251 @@ html.is-deck.is-crawler body {
 
 .deck-slide--faq.is-revealed .deck-title__outline {
   animation: title-scale 0.85s cubic-bezier(0.22, 1, 0.36, 1) 0.18s both;
+}
+
+.deck-slide--plans.is-revealed .deck-title__fill {
+  animation: title-clip 0.85s cubic-bezier(0.22, 1, 0.36, 1) 0.08s both;
+}
+
+.deck-slide--plans.is-revealed .deck-title__outline {
+  animation: title-rise 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.2s both;
+}
+
+.plan-grid {
+  display: grid;
+  gap: 1rem;
+}
+
+.plan-card {
+  position: relative;
+  display: flex;
+  isolation: isolate;
+  width: 100%;
+  min-height: 100%;
+  padding: 2px;
+  overflow: hidden;
+  border-radius: 24px;
+  line-height: 1.6;
+  transition: all 0.48s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.plan-card::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  height: 160%;
+  width: 160%;
+  border-radius: inherit;
+  background: #0a3cff;
+  background: linear-gradient(to right, #0a3cff, #38bdf8);
+  transform-origin: center;
+  animation: plan-card-spin 4.8s linear infinite paused;
+  transition: all 0.88s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.plan-card__content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  width: 100%;
+  min-height: 100%;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0;
+  overflow: hidden;
+  padding: 1.35rem 1.25rem 1.2rem;
+  border-radius: 22px;
+  color: #ffffff;
+  background: #080b13;
+  transition: all 0.48s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.plan-card--vip .plan-card__content {
+  background:
+    radial-gradient(ellipse at 88% -10%, rgba(10, 60, 255, 0.22), transparent 52%),
+    #080b13;
+}
+
+.plan-card--vip .plan-card__content::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(56, 189, 248, 0.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(56, 189, 248, 0.07) 1px, transparent 1px);
+  background-size: 26px 26px;
+  mask-image: radial-gradient(ellipse at 80% 0%, #000 0%, transparent 68%);
+}
+
+.plan-card__badge {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  z-index: 2;
+  margin: 0;
+  padding: 0.28rem 0.62rem;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #38bdf8 0%, #0a3cff 100%);
+  color: #ffffff;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.plan-card__head {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.plan-card__name {
+  margin: 0;
+  color: #ffffff;
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.3;
+  transition: color 0.48s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.plan-card__price {
+  margin: 0.45rem 0 0;
+  color: #ffffff;
+  font-size: clamp(1.55rem, 4vw, 2.05rem);
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  line-height: 1.1;
+  transition: color 0.48s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.plan-card__price span {
+  color: #8b93a7;
+  font-size: 0.82rem;
+  font-weight: 500;
+  letter-spacing: 0;
+}
+
+.plan-card__list {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  width: 100%;
+  gap: 0.72rem;
+  margin: 1.1rem 0 1.25rem;
+  padding: 0;
+  flex: 1;
+  list-style: none;
+}
+
+.plan-card__list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.7rem;
+  color: #c5cad8;
+  font-size: 0.88rem;
+  line-height: 1.45;
+  opacity: 0.92;
+  transition: color 0.48s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.plan-card__check {
+  display: flex;
+  height: 1.35rem;
+  width: 1.35rem;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  margin-top: 0.05rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.06);
+  color: #ffffff;
+}
+
+.plan-card--vip .plan-card__check {
+  background: rgba(10, 60, 255, 0.22);
+  color: #7dd3fc;
+}
+
+.plan-card__cta {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  width: 100%;
+  min-height: 2.85rem;
+  align-items: center;
+  justify-content: center;
+  margin-top: auto;
+  padding: 0.75rem 1rem;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-align: center;
+  text-transform: uppercase;
+  text-decoration: none;
+}
+
+.plan-card__cta--ghost {
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: transparent;
+  color: #ffffff;
+}
+
+.plan-card__cta--solid {
+  background: linear-gradient(90deg, #38bdf8 0%, #0a3cff 100%);
+  box-shadow: 0 10px 24px rgba(10, 60, 255, 0.32);
+  color: #ffffff;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .plan-card:hover::before {
+    animation-play-state: running;
+    z-index: -1;
+    width: 20%;
+  }
+
+  .plan-card:hover {
+    z-index: 2;
+    box-shadow:
+      0 6px 13px rgba(10, 60, 255, 0.1),
+      0 24px 24px rgba(10, 60, 255, 0.09),
+      0 55px 33px rgba(10, 60, 255, 0.05),
+      0 97px 39px rgba(10, 60, 255, 0.01),
+      0 152px 43px rgba(10, 60, 255, 0);
+    scale: 1.05;
+  }
+
+  .plan-card__cta--ghost:hover,
+  .plan-card__cta--solid:hover {
+    transform: translateY(-2px);
+  }
+
+  .plan-card__cta--ghost {
+    transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.25s ease;
+  }
+
+  .plan-card__cta--ghost:hover {
+    border-color: rgba(255, 255, 255, 0.42);
+  }
+
+  .plan-card__cta--solid {
+    transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.25s ease;
+  }
+}
+
+@keyframes plan-card-spin {
+  0% {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+
+  100% {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
 }
 
 .deck-lead {
@@ -1259,12 +1505,14 @@ html.is-deck.is-crawler body {
 
 .deck-slide.is-visible .signal-card,
 .deck-slide.is-visible .deck-panel,
+.deck-slide.is-visible .plan-card,
 .deck-slide.is-visible .deck-stat {
   animation: card-breathe 6.4s ease-in-out infinite;
 }
 
 .deck-slide.is-visible .signal-card:nth-child(2),
 .deck-slide.is-visible .deck-panel:nth-child(2):not(.how-card),
+.deck-slide.is-visible .plan-card:nth-child(2),
 .deck-slide.is-visible .deck-stat:nth-child(2) {
   animation-delay: 1.2s;
   animation-duration: 6.9s;
@@ -1279,6 +1527,7 @@ html.is-deck.is-crawler body {
 .deck-slide.is-visible .signal-card:hover,
 .deck-slide.is-visible .signal-card:focus-visible,
 .deck-slide.is-visible .deck-panel:hover,
+.deck-slide.is-visible .plan-card:hover,
 .deck-slide.is-visible .deck-stat:hover,
 .deck-slide.is-visible .deck-stat:focus-within {
   animation-play-state: paused;
@@ -1907,6 +2156,40 @@ html.is-deck.is-crawler body {
     align-items: flex-start;
   }
 
+  .deck-slide--plans .deck-slide__layout {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "copy"
+      "lead"
+      "visual";
+    justify-items: center;
+    gap: 1.75rem;
+  }
+
+  .deck-slide--plans .deck-slide__copy {
+    grid-area: copy;
+    max-width: 42rem;
+    text-align: center;
+  }
+
+  .deck-slide--plans .deck-lead {
+    grid-area: lead;
+    margin-inline: auto;
+    text-align: center;
+  }
+
+  .deck-slide--plans .plan-grid {
+    grid-area: visual;
+    width: min(100%, 52rem);
+    grid-template-columns: 1fr 1fr;
+    align-items: stretch;
+    gap: 1.15rem;
+  }
+
+  .plan-card__content {
+    padding: 1.6rem 1.45rem 1.35rem;
+  }
+
   .deck-slide--faq .deck-slide__layout {
     grid-template-columns: minmax(0, 0.72fr) minmax(0, 1.28fr);
     align-items: start;
@@ -2095,6 +2378,22 @@ html.is-deck.is-crawler body {
   .scenario-signal__value {
     font-size: 1.05rem;
   }
+
+  .deck-slide--plans .deck-title {
+    font-size: clamp(2.1rem, 11vw, 3.2rem);
+  }
+
+  .deck-slide--plans .plan-grid {
+    gap: 0.85rem;
+  }
+
+  .plan-card__content {
+    padding: 1.2rem 1.1rem 1.1rem;
+  }
+
+  .plan-card__price {
+    font-size: 1.55rem;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -2113,6 +2412,7 @@ html.is-deck.is-crawler body {
   .deck-slide.is-visible .intro-visual__hover,
   .deck-slide.is-visible .deck-stat,
   .deck-slide.is-visible .deck-panel,
+  .deck-slide.is-visible .plan-card,
   .deck-slide.is-visible .signal-card,
   .deck-slide.is-visible .scenario-board,
   .deck-slide--how .how-card--chaos,
@@ -2121,7 +2421,8 @@ html.is-deck.is-crawler body {
   .deck-index,
   .signal-card__pulse,
   .signal-card .sparkline-stroke,
-  .signal-card .sparkline-fill {
+  .signal-card .sparkline-fill,
+  .plan-card::before {
     animation: none !important;
     transition: none !important;
   }
@@ -2135,8 +2436,10 @@ html.is-deck.is-crawler body {
   }
 
   .intro-visual__hover:hover,
-  .signal-card:hover {
+  .signal-card:hover,
+  .plan-card:hover {
     transform: none;
+    scale: none;
   }
 
   .deck-slide--intro .intro-visual__glow,
