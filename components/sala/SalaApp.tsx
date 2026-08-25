@@ -3,11 +3,12 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import SalaChat from "@/components/sala/SalaChat";
+import SalaEbookReader from "@/components/sala/SalaEbookReader";
 import { IconBooks, IconRobot, IconRuler } from "@/components/sala/SalaIcons";
 import SalaLibrary from "@/components/sala/SalaLibrary";
 import SalaModal from "@/components/sala/SalaModal";
 import { useBrokerSession } from "@/components/sala/useBrokerSession";
-import { useSalaChat } from "@/components/sala/useSalaChat";
+import { useTradingSignals } from "@/components/sala/useTradingSignals";
 import { ROUTES } from "@/lib/config";
 import type { SalaEbook } from "@/lib/sala";
 import "./Sala.css";
@@ -69,13 +70,15 @@ function SalaNav({
 }
 
 export default function SalaApp() {
-  const { messages, status } = useSalaChat();
+  const { signals, connectionStatus, error } = useTradingSignals();
   const { authed, onFrameLoad } = useBrokerSession();
   const [sideOpen, setSideOpen] = useState(false);
   const [panel, setPanel] = useState<SidePanel>("chat");
   const [soonOpen, setSoonOpen] = useState(false);
   const [notice, setNotice] = useState({ title: "", text: "" });
   const [active, setActive] = useState<SalaTool | null>(null);
+  const [debugSignals, setDebugSignals] = useState(false);
+  const [ebook, setEbook] = useState<SalaEbook | null>(null);
 
   const closeSoon = () => {
     setSoonOpen(false);
@@ -95,20 +98,36 @@ export default function SalaApp() {
     setActive((current) => (current === "ruler" ? current : null));
   };
 
+  const closeEbook = () => {
+    setEbook(null);
+  };
+
   useEffect(() => {
-    if (!soonOpen) {
+    const params = new URLSearchParams(window.location.search);
+    setDebugSignals(
+      process.env.NODE_ENV !== "production" && params.get("debugSignals") === "true",
+    );
+  }, []);
+
+  useEffect(() => {
+    if (!soonOpen && !ebook) {
       return;
     }
 
     const onKey = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
-        closeSoon();
+      if (event.key !== "Escape") {
+        return;
       }
+      if (ebook) {
+        closeEbook();
+        return;
+      }
+      closeSoon();
     };
 
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [soonOpen, sideOpen, panel]);
+  }, [soonOpen, ebook, sideOpen, panel]);
 
   const selectTool = (tool: SalaTool) => {
     if (!authed) {
@@ -118,6 +137,7 @@ export default function SalaApp() {
     switch (tool) {
       case "chat":
         setSoonOpen(false);
+        setEbook(null);
         setPanel("chat");
         setSideOpen(true);
         setActive("chat");
@@ -132,6 +152,7 @@ export default function SalaApp() {
         return;
       case "books":
         setSoonOpen(false);
+        setEbook(null);
         setPanel("library");
         setSideOpen(true);
         setActive("books");
@@ -141,17 +162,9 @@ export default function SalaApp() {
     }
   };
 
-  const openEbook = (ebook: SalaEbook) => {
-    if (ebook.pdfUrl) {
-      window.open(ebook.pdfUrl, "_blank", "noopener,noreferrer");
-      return;
-    }
-
-    setNotice({
-      title: ebook.title,
-      text: "O PDF deste e-book será lançado depois. O card já está pronto para abrir o arquivo.",
-    });
-    setSoonOpen(true);
+  const openEbook = (next: SalaEbook) => {
+    setSoonOpen(false);
+    setEbook(next);
   };
 
   let side: "chat" | "library" | "closed";
@@ -194,8 +207,10 @@ export default function SalaApp() {
           )}
           {side === "chat" ? (
             <SalaChat
-              messages={messages}
-              status={status}
+              signals={signals}
+              connectionStatus={connectionStatus}
+              error={error}
+              debug={debugSignals}
               onClose={closeSide}
             />
           ) : null}
@@ -207,6 +222,8 @@ export default function SalaApp() {
           </div>
         </div>
       </div>
+
+      {ebook ? <SalaEbookReader ebook={ebook} onClose={closeEbook} /> : null}
 
       {soonOpen ? (
         <div

@@ -367,6 +367,78 @@ html:has(.sala-page) body {
   word-break: break-word;
 }
 
+.sala-signal__asset {
+  margin: 0.7rem 0.7rem 0.15rem;
+  font-size: 1.05rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  overflow-wrap: anywhere;
+}
+
+.sala-signal__side {
+  margin: 0 0.7rem 0.15rem;
+  font-size: 0.82rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.sala-chat__wait {
+  margin: 0;
+  color: var(--sala-muted);
+  font-size: 0.86rem;
+  line-height: 1.45;
+}
+
+.sala-signal-debug {
+  display: grid;
+  gap: 0.4rem;
+  padding: 0.65rem 0.7rem 0.8rem;
+  border-top: 1px solid var(--sala-line);
+  background: var(--sala-raised);
+}
+
+.sala-signal-debug p {
+  margin: 0 0 0.15rem;
+  color: var(--sala-cyan);
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.sala-signal-debug label {
+  display: grid;
+  gap: 0.2rem;
+  color: var(--sala-muted);
+  font-size: 0.68rem;
+}
+
+.sala-signal-debug select,
+.sala-signal-debug button {
+  min-height: 2.1rem;
+  border: 1px solid var(--sala-line);
+  border-radius: 0.55rem;
+  background: var(--sala-bg);
+  color: var(--sala-text);
+}
+
+.sala-signal-debug button {
+  border: 0;
+  background: var(--sala-cyan);
+  color: #041018;
+  font-weight: 700;
+}
+
+.sala-signal-debug button:disabled {
+  opacity: 0.6;
+}
+
+.sala-signal-debug span {
+  color: var(--sala-muted);
+  font-size: 0.72rem;
+}
+
 .sala-icon-btn {
   display: grid;
   flex: 0 0 auto;
@@ -390,7 +462,7 @@ html:has(.sala-page) body {
 
 .sala-ebook {
   display: grid;
-  grid-template-columns: auto minmax(0, 1fr);
+  grid-template-columns: 3.15rem minmax(0, 1fr);
   gap: 0.55rem;
   min-width: 0;
   padding: 0;
@@ -429,17 +501,190 @@ html:has(.sala-page) body {
   border-color: rgba(56, 189, 248, 0.45);
 }
 
-.sala-ebook__cover {
+.sala-ebook-cover {
   display: grid;
-  width: 2.6rem;
-  place-items: center;
-  background: rgba(56, 189, 248, 0.12);
-  color: var(--sala-cyan);
+  overflow: hidden;
+  align-content: end;
+  justify-items: start;
+  padding: 0.4rem;
+  color: #f8fbff;
+  text-align: left;
 }
 
-.sala-ebook__cover svg {
-  width: 1.05rem;
-  height: 1.05rem;
+.sala-ebook-cover--card {
+  width: 3.15rem;
+  min-height: 4.35rem;
+  height: 100%;
+}
+
+.sala-ebook-cover--hero {
+  width: 100%;
+  min-height: 11rem;
+  margin-bottom: 1rem;
+  padding: 1rem 1.05rem;
+  border-radius: 0.85rem;
+}
+
+.sala-ebook-cover--photo {
+  padding: 0;
+}
+
+.sala-ebook-cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.sala-ebook-cover em {
+  font-size: 0.62rem;
+  font-style: normal;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  opacity: 0.88;
+}
+
+.sala-ebook-cover--card em {
+  font-size: 0.58rem;
+}
+
+.sala-ebook-cover strong {
+  display: none;
+  margin-top: 0.35rem;
+  font-size: 1.05rem;
+  line-height: 1.25;
+}
+
+.sala-ebook-cover--hero strong {
+  display: block;
+}
+
+.sala-ebook-cover--cyan {
+  background: linear-gradient(165deg, #7dd3fc 0%, #38bdf8 42%, #1d4ed8 100%);
+}
+
+.sala-ebook-cover--green {
+  background: linear-gradient(165deg, #86efac 0%, #22c55e 48%, #166534 100%);
+}
+
+.sala-ebook-cover--amber {
+  background: linear-gradient(165deg, #fde68a 0%, #f59e0b 48%, #b45309 100%);
+}
+
+.sala-ebook-cover--violet {
+  background: linear-gradient(165deg, #ddd6fe 0%, #8b5cf6 48%, #5b21b6 100%);
+}
+
+.sala-ebook-reader {
+  position: fixed;
+  inset: 0;
+  z-index: 32;
+  display: grid;
+  place-items: center;
+  padding: max(0.75rem, env(safe-area-inset-top, 0px)) 0.75rem max(0.75rem, env(safe-area-inset-bottom, 0px));
+  background: rgba(5, 7, 13, 0.78);
+  animation: sala-fade-in 0.22s ease;
+}
+
+.sala-ebook-reader__card {
+  display: grid;
+  width: min(36rem, 100%);
+  max-height: min(40rem, calc(100dvh - 1.5rem));
+  grid-template-rows: auto minmax(0, 1fr);
+  overflow: hidden;
+  border: 1px solid var(--sala-line);
+  border-radius: 1.05rem;
+  background: var(--sala-raised);
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.45);
+  animation: sala-card-in 0.34s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.sala-ebook-reader__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.7rem 0.85rem;
+  border-bottom: 1px solid var(--sala-line);
+}
+
+.sala-ebook-reader__head p {
+  margin: 0;
+  color: var(--sala-cyan);
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.sala-ebook-reader__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.4rem;
+}
+
+.sala-ebook-reader__head button {
+  min-height: 2.1rem;
+  padding: 0 0.8rem;
+  border: 1px solid var(--sala-line);
+  border-radius: 0.65rem;
+  background: transparent;
+  color: var(--sala-text);
+  font-weight: 700;
+}
+
+.sala-ebook-reader__download {
+  border: 0 !important;
+  background: var(--sala-cyan) !important;
+  color: #041018 !important;
+}
+
+.sala-ebook-reader__download:disabled {
+  opacity: 0.65;
+}
+
+.sala-ebook-reader__fail {
+  margin: 0;
+  padding: 0.45rem 0.85rem 0;
+  color: #fecaca;
+  font-size: 0.78rem;
+}
+
+.sala-ebook-reader__scroll {
+  overflow: auto;
+  padding: 0.9rem 0.95rem 1.2rem;
+}
+
+.sala-ebook-reader__scroll h2 {
+  margin: 0 0 0.4rem;
+  font-size: 1.35rem;
+  font-weight: 800;
+  overflow-wrap: anywhere;
+}
+
+.sala-ebook-reader__lead {
+  margin: 0 0 1.1rem;
+  color: var(--sala-muted);
+  font-size: 0.92rem;
+  line-height: 1.5;
+}
+
+.sala-ebook-reader__scroll h3 {
+  margin: 0 0 0.4rem;
+  font-size: 0.92rem;
+  font-weight: 800;
+}
+
+.sala-ebook-reader__scroll section {
+  margin-bottom: 1.05rem;
+}
+
+.sala-ebook-reader__scroll section p {
+  margin: 0 0 0.65rem;
+  color: #d5dbe8;
+  font-size: 0.9rem;
+  line-height: 1.6;
 }
 
 .sala-ebook__body {
@@ -699,8 +944,13 @@ html:has(.sala-page) body {
     gap: 0.45rem;
   }
 
-  .sala-ebook__cover {
-    width: 2.15rem;
+  .sala-ebook {
+    grid-template-columns: 2.85rem minmax(0, 1fr);
+  }
+
+  .sala-ebook-cover--card {
+    width: 2.85rem;
+    min-height: 3.9rem;
   }
 
   .sala-ebook__body {

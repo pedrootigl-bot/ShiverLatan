@@ -1,7 +1,8 @@
 "use client";
 
 import { SALA_EBOOKS, type SalaEbook } from "@/lib/sala";
-import { IconBooks, IconPanel } from "@/components/sala/SalaIcons";
+import SalaEbookCover from "@/components/sala/SalaEbookCover";
+import { IconPanel } from "@/components/sala/SalaIcons";
 
 type SalaLibraryProps = {
   onClose: () => void;
@@ -15,11 +16,11 @@ export default function SalaLibrary({ onClose, onOpenEbook }: SalaLibraryProps) 
         <div>
           <p className="sala-chat__title">
             <span className="sala-chat__name">Biblioteca</span>
-            <span className="sala-chat__bot">PDF</span>
+            <span className="sala-chat__bot">TEXTO</span>
           </p>
           <p className="sala-chat__status">
             <span aria-hidden />
-            E-books · lançamento depois
+            E-books · leitura na sala
           </p>
         </div>
         <button
@@ -42,11 +43,9 @@ export default function SalaLibrary({ onClose, onOpenEbook }: SalaLibraryProps) 
             className="sala-ebook"
             onClick={() => onOpenEbook(ebook)}
           >
-            <span className="sala-ebook__cover" aria-hidden>
-              <IconBooks />
-            </span>
+            <SalaEbookCover ebook={ebook} />
             <span className="sala-ebook__body">
-              <span className="sala-ebook__tag">E-book · em breve</span>
+              <span className="sala-ebook__tag">{ebook.kicker}</span>
               <strong>{ebook.title}</strong>
               <span>{ebook.subtitle}</span>
             </span>

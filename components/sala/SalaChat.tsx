@@ -1,70 +1,134 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import {
-  CHAT_STATUS_LABEL,
-  SALA_BOT_NAME,
-  type ChatMessage,
-  type ChatStatus,
-  type SignalCard,
-} from "@/lib/sala";
+import { SALA_BOT_NAME } from "@/lib/sala";
 import { IconPanel } from "@/components/sala/SalaIcons";
+import SalaSignalDebug from "@/components/sala/SalaSignalDebug";
+import type { SignalConnectionStatus, SignalDirection, TradingSignal } from "@/lib/signals/types";
 
 type SalaChatProps = {
-  messages: ChatMessage[];
-  status: ChatStatus;
+  signals: TradingSignal[];
+  connectionStatus: SignalConnectionStatus;
+  error: string | null;
+  debug: boolean;
   onClose: () => void;
 };
 
-function SignalBlock({ signal, time }: { signal: SignalCard; time: string }) {
-  const buy = signal.side === "compra";
+function assertNever(value: never): never {
+  throw new Error(`Direção de sinal não tratada: ${String(value)}`);
+}
+
+function directionLabel(direction: SignalDirection): string {
+  switch (direction) {
+    case "BUY":
+      return "Compra";
+    case "SELL":
+      return "Venda";
+    default:
+      return assertNever(direction);
+  }
+}
+
+function directionMark(direction: SignalDirection): string {
+  switch (direction) {
+    case "BUY":
+      return "↑";
+    case "SELL":
+      return "↓";
+    default:
+      return assertNever(direction);
+  }
+}
+
+function formatExpiration(value: string): string {
+  const match = value.trim().match(/^(\d+)\s*M$/i);
+  if (!match) {
+    return value;
+  }
+
+  const amount = Number(match[1]);
+  return amount === 1 ? "1 minuto" : `${amount} minutos`;
+}
+
+function formatEntry(signal: TradingSignal): string {
+  if (signal.entryTime) {
+    return signal.entryTime;
+  }
+
+  const date = new Date(signal.createdAt);
+  if (Number.isNaN(date.getTime())) {
+    return "--:--";
+  }
+
+  return date.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" });
+}
+
+function statusCopy(status: SignalConnectionStatus): string {
+  switch (status) {
+    case "connecting":
+      return "Conectando ao assistente...";
+    case "connected":
+      return "Assistente online";
+    case "reconnecting":
+    case "disconnected":
+      return "Reconectando ao assistente...";
+    default:
+      return assertNever(status);
+  }
+}
+
+function SignalBlock({ signal }: { signal: TradingSignal }) {
+  const buy = signal.direction === "BUY";
 
   return (
     <div className={buy ? "sala-signal sala-signal--buy" : "sala-signal sala-signal--sell"}>
       <p className="sala-signal__tag">
-        <span>{buy ? "Sinal de compra" : "Sinal de venda"}</span>
-        <time dateTime={time}>{time}</time>
+        <span>Nova leitura</span>
+        <time dateTime={signal.createdAt}>{formatEntry(signal)}</time>
+      </p>
+      <p className="sala-signal__asset">{signal.asset}</p>
+      <p className="sala-signal__side">
+        {directionMark(signal.direction)} {directionLabel(signal.direction)}
       </p>
       <dl>
-        <div>
-          <dt>Ativo</dt>
-          <dd>{signal.asset}</dd>
-        </div>
+        {signal.expiration ? (
+          <div>
+            <dt>Expiração</dt>
+            <dd>{formatExpiration(signal.expiration)}</dd>
+          </div>
+        ) : null}
+        {signal.timeframe ? (
+          <div>
+            <dt>Tempo</dt>
+            <dd>{signal.timeframe}</dd>
+          </div>
+        ) : null}
         <div>
           <dt>Entrada</dt>
-          <dd>{signal.entry}</dd>
-        </div>
-        <div>
-          <dt>Alvos</dt>
-          <dd>{signal.targets}</dd>
-        </div>
-        <div>
-          <dt>Stop</dt>
-          <dd>{signal.stop}</dd>
+          <dd>{formatEntry(signal)}</dd>
         </div>
       </dl>
     </div>
   );
 }
 
-function Message({ message }: { message: ChatMessage }) {
-  return (
-    <article className="sala-msg">
-      <SignalBlock signal={message.signal} time={message.time} />
-    </article>
-  );
-}
-
-export default function SalaChat({ messages, status, onClose }: SalaChatProps) {
+export default function SalaChat({
+  signals,
+  connectionStatus,
+  error,
+  debug,
+  onClose,
+}: SalaChatProps) {
   const scrollerRef = useRef<HTMLDivElement>(null);
+  const online = connectionStatus === "connected";
 
   useEffect(() => {
     const root = scrollerRef.current;
     if (!root) {
       return;
     }
-    root.scrollTop = root.scrollHeight;
-  }, [messages]);
+    root.scrollTop = 0;
+  }, [signals]);
 
   return (
     <section className="sala-chat" id="sala-chat" aria-label="Disparos do assistente">
@@ -74,10 +138,12 @@ export default function SalaChat({ messages, status, onClose }: SalaChatProps) {
             <span className="sala-chat__name">{SALA_BOT_NAME}</span>
             <span className="sala-chat__bot">BOT</span>
           </p>
-          <p className={`sala-chat__status sala-chat__status--${status}`}>
+          <p
+            className={`sala-chat__status ${online ? "sala-chat__status--online" : ""}`}
+          >
             <span aria-hidden />
-            {CHAT_STATUS_LABEL[status]}
-            <em className="sala-chat__status-extra"> · só disparos</em>
+            {statusCopy(connectionStatus)}
+            {online ? <em className="sala-chat__status-extra"> · só disparos</em> : null}
           </p>
         </div>
         <button
@@ -92,11 +158,24 @@ export default function SalaChat({ messages, status, onClose }: SalaChatProps) {
         </button>
       </header>
 
-      <div ref={scrollerRef} className="sala-chat__thread">
-        {messages.map((message) => (
-          <Message key={message.id} message={message} />
-        ))}
+      <div
+        ref={scrollerRef}
+        className="sala-chat__thread"
+        aria-live="polite"
+        aria-relevant="additions"
+      >
+        {error ? <p className="sala-chat__wait">{error}</p> : null}
+        {signals.length === 0 ? (
+          <p className="sala-chat__wait">Aguardando uma nova leitura de mercado...</p>
+        ) : (
+          signals.map((signal) => (
+            <article key={signal.id} className="sala-msg">
+              <SignalBlock signal={signal} />
+            </article>
+          ))
+        )}
       </div>
+      {debug ? <SalaSignalDebug /> : null}
     </section>
   );
 }
