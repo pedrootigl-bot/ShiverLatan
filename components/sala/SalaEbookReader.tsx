@@ -43,29 +43,41 @@ export default function SalaEbookReader({ ebook, onClose }: SalaEbookReaderProps
         onClick={(event) => event.stopPropagation()}
       >
         <header className="sala-ebook-reader__head">
-          <p>{ebook.kicker}</p>
+          <div className="sala-ebook-reader__identity">
+            <p>{ebook.kicker}</p>
+            <strong>{ebook.title}</strong>
+          </div>
           <div className="sala-ebook-reader__actions">
-            <button type="button" className="sala-ebook-reader__download" onClick={() => void download()} disabled={busy}>
+            <button
+              type="button"
+              className="sala-ebook-reader__download"
+              onClick={() => void download()}
+              disabled={busy}
+            >
               {busy ? "Gerando PDF…" : "Baixar e-book"}
             </button>
-            <button type="button" onClick={onClose}>
+            <button type="button" className="sala-ebook-reader__close" onClick={onClose}>
               Fechar
             </button>
           </div>
+          {fail ? <p className="sala-ebook-reader__fail">{fail}</p> : null}
         </header>
-        {fail ? <p className="sala-ebook-reader__fail">{fail}</p> : null}
-        <div ref={printRef} className="sala-ebook-reader__scroll">
-          <SalaEbookCover ebook={ebook} size="hero" />
-          <h2 id="sala-ebook-title">{ebook.title}</h2>
-          <p className="sala-ebook-reader__lead">{ebook.subtitle}</p>
-          {ebook.body.map((section) => (
-            <section key={section.heading ?? section.paragraphs[0]}>
-              {section.heading ? <h3>{section.heading}</h3> : null}
-              {section.paragraphs.map((paragraph) => (
-                <p key={paragraph}>{paragraph}</p>
-              ))}
-            </section>
-          ))}
+        <div ref={printRef} className="sala-ebook-reader__body">
+          <div className="sala-ebook-reader__cover">
+            <SalaEbookCover ebook={ebook} size="hero" />
+          </div>
+          <div className="sala-ebook-reader__copy">
+            <h2 id="sala-ebook-title">{ebook.title}</h2>
+            <p className="sala-ebook-reader__lead">{ebook.subtitle}</p>
+            {ebook.body.map((section) => (
+              <section key={section.heading ?? section.paragraphs[0]}>
+                {section.heading ? <h3>{section.heading}</h3> : null}
+                {section.paragraphs.map((paragraph) => (
+                  <p key={paragraph}>{paragraph}</p>
+                ))}
+              </section>
+            ))}
+          </div>
         </div>
       </article>
     </div>

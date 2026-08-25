@@ -125,8 +125,13 @@ export default function SalaApp() {
       closeSoon();
     };
 
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
     window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener("keydown", onKey);
+    };
   }, [soonOpen, ebook, sideOpen, panel]);
 
   const selectTool = (tool: SalaTool) => {
@@ -238,12 +243,21 @@ export default function SalaApp() {
             aria-labelledby="sala-soon-title"
             onClick={(event) => event.stopPropagation()}
           >
-            <p className="sala-soon__kicker">Em breve</p>
-            <h2 id="sala-soon-title">{notice.title}</h2>
-            <p>{notice.text}</p>
-            <button type="button" onClick={closeSoon}>
-              Entendi
-            </button>
+            <header className="sala-soon__head">
+              <span className="sala-soon__mark" aria-hidden>
+                <IconRuler />
+              </span>
+              <div>
+                <p className="sala-soon__kicker">Em breve</p>
+                <h2 id="sala-soon-title">{notice.title}</h2>
+              </div>
+            </header>
+            <p className="sala-soon__text">{notice.text}</p>
+            <footer className="sala-soon__foot">
+              <button type="button" onClick={closeSoon}>
+                Entendi
+              </button>
+            </footer>
           </div>
         </div>
       ) : null}
