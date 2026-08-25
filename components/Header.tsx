@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import type { CardNavItem } from "@/components/CardNav";
 import { CTA_HREF, CTA_LABEL } from "@/lib/cta";
@@ -80,9 +80,9 @@ function navClass(active: SectionId | "", id: SectionId) {
 
 export default function Header() {
   const [active, setActive] = useState<SectionId | "">("");
-  const [compact, setCompact] = useState(false);
+  const [compact, setCompact] = useState(true);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const media = window.matchMedia("(max-width: 1023px)");
     const update = () => setCompact(media.matches);
     update();

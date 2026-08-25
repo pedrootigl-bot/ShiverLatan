@@ -7,13 +7,14 @@ export default function SlideIntro() {
       <div className="deck-slide__layout">
         <div className="deck-slide__copy">
           <p className="deck-eyebrow deck-enter">Corretora Shiver</p>
-          <h1 className="deck-title">
+          <h2 className="deck-title">
             <span className="sr-only">
-              Shiver, corretora e ferramenta para traders.{" "}
+              Mercado com clareza: tendência, momentum e volatilidade no mesmo
+              painel.{" "}
             </span>
             <span className="deck-title__fill">Mercado</span>
             <span className="deck-title__outline">Clareza</span>
-          </h1>
+          </h2>
           <p className="deck-lead deck-enter">
             Tendência, momentum e volatilidade em um só painel. A ferramenta
             auxilia a hora de compra e venda — quem opera é você.

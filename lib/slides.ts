@@ -1,7 +1,7 @@
 import { HASH_ALIASES } from "@/lib/config";
 
 export const SLIDES = [
-  { id: "inicio", label: "Início" },
+  { id: "inicio", label: "Mercado" },
   { id: "beneficios", label: "Benefícios" },
   { id: "como-funciona", label: "Como funciona" },
   { id: "ferramenta", label: "Ferramenta" },

@@ -24,7 +24,9 @@
 
 html {
   scroll-behavior: smooth;
-  scroll-padding-top: 6.5rem;
+  scroll-padding-top: 5.75rem;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
 
 #inicio,
@@ -36,12 +38,12 @@ html {
 #planos,
 #faq,
 #comecar {
-  scroll-margin-top: 6.5rem;
+  scroll-margin-top: 5.75rem;
 }
 
-@media (max-width: 767px) {
+@media (min-width: 768px) {
   html {
-    scroll-padding-top: 5.75rem;
+    scroll-padding-top: 6.5rem;
   }
 
   #inicio,
@@ -53,7 +55,7 @@ html {
   #planos,
   #faq,
   #comecar {
-    scroll-margin-top: 5.75rem;
+    scroll-margin-top: 6.5rem;
   }
 }
 
@@ -722,7 +724,7 @@ details[open] p {
 }
 
 .product-stage {
-  transform: perspective(1600px) rotateX(4deg);
+  transform: none;
   transform-origin: center top;
 }
 
@@ -757,9 +759,9 @@ details[open] p {
   box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.06);
 }
 
-@media (max-width: 767px) {
+@media (min-width: 768px) {
   .product-stage {
-    transform: none;
+    transform: perspective(1600px) rotateX(4deg);
   }
 }
 

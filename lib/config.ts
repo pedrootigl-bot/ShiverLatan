@@ -4,20 +4,23 @@ export const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 export const SITE_LOCALE = "pt_BR";
 
-export const CTA_HREF = "#ferramenta";
+export const ROUTES = {
+  home: "/",
+  sala: "/sala",
+  termos: "/termos",
+  privacidade: "/privacidade",
+} as const;
+
+export const CTA_HREF = ROUTES.sala;
 export const CTA_LABEL = "Conheça a ferramenta";
 export const SECONDARY_HREF = "#como-funciona";
 export const SECONDARY_LABEL = "Como funciona";
 export const CLOSER_HREF = "#comecar";
 
-export const ROUTES = {
-  home: "/",
-  termos: "/termos",
-  privacidade: "/privacidade",
-} as const;
-
 export const HASH_ALIASES: Record<string, string> = {
   comecar: "faq",
+  home: "inicio",
+  cta: "inicio",
 };
 
 export const PRELOADER = {
@@ -41,6 +44,9 @@ export const SEO = {
     "análise de mercado",
   ],
   ogAlt: "Shiver — auxílio na hora de comprar e vender",
+  salaTitle: "Sala de operação | Shiver",
+  salaDescription:
+    "O assistente dispara sinais na sala. Quem opera é você, no traderoom da corretora.",
   termosTitle: "Termos de uso",
   termosDescription:
     "Termos de uso da landing Shiver: a corretora, a ferramenta de auxílio ao trader e o que a prévia desta página apresenta.",

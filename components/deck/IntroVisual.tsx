@@ -1,16 +1,15 @@
 import Image from "next/image";
+import IntroRings from "@/components/deck/IntroRings";
 import { MOCK_INTRO_CHIPS } from "@/lib/mock-market-data";
 
 export default function IntroVisual() {
   return (
-    <div className="intro-visual" aria-hidden>
-      <div className="intro-visual__glow" />
-      <div className="intro-visual__orb">
-        <span className="intro-visual__shine" />
+    <div className="intro-visual">
+      <div className="intro-visual__rings" aria-hidden>
+        <IntroRings />
       </div>
-      <div className="intro-visual__ring" />
 
-      <div className="intro-visual__figure">
+      <div className="intro-visual__figure" aria-hidden>
         <div className="intro-visual__hover">
           <Image
             className="intro-visual__hand"

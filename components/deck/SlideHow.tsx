@@ -29,7 +29,7 @@ export default function SlideHow() {
         </div>
 
         <div className="deck-visual deck-visual--split grid gap-4">
-          <article className="deck-panel how-card how-card--chaos overflow-hidden p-6">
+          <article className="deck-panel how-card how-card--chaos overflow-hidden p-4 sm:p-6">
             <p className="text-[11px] font-semibold tracking-[0.28em] text-red-400 uppercase">
               Caos
             </p>
@@ -42,7 +42,7 @@ export default function SlideHow() {
             </ul>
           </article>
 
-          <article className="deck-panel how-card how-card--clarity overflow-hidden p-6">
+          <article className="deck-panel how-card how-card--clarity overflow-hidden p-4 sm:p-6">
             <p className="text-[11px] font-semibold tracking-[0.28em] text-[#38bdf8] uppercase">
               Clareza
             </p>

@@ -463,6 +463,7 @@ export default function Deck({ children }: { children: ReactNode }) {
       if (nebula) {
         const amount = preset.compact ? 0.4 : 1;
         const shifts = [
+          { x: 24, y: -16, scale: 1.05 },
           { x: 0, y: 0, scale: 1 },
           { x: -90, y: 48, scale: 0.92 },
           { x: -180, y: 28, scale: 1.04 },
@@ -615,7 +616,15 @@ export default function Deck({ children }: { children: ReactNode }) {
       }
 
       const href = link.getAttribute("href");
-      if (!href || !href.startsWith("#")) {
+      if (!href) {
+        return;
+      }
+
+      if (href === CTA_HREF) {
+        track("cta_click", { href });
+      }
+
+      if (!href.startsWith("#")) {
         return;
       }
 
@@ -626,9 +635,6 @@ export default function Deck({ children }: { children: ReactNode }) {
       }
 
       event.preventDefault();
-      if (href === CTA_HREF) {
-        track("cta_click", { href });
-      }
       requestSlide(nextIndex);
     };
 
