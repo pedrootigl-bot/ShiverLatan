@@ -29,6 +29,7 @@ html:has(.sala-page) body {
   --sala-cyan: #38bdf8;
   --sala-buy: #22c55e;
   --sala-sell: #ef4444;
+  --sala-scroll: rgba(56, 189, 248, 0.38);
   display: flex;
   flex: 1;
   flex-direction: column;
@@ -37,6 +38,53 @@ html:has(.sala-page) body {
   height: 100%;
   background: var(--sala-bg);
   color: var(--sala-text);
+  scrollbar-width: thin;
+  scrollbar-color: var(--sala-scroll) transparent;
+}
+
+.sala *,
+.sala *::before,
+.sala *::after {
+  scrollbar-width: thin;
+  scrollbar-color: var(--sala-scroll) transparent;
+}
+
+.sala::-webkit-scrollbar,
+.sala *::-webkit-scrollbar {
+  width: 0.38rem;
+  height: 0.38rem;
+}
+
+.sala::-webkit-scrollbar-track,
+.sala *::-webkit-scrollbar-track {
+  margin: 0.35rem 0;
+  background: transparent;
+}
+
+.sala::-webkit-scrollbar-thumb,
+.sala *::-webkit-scrollbar-thumb {
+  border: 2px solid transparent;
+  border-radius: 999px;
+  background: var(--sala-scroll);
+  background-clip: padding-box;
+}
+
+.sala::-webkit-scrollbar-thumb:hover,
+.sala *::-webkit-scrollbar-thumb:hover {
+  background: rgba(56, 189, 248, 0.62);
+  background-clip: padding-box;
+}
+
+.sala::-webkit-scrollbar-button,
+.sala *::-webkit-scrollbar-button {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
+.sala::-webkit-scrollbar-corner,
+.sala *::-webkit-scrollbar-corner {
+  background: transparent;
 }
 
 .sala-nav__lock {
@@ -323,8 +371,10 @@ html:has(.sala-page) body {
 
 .sala-chat__thread {
   display: flex;
-  overflow: auto;
-  padding: 1rem 0.9rem 1.2rem;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 1rem 0.7rem 1.2rem 0.9rem;
   flex-direction: column;
   gap: 0.95rem;
 }
@@ -523,8 +573,10 @@ html:has(.sala-page) body {
 .sala-library__list {
   display: flex;
   min-height: 0;
-  overflow: auto;
-  padding: 0.7rem 0.55rem 0.85rem;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 0.7rem 0.35rem 0.85rem 0.55rem;
   flex-direction: column;
   gap: 0.55rem;
 }
@@ -554,8 +606,6 @@ html:has(.sala-page) body {
   gap: 0.35rem;
   padding-top: 0.15rem;
   overscroll-behavior: contain;
-  scrollbar-width: thin;
-  scrollbar-color: rgba(56, 189, 248, 0.35) transparent;
 }
 
 .sala-library__rest .sala-ebook__toggle {
@@ -832,8 +882,6 @@ html:has(.sala-page) body {
   overscroll-behavior: contain;
   -webkit-overflow-scrolling: touch;
   padding: 0 0.15rem 0.2rem 0;
-  scrollbar-width: thin;
-  scrollbar-color: rgba(56, 189, 248, 0.35) transparent;
 }
 
 .sala-ebook-expand .sala-ebook-cover--hero {
@@ -1037,11 +1085,10 @@ html:has(.sala-page) body {
   display: grid;
   min-height: 0;
   gap: 1.1rem;
-  overflow: auto;
+  overflow-x: hidden;
+  overflow-y: auto;
   overscroll-behavior: contain;
-  padding: 1rem 1rem 1.35rem;
-  scrollbar-width: thin;
-  scrollbar-color: rgba(56, 189, 248, 0.35) transparent;
+  padding: 1rem 0.75rem 1.35rem 1rem;
 }
 
 .sala-ebook-reader__cover {
@@ -1786,7 +1833,7 @@ html:has(.sala-page) body {
   }
 
   .sala-library__list {
-    padding: 0.5rem 0.4rem 0.65rem;
+    padding: 0.5rem 0.28rem 0.65rem 0.4rem;
     gap: 0.45rem;
   }
 
