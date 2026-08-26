@@ -1,41 +1,24 @@
-const principles = [
-  {
-    index: "01",
-    title: "Menos ruído",
-    description: "Um painel só, para reduzir a troca de telas na hora de operar.",
-  },
-  {
-    index: "02",
-    title: "Mais contexto",
-    description:
-      "Sinais juntos para auxiliar a hora de compra e venda — não para substituir o trader.",
-  },
-  {
-    index: "03",
-    title: "Decisão sua",
-    description:
-      "A ferramenta não opera sozinha. Quem decide e quem opera é você.",
-  },
-];
+"use client";
+
+import { useI18n } from "@/components/i18n/LocaleProvider";
 
 export default function SlideMethod() {
+  const { t } = useI18n();
+
   return (
     <section id="metodo" data-slide="5" className="deck-slide deck-slide--method">
       <div className="deck-slide__layout">
         <div className="deck-slide__copy">
-          <p className="deck-eyebrow deck-enter">Método</p>
+          <p className="deck-eyebrow deck-enter">{t.method.eyebrow}</p>
           <h2 className="deck-title deck-title--compact">
-            <span className="sr-only">
-              Método da ferramenta Shiver: menos ruído, mais contexto, decisão
-              do trader.{" "}
-            </span>
-            <span className="deck-title__fill">Como</span>
-            <span className="deck-title__outline">Lemos</span>
+            <span className="sr-only">{t.method.sr} </span>
+            <span className="deck-title__fill">{t.method.fill}</span>
+            <span className="deck-title__outline">{t.method.outline}</span>
           </h2>
         </div>
 
         <div className="deck-visual deck-visual--steps flex flex-col gap-4">
-          {principles.map((principle) => (
+          {t.method.principles.map((principle) => (
             <article key={principle.index} className="deck-stat deck-enter">
               <span className="deck-stat__neon" aria-hidden />
               <div>
@@ -53,10 +36,7 @@ export default function SlideMethod() {
           ))}
         </div>
 
-        <p className="deck-lead deck-enter">
-          O painel descreve o cenário para auxiliar o momento. A decisão, o
-          risco e a ordem continuam sendo seus.
-        </p>
+        <p className="deck-lead deck-enter">{t.method.lead}</p>
       </div>
     </section>
   );

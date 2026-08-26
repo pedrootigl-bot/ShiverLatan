@@ -2,9 +2,11 @@
 
 import { useState } from "react";
 import { Sparkline } from "@/components/CandleChart";
+import { useI18n } from "@/components/i18n/LocaleProvider";
 import { MOCK_SIGNALS } from "@/lib/mock-market-data";
 
 export default function SignalBoard() {
+  const { t } = useI18n();
   const [active, setActive] = useState<string | null>(null);
 
   return (
@@ -14,9 +16,10 @@ export default function SignalBoard() {
           ? "deck-visual deck-visual--stack signal-board has-focus"
           : "deck-visual deck-visual--stack signal-board"
       }
-      aria-label="Três sinais. Clique para destacar."
+      aria-label={t.pillars.boardAria}
     >
-      {MOCK_SIGNALS.map((signal) => {
+      {MOCK_SIGNALS.map((signal, index) => {
+        const copy = t.pillars.signals[index];
         const selected = active === signal.label;
 
         return (
@@ -40,10 +43,10 @@ export default function SignalBoard() {
             <span className="signal-card__meta">
               <span className="signal-card__label">
                 <span className="signal-card__pulse" aria-hidden />
-                {signal.label}
+                {copy?.label ?? signal.label}
               </span>
-              <span className="signal-card__status">{signal.status}</span>
-              <span className="signal-card__hint">{signal.hint}</span>
+              <span className="signal-card__status">{copy?.status ?? signal.status}</span>
+              <span className="signal-card__hint">{copy?.hint ?? signal.hint}</span>
             </span>
             <span className="signal-card__chart">
               <Sparkline

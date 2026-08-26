@@ -4,7 +4,9 @@ import { useLayoutEffect, useRef, useState, type ReactNode } from "react";
 import { gsap } from "gsap";
 import { track } from "@/lib/analytics";
 import { CTA_HREF, HASH_ALIASES } from "@/lib/config";
+import { TRADE_ROOM_ORIGIN } from "@/lib/sala";
 import { isSearchCrawler } from "@/lib/crawler";
+import { useI18n } from "@/components/i18n/LocaleProvider";
 import {
   goTo as requestSlide,
   isDeckLocked,
@@ -151,6 +153,7 @@ function enterNodes(slide: HTMLElement) {
 }
 
 export default function Deck({ children }: { children: ReactNode }) {
+  const { t } = useI18n();
   const viewportRef = useRef<HTMLDivElement>(null);
   const [active, setActive] = useState(0);
 
@@ -620,7 +623,7 @@ export default function Deck({ children }: { children: ReactNode }) {
         return;
       }
 
-      if (href === CTA_HREF) {
+      if (href === CTA_HREF || href.startsWith(TRADE_ROOM_ORIGIN)) {
         track("cta_click", { href });
       }
 
@@ -676,18 +679,18 @@ export default function Deck({ children }: { children: ReactNode }) {
       </div>
 
       <p className="sr-only" aria-live="polite">
-        {SLIDES[active]?.label ?? "Início"}
+        {t.deck.slides[SLIDES[active]?.id ?? ""] ?? t.deck.start}
       </p>
 
-      <nav className="deck-dots" aria-label="Slides da apresentação">
+      <nav className="deck-dots" aria-label={t.deck.dots}>
         {SLIDES.map((slide, index) => (
           <button
             key={slide.id}
             type="button"
             className={index === active ? "is-active" : undefined}
             aria-current={index === active ? "true" : undefined}
-            aria-label={slide.label}
-            title={slide.label}
+            aria-label={t.deck.slides[slide.id] ?? slide.label}
+            title={t.deck.slides[slide.id] ?? slide.label}
             onClick={() => requestSlide(index)}
           />
         ))}
@@ -700,10 +703,10 @@ export default function Deck({ children }: { children: ReactNode }) {
         <button
           type="button"
           className="deck-scroll"
-          aria-label={isLast ? "Voltar ao início" : "Ir para o próximo slide"}
+          aria-label={isLast ? t.deck.top : t.deck.next}
           onClick={() => (isLast ? requestSlide(0) : requestNext())}
         >
-          {isLast ? "Topo" : "Scroll"}
+          {isLast ? t.deck.start : t.deck.scroll}
         </button>
       </div>
 

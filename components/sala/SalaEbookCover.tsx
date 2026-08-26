@@ -31,7 +31,7 @@ export default function SalaEbookCover({
   if (ebook.coverSrc) {
     return (
       <span className={className}>
-        <img src={ebook.coverSrc} alt="" />
+        <img src={ebook.coverSrc} alt={`Capa do e-book ${ebook.title}`} />
       </span>
     );
   }

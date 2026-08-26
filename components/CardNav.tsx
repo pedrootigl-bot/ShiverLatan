@@ -21,6 +21,7 @@ export type CardNavItem = {
 
 export type CardNavProps = {
   logo: ReactNode;
+  extra?: ReactNode;
   items: CardNavItem[];
   className?: string;
   ease?: string;
@@ -28,6 +29,8 @@ export type CardNavProps = {
   menuColor?: string;
   buttonBgColor?: string;
   buttonTextColor?: string;
+  openMenuLabel?: string;
+  closeMenuLabel?: string;
 };
 
 const CLOSED_SIZE = 44;
@@ -38,11 +41,14 @@ const OPEN_RADIUS = 16;
 
 export default function CardNav({
   logo,
+  extra,
   items,
   className = "",
   baseColor = "#0b0f19",
   buttonBgColor = "#38bdf8",
   buttonTextColor = "#ffffff",
+  openMenuLabel = "Abrir menu",
+  closeMenuLabel = "Fechar menu",
 }: CardNavProps) {
   const [isOpen, setIsOpen] = useState(false);
   const toggleRef = useRef<HTMLDivElement>(null);
@@ -248,6 +254,7 @@ export default function CardNav({
     <div className={`card-nav-container ${className}`.trim()}>
       <nav className="blob-nav" style={{ backgroundColor: baseColor }}>
         <div className="blob-nav__brand">{logo}</div>
+        {extra ? <div className="blob-nav__extra">{extra}</div> : null}
 
         <div
           ref={toggleRef}
@@ -259,7 +266,7 @@ export default function CardNav({
           <button
             type="button"
             className="blob-nav__hit"
-            aria-label={isOpen ? "Fechar menu" : "Abrir menu"}
+            aria-label={isOpen ? closeMenuLabel : openMenuLabel}
             aria-expanded={isOpen}
             aria-controls="menu-mobile"
             onClick={toggleMenu}

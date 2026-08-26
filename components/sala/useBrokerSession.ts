@@ -1,51 +1,63 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 
-const SETTLE_MS = 4000;
-const GUEST_BOUNCE_MS = 8000;
+const GUEST_BOUNCE_MS = 2500;
+const LOGIN_GAP_MS = 3000;
 
 export function useBrokerSession() {
   const [authed, setAuthed] = useState(false);
+  const authedRef = useRef(false);
   const loadsRef = useRef(0);
-  const firstAtRef = useRef(0);
-  const timerRef = useRef(0);
+  const lastAtRef = useRef(0);
+
+  const lock = useCallback(() => {
+    authedRef.current = false;
+    setAuthed(false);
+  }, []);
+
+  const unlock = useCallback(() => {
+    authedRef.current = true;
+    setAuthed(true);
+  }, []);
+
+  const resetSession = useCallback(() => {
+    loadsRef.current = 0;
+    lastAtRef.current = 0;
+    lock();
+  }, [lock]);
+
+  const markResume = useCallback(() => {
+    loadsRef.current = 0;
+    lastAtRef.current = 0;
+    lock();
+  }, [lock]);
 
   const onFrameLoad = () => {
+    if (authedRef.current) {
+      return;
+    }
+
     loadsRef.current += 1;
     const loads = loadsRef.current;
     const now = Date.now();
+    const gap = lastAtRef.current === 0 ? 0 : now - lastAtRef.current;
+    lastAtRef.current = now;
 
     if (loads === 1) {
-      firstAtRef.current = now;
-      timerRef.current = window.setTimeout(() => {
-        if (loadsRef.current === 1) {
-          setAuthed(true);
-        }
-      }, SETTLE_MS);
+      lock();
       return;
     }
 
-    if (timerRef.current) {
-      window.clearTimeout(timerRef.current);
-      timerRef.current = 0;
-    }
-
-    if (loads === 2 && now - firstAtRef.current < GUEST_BOUNCE_MS) {
-      setAuthed(false);
+    if (gap < GUEST_BOUNCE_MS) {
+      lock();
       return;
     }
 
-    setAuthed(true);
+    if (gap >= LOGIN_GAP_MS) {
+      unlock();
+    }
   };
 
-  useEffect(() => {
-    return () => {
-      if (timerRef.current) {
-        window.clearTimeout(timerRef.current);
-      }
-    };
-  }, []);
-
-  return { authed, onFrameLoad };
+  return { authed, onFrameLoad, resetSession, markResume };
 }

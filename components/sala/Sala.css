@@ -39,13 +39,76 @@ html:has(.sala-page) body {
   color: var(--sala-text);
 }
 
-.sala--guest .sala-rail,
-.sala--guest .sala-tools {
-  display: none;
+.sala-nav__lock {
+  position: absolute;
+  right: 0.2rem;
+  bottom: 0.15rem;
+  z-index: 1;
+  display: grid;
+  width: 1rem;
+  height: 1rem;
+  place-items: center;
+  border: 1px solid rgba(251, 191, 36, 0.45);
+  border-radius: 999px;
+  background: #0b0f16;
+  color: #fbbf24;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+}
+
+.sala-nav__lock svg,
+.sala-tools .sala-nav__lock svg {
+  width: 0.62rem;
+  height: 0.62rem;
+}
+
+.sala-tools button.is-locked,
+.sala-rail button.is-locked {
+  color: var(--sala-muted);
+}
+
+.sala-tools .sala-nav__ia.is-locked {
+  color: var(--sala-muted);
+}
+
+.sala-tools .sala-nav__ia.is-locked .sala-nav__ia-ring {
+  opacity: 0.55;
+  box-shadow: none;
+}
+
+.sala-tools .sala-nav__ia.is-locked .sala-nav__ia-label {
+  color: var(--sala-muted);
+}
+
+.sala-tools .sala-nav__ia.is-locked .sala-nav__lock {
+  right: calc(50% - 1.35rem);
+  bottom: 1.05rem;
+}
+
+.sala .lang-switch,
+.sala-modal__bar .lang-switch,
+.sala-rail__lang,
+.sala--guest .lang-switch {
+  display: none !important;
 }
 
 .sala-rail {
   display: none;
+}
+
+.sala-rail__lang {
+  margin-top: auto;
+}
+
+.sala-rail__lang .lang-switch {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.2rem;
+}
+
+.sala-rail__lang .lang-switch__btn {
+  justify-content: center;
+  min-height: 1.7rem;
+  padding: 0.15rem 0.2rem;
 }
 
 .sala-tools {
@@ -58,6 +121,7 @@ html:has(.sala-page) body {
 }
 
 .sala-tools button {
+  position: relative;
   display: grid;
   min-height: 2.75rem;
   place-items: center;
@@ -167,13 +231,17 @@ html:has(.sala-page) body {
   left: 0;
   z-index: 5;
   display: grid;
-  width: min(20.5rem, 88vw);
+  width: min(20.5rem, 92vw);
   grid-template-rows: auto minmax(0, 1fr);
   overflow: hidden;
   border-right: 1px solid var(--sala-line);
   background: var(--sala-bg);
   box-shadow: 12px 0 40px rgba(0, 0, 0, 0.35);
   animation: sala-panel-in 0.34s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.sala-library.sala-library--reading {
+  width: min(20.5rem, 92vw);
 }
 
 .sala-chat__head {
@@ -454,16 +522,63 @@ html:has(.sala-page) body {
 
 .sala-library__list {
   display: flex;
+  min-height: 0;
   overflow: auto;
   padding: 0.7rem 0.55rem 0.85rem;
   flex-direction: column;
   gap: 0.55rem;
 }
 
+.sala-library__list.is-reading {
+  overflow: hidden;
+  gap: 0.45rem;
+}
+
+.sala-library__list.is-reading .sala-ebook.is-open {
+  flex: 1 1 0;
+  min-height: 0;
+  order: 0;
+}
+
+.sala-library__list.is-reading .sala-ebook.is-open .sala-ebook__toggle {
+  display: none;
+}
+
+.sala-library__rest {
+  display: flex;
+  flex: 0 0 auto;
+  max-height: min(9.5rem, 28vh);
+  min-height: 0;
+  overflow: auto;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding-top: 0.15rem;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(56, 189, 248, 0.35) transparent;
+}
+
+.sala-library__rest .sala-ebook__toggle {
+  grid-template-columns: 2.5rem minmax(0, 1fr);
+}
+
+.sala-library__rest .sala-ebook-cover--card {
+  width: 2.5rem;
+  min-height: 3.75rem;
+}
+
+.sala-library__rest .sala-ebook__body {
+  padding: 0.35rem 0.45rem 0.4rem 0;
+}
+
+.sala-library__rest .sala-ebook__body span:last-child {
+  display: none;
+}
+
 .sala-ebook {
-  display: grid;
-  grid-template-columns: 3.15rem minmax(0, 1fr);
-  gap: 0.55rem;
+  display: flex;
+  flex: 0 0 auto;
+  flex-direction: column;
   min-width: 0;
   padding: 0;
   overflow: hidden;
@@ -472,8 +587,38 @@ html:has(.sala-page) body {
   background: var(--sala-raised);
   color: inherit;
   text-align: left;
-  cursor: pointer;
   animation: sala-item-in 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.sala-ebook__toggle {
+  display: grid;
+  flex: 0 0 auto;
+  grid-template-columns: 3.15rem minmax(0, 1fr);
+  gap: 0.55rem;
+  width: 100%;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.sala-ebook.is-open {
+  flex: 1 1 0;
+  min-height: 0;
+  border-color: rgba(56, 189, 248, 0.45);
+}
+
+.sala-ebook__panel {
+  display: flex;
+  flex: 1 1 0;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  flex-direction: column;
+  border-top: 1px solid var(--sala-line);
 }
 
 .sala-library__list .sala-ebook:nth-child(1) {
@@ -496,8 +641,61 @@ html:has(.sala-page) body {
   animation-delay: 0.25s;
 }
 
+.sala-library__list .sala-ebook:nth-child(6) {
+  animation-delay: 0.3s;
+}
+
+.sala-library__list .sala-ebook:nth-child(7) {
+  animation-delay: 0.35s;
+}
+
+.sala-library__list .sala-ebook:nth-child(8) {
+  animation-delay: 0.4s;
+}
+
+.sala-library__list .sala-ebook:nth-child(9) {
+  animation-delay: 0.45s;
+}
+
+.sala-library__list .sala-ebook:nth-child(10) {
+  animation-delay: 0.5s;
+}
+
+.sala-library__list .sala-ebook:nth-child(11) {
+  animation-delay: 0.55s;
+}
+
+.sala-library__list .sala-ebook:nth-child(12) {
+  animation-delay: 0.6s;
+}
+
+.sala-library__list .sala-ebook:nth-child(13) {
+  animation-delay: 0.65s;
+}
+
+.sala-library__list .sala-ebook:nth-child(14) {
+  animation-delay: 0.7s;
+}
+
+.sala-library__list .sala-ebook:nth-child(15) {
+  animation-delay: 0.75s;
+}
+
+.sala-library__list .sala-ebook:nth-child(16) {
+  animation-delay: 0.8s;
+}
+
+.sala-library__list .sala-ebook:nth-child(17) {
+  animation-delay: 0.85s;
+}
+
+.sala-ebook:hover .sala-ebook__toggle,
+.sala-ebook__toggle:focus-visible {
+  outline: none;
+}
+
 .sala-ebook:hover,
-.sala-ebook:focus-visible {
+.sala-ebook:focus-within {
   border-color: rgba(56, 189, 248, 0.45);
 }
 
@@ -512,6 +710,7 @@ html:has(.sala-page) body {
 }
 
 .sala-ebook-cover--card {
+  align-self: stretch;
   width: 3.15rem;
   min-height: 4.35rem;
   height: 100%;
@@ -527,14 +726,39 @@ html:has(.sala-page) body {
   box-shadow: 0 16px 40px rgba(0, 0, 0, 0.28);
 }
 
-.sala-ebook-cover--photo {
+.sala-ebook-cover--hero.sala-ebook-cover--photo {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 2 / 3;
+  height: auto;
   padding: 0;
+  background: #05070d;
+}
+
+.sala-ebook-cover--photo {
+  display: block;
+  padding: 0;
+  background: #05070d;
+}
+
+.sala-ebook-cover--card.sala-ebook-cover--photo {
+  position: relative;
+  overflow: hidden;
+  min-height: 4.725rem;
+  height: auto;
 }
 
 .sala-ebook-cover img {
+  display: block;
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: center top;
+}
+
+.sala-ebook-cover--photo img {
+  position: absolute;
+  inset: 0;
 }
 
 .sala-ebook-cover em {
@@ -577,28 +801,51 @@ html:has(.sala-page) body {
 }
 
 .sala-ebook-reader {
-  position: fixed;
-  inset: 0;
-  z-index: 32;
-  display: grid;
-  place-items: center;
-  padding: max(0.65rem, env(safe-area-inset-top, 0px)) 0.65rem max(0.65rem, env(safe-area-inset-bottom, 0px));
-  background: rgba(5, 7, 13, 0.78);
-  backdrop-filter: blur(10px);
-  animation: sala-fade-in 0.22s ease;
+  position: relative;
 }
 
-.sala-ebook-reader__card {
-  display: grid;
-  width: min(56rem, 100%);
-  max-height: min(46rem, calc(100dvh - 1.3rem));
-  grid-template-rows: auto minmax(0, 1fr);
+.sala-ebook-expand {
+  position: relative;
+  display: flex;
+  flex: 1 1 0;
+  min-height: 0;
   overflow: hidden;
-  border: 1px solid var(--sala-line);
-  border-radius: 1.15rem;
-  background: var(--sala-raised);
-  box-shadow: 0 28px 90px rgba(0, 0, 0, 0.5);
-  animation: sala-card-in 0.34s cubic-bezier(0.22, 1, 0.36, 1);
+  flex-direction: column;
+  padding: 0.7rem 0.6rem 0.85rem;
+}
+
+.sala-ebook-expand__toolbar {
+  display: flex;
+  flex: 0 0 auto;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-bottom: 0.7rem;
+}
+
+.sala-ebook-expand .sala-ebook-reader__body {
+  display: grid;
+  flex: 1 1 0;
+  min-height: 0;
+  gap: 0.9rem;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  padding: 0 0.15rem 0.2rem 0;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(56, 189, 248, 0.35) transparent;
+}
+
+.sala-ebook-expand .sala-ebook-cover--hero {
+  aspect-ratio: 16 / 9;
+  max-height: 9.5rem;
+}
+
+.sala-ebook-expand .sala-ebook-cover--hero.sala-ebook-cover--photo {
+  aspect-ratio: 2 / 3;
+  width: min(100%, 8.5rem);
+  max-height: min(12.5rem, 32vh);
+  margin-inline: auto;
 }
 
 .sala-ebook-reader__head {
@@ -613,7 +860,21 @@ html:has(.sala-page) body {
 }
 
 .sala-ebook-reader__identity {
+  display: flex;
   min-width: 0;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.sala-ebook-reader__logo {
+  flex: 0 0 auto;
+  width: 2.45rem;
+  height: 2.45rem;
+  object-fit: cover;
+  object-position: center;
+  border: 1px solid var(--sala-line);
+  border-radius: 0.55rem;
+  background: #05070d;
 }
 
 .sala-ebook-reader__identity p {
@@ -636,7 +897,8 @@ html:has(.sala-page) body {
   gap: 0.4rem;
 }
 
-.sala-ebook-reader__head button {
+.sala-ebook-reader__head button,
+.sala-ebook-expand__toolbar button {
   min-height: 2.35rem;
   padding: 0 0.9rem;
   border: 1px solid var(--sala-line);
@@ -659,8 +921,105 @@ html:has(.sala-page) body {
   color: #041018 !important;
 }
 
-.sala-ebook-reader__download:disabled {
+.sala-ebook-reader__download:disabled,
+.sala-ebook-reader__close:disabled {
   opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.sala-ebook-load {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+  background: rgba(5, 7, 13, 0.82);
+  backdrop-filter: blur(10px);
+}
+
+.sala-ebook-load__card {
+  width: min(26rem, 100%);
+  padding: 1.2rem 1.2rem 1.1rem;
+  border: 1px solid var(--sala-line);
+  border-radius: 1.15rem;
+  background: var(--sala-raised);
+  box-shadow: 0 28px 90px rgba(0, 0, 0, 0.5);
+}
+
+.sala-ebook-load__kicker {
+  margin: 0;
+  color: var(--sala-cyan);
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.sala-ebook-load__card h2 {
+  margin: 0.35rem 0 0.35rem;
+  font-size: 1.2rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.sala-ebook-load__file {
+  margin: 0 0 0.85rem;
+  color: var(--sala-muted);
+  font-size: 0.86rem;
+  line-height: 1.4;
+}
+
+.sala-ebook-load__status {
+  margin: 0 0 0.9rem;
+  color: #d8deea;
+  font-size: 0.88rem;
+  font-weight: 700;
+}
+
+.sala-ebook-load__row {
+  margin: 0 0 0.75rem;
+}
+
+.sala-ebook-load__row-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.7rem;
+  margin-bottom: 0.35rem;
+  color: var(--sala-muted);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.sala-ebook-load__row-head b {
+  color: var(--sala-cyan);
+  font-variant-numeric: tabular-nums;
+}
+
+.sala-ebook-load__bar {
+  overflow: hidden;
+  height: 0.55rem;
+  border-radius: 999px;
+  background: rgba(5, 7, 13, 0.55);
+  box-shadow: inset 0 0 0 1px var(--sala-line);
+}
+
+.sala-ebook-load__bar span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #38bdf8, #7dd3fc);
+  transition: width 0.22s ease;
+}
+
+.sala-ebook-load__hint {
+  margin: 0.35rem 0 0;
+  color: var(--sala-muted);
+  font-size: 0.75rem;
+  line-height: 1.4;
 }
 
 .sala-ebook-reader__fail {
@@ -693,6 +1052,10 @@ html:has(.sala-page) body {
   min-width: 0;
 }
 
+.sala-ebook-reader__intro h2 {
+  margin: 0 0 0.45rem;
+}
+
 .sala-ebook-reader__copy h2 {
   margin: 0 0 0.45rem;
   font-size: clamp(1.2rem, 3vw, 1.7rem);
@@ -717,70 +1080,409 @@ html:has(.sala-page) body {
   text-transform: uppercase;
 }
 
-.sala-ebook-reader__copy section {
+.sala-ebook-block,
+.sala-ebook-callout,
+.sala-ebook-meta,
+.sala-ebook-stats,
+.sala-ebook-table-wrap,
+.sala-ebook-figure,
+.sala-ebook-steps,
+.sala-ebook-quote,
+.sala-ebook-plan,
+.sala-ebook-split {
   margin: 0 0 0.85rem;
-  padding: 0.9rem 0.95rem 0.85rem;
+}
+
+.sala-ebook-block,
+.sala-ebook-callout,
+.sala-ebook-meta,
+.sala-ebook-stats,
+.sala-ebook-table-wrap,
+.sala-ebook-figure,
+.sala-ebook-steps,
+.sala-ebook-quote,
+.sala-ebook-plan,
+.sala-ebook-split {
+  padding: 0.9rem 0.95rem;
   border: 1px solid var(--sala-line);
   border-radius: 0.9rem;
   background: rgba(5, 7, 13, 0.35);
 }
 
-.sala-ebook-reader__copy section:last-child {
+.sala-ebook-keep {
+  min-width: 0;
+}
+
+.sala-ebook-keep:last-child > * {
   margin-bottom: 0;
 }
 
-.sala-ebook-reader__copy section p {
+.sala-ebook-block__kicker {
+  margin: 0 0 0.35rem;
+  color: var(--sala-cyan);
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.sala-ebook-block--chapter h3,
+.sala-ebook-block h3 {
+  margin: 0 0 0.55rem;
+  color: var(--sala-text);
+  font-size: 1.05rem;
+  letter-spacing: -0.02em;
+  text-transform: none;
+}
+
+.sala-ebook-block__lead,
+.sala-ebook-block p,
+.sala-ebook-callout p,
+.sala-ebook-quote p,
+.sala-ebook-split p,
+.sala-ebook-traps p,
+.sala-ebook-steps p {
   margin: 0 0 0.7rem;
   color: #d8deea;
   font-size: 0.92rem;
   line-height: 1.65;
 }
 
-.sala-ebook-reader__copy section p:last-child {
+.sala-ebook-block p:last-child,
+.sala-ebook-callout p:last-child,
+.sala-ebook-quote p:last-child,
+.sala-ebook-steps p:last-child,
+.sala-ebook-traps p:last-child {
   margin-bottom: 0;
 }
 
-@media (min-width: 720px) {
-  .sala-ebook-reader {
-    padding: 1.1rem;
+.sala-ebook-callout--gold {
+  border-color: rgba(251, 191, 36, 0.35);
+  background: rgba(120, 53, 15, 0.22);
+}
+
+.sala-ebook-callout--gold .sala-ebook-block__kicker {
+  color: #fbbf24;
+}
+
+.sala-ebook-callout--warn,
+.sala-ebook-callout--danger {
+  border-color: rgba(248, 113, 113, 0.32);
+  background: rgba(127, 29, 29, 0.22);
+}
+
+.sala-ebook-callout--warn .sala-ebook-block__kicker,
+.sala-ebook-callout--danger .sala-ebook-block__kicker {
+  color: #fecaca;
+}
+
+.sala-ebook-callout--principle {
+  border-color: rgba(56, 189, 248, 0.4);
+  background: rgba(8, 47, 73, 0.45);
+}
+
+.sala-ebook-formula {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.95rem !important;
+  font-weight: 700;
+  color: #f8fbff !important;
+}
+
+.sala-ebook-meta {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.65rem;
+}
+
+.sala-ebook-meta dt {
+  margin: 0 0 0.2rem;
+  color: var(--sala-cyan);
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.sala-ebook-meta dd {
+  margin: 0;
+  font-size: 0.92rem;
+  font-weight: 700;
+}
+
+.sala-ebook-toc ol {
+  margin: 0.4rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.sala-ebook-toc li {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.38rem 0;
+  border-bottom: 1px dashed rgba(148, 163, 184, 0.2);
+  color: #d8deea;
+  font-size: 0.86rem;
+}
+
+.sala-ebook-toc li b {
+  color: var(--sala-muted);
+  font-weight: 700;
+}
+
+.sala-ebook-stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.55rem;
+}
+
+.sala-ebook-stats div {
+  display: grid;
+  gap: 0.3rem;
+  padding: 0.7rem 0.65rem;
+  border-radius: 0.7rem;
+  background: rgba(5, 7, 13, 0.4);
+}
+
+.sala-ebook-stats strong {
+  color: var(--sala-cyan);
+  font-size: 1.25rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+}
+
+.sala-ebook-stats span {
+  color: var(--sala-muted);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  line-height: 1.35;
+}
+
+.sala-ebook-table-wrap {
+  overflow-x: auto;
+}
+
+.sala-ebook-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.8rem;
+}
+
+.sala-ebook-table th,
+.sala-ebook-table td {
+  padding: 0.45rem 0.4rem;
+  border-bottom: 1px solid var(--sala-line);
+  text-align: left;
+  vertical-align: top;
+}
+
+.sala-ebook-table th {
+  color: var(--sala-cyan);
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.sala-ebook-table td {
+  color: #d8deea;
+}
+
+.sala-ebook-figure {
+  margin: 0 0 0.85rem;
+}
+
+.sala-ebook-figure svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  background: rgba(5, 7, 13, 0.45);
+  border-radius: 0.65rem;
+}
+
+.sala-ebook-figure figcaption {
+  margin: 0.55rem 0 0;
+  color: var(--sala-muted);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.sala-ebook-steps,
+.sala-ebook-traps,
+.sala-ebook-check {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.sala-ebook-steps li,
+.sala-ebook-traps li,
+.sala-ebook-check li {
+  display: grid;
+  grid-template-columns: 2.1rem minmax(0, 1fr);
+  gap: 0.65rem;
+  margin: 0 0 0.75rem;
+}
+
+.sala-ebook-steps li:last-child,
+.sala-ebook-traps li:last-child,
+.sala-ebook-check li:last-child {
+  margin-bottom: 0;
+}
+
+.sala-ebook-steps b {
+  color: var(--sala-cyan);
+  font-size: 0.78rem;
+}
+
+.sala-ebook-steps strong,
+.sala-ebook-traps strong {
+  display: block;
+  margin-bottom: 0.2rem;
+  font-size: 0.9rem;
+}
+
+.sala-ebook-traps li,
+.sala-ebook-check li {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.sala-ebook-check li {
+  position: relative;
+  padding-left: 1.25rem;
+  color: #d8deea;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.sala-ebook-check li::before {
+  content: "";
+  position: absolute;
+  top: 0.35rem;
+  left: 0;
+  width: 0.55rem;
+  height: 0.55rem;
+  border: 1.5px solid var(--sala-cyan);
+  border-radius: 0.15rem;
+}
+
+.sala-ebook-quote {
+  border-left: 3px solid var(--sala-cyan);
+}
+
+.sala-ebook-quote cite {
+  display: block;
+  margin-top: 0.55rem;
+  color: var(--sala-cyan);
+  font-size: 0.78rem;
+  font-style: normal;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+}
+
+.sala-ebook-plan {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.55rem;
+}
+
+.sala-ebook-plan div {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.sala-ebook-plan strong {
+  color: var(--sala-cyan);
+  font-size: 1.2rem;
+  font-weight: 800;
+}
+
+.sala-ebook-plan span {
+  color: #d8deea;
+  font-size: 0.8rem;
+  line-height: 1.45;
+}
+
+.sala-ebook-split {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.sala-ebook-split section {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+
+@media (max-width: 719px) {
+  .sala-ebook-meta,
+  .sala-ebook-stats,
+  .sala-ebook-plan {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 639px) {
+  .sala-library--reading .sala-chat__head {
+    padding: 0.4rem 0.55rem;
   }
 
-  .sala-ebook-reader__card {
-    max-height: min(48rem, calc(100dvh - 2.2rem));
+  .sala-library--reading .sala-ebook-expand {
+    padding: 0.4rem 0.45rem 0.55rem;
   }
 
-  .sala-ebook-reader__head {
-    flex-wrap: nowrap;
-    padding: 0.9rem 1.2rem;
+  .sala-library--reading .sala-ebook-expand__toolbar button {
+    flex: 1 1 0;
+    min-height: 2.75rem;
+    padding: 0.55rem 0.7rem;
+    font-size: 0.78rem;
   }
 
-  .sala-ebook-reader__identity strong {
-    display: block;
-    overflow: hidden;
-    margin-top: 0.18rem;
+  .sala-library--reading .sala-ebook-reader__intro h2,
+  .sala-library--reading .sala-ebook-reader__copy h2 {
+    font-size: 1.15rem;
+  }
+
+  .sala-library--reading .sala-ebook-reader__lead {
     font-size: 0.88rem;
-    font-weight: 700;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+    margin-bottom: 0.85rem;
   }
 
-  .sala-ebook-reader__body {
-    grid-template-columns: minmax(12.5rem, 15.5rem) minmax(0, 1fr);
-    align-items: start;
-    gap: 1.35rem;
-    padding: 1.2rem 1.25rem 1.5rem;
+  .sala-library--reading .sala-ebook-block,
+  .sala-library--reading .sala-ebook-callout,
+  .sala-library--reading .sala-ebook-meta,
+  .sala-library--reading .sala-ebook-stats,
+  .sala-library--reading .sala-ebook-table-wrap,
+  .sala-library--reading .sala-ebook-figure,
+  .sala-library--reading .sala-ebook-steps,
+  .sala-library--reading .sala-ebook-quote,
+  .sala-library--reading .sala-ebook-plan,
+  .sala-library--reading .sala-ebook-split {
+    padding: 0.75rem 0.8rem;
+  }
+}
+
+@media (min-width: 720px) {
+  .sala-ebook-split {
+    grid-template-columns: 1fr 1fr;
   }
 
-  .sala-ebook-reader__cover {
-    position: sticky;
-    top: 0;
-  }
-
-  .sala-ebook-cover--hero {
-    aspect-ratio: 3 / 4;
-  }
-
-  .sala-ebook-reader__copy section {
+  .sala-ebook-block,
+  .sala-ebook-callout,
+  .sala-ebook-meta,
+  .sala-ebook-stats,
+  .sala-ebook-table-wrap,
+  .sala-ebook-figure,
+  .sala-ebook-steps,
+  .sala-ebook-quote,
+  .sala-ebook-plan,
+  .sala-ebook-split {
     padding: 1rem 1.05rem;
   }
 }
@@ -801,11 +1503,13 @@ html:has(.sala-page) body {
 }
 
 .sala-ebook__body strong {
+  display: -webkit-box;
   overflow: hidden;
   font-size: 0.78rem;
   font-weight: 700;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
 }
 
 .sala-ebook__body span:last-child {
@@ -854,7 +1558,7 @@ html:has(.sala-page) body {
   font-weight: 700;
 }
 
-.sala-modal__bar span {
+.sala-modal__copy span {
   display: none;
   color: var(--sala-muted);
   font-size: 0.72rem;
@@ -994,7 +1698,11 @@ html:has(.sala-page) body {
   }
 
   .sala-body {
-    grid-template-columns: minmax(15.5rem, 32%) minmax(0, 1fr);
+    grid-template-columns: minmax(16rem, 34%) minmax(0, 1fr);
+  }
+
+  .sala-body:has(.sala-library--reading) {
+    grid-template-columns: minmax(20rem, 44%) minmax(0, 1fr);
   }
 
   .sala-chat,
@@ -1004,6 +1712,10 @@ html:has(.sala-page) body {
     z-index: auto;
     width: auto;
     box-shadow: none;
+  }
+
+  .sala-library.sala-library--reading {
+    width: auto;
   }
 
   .sala--closed .sala-body {
@@ -1018,7 +1730,7 @@ html:has(.sala-page) body {
     font-size: 0.88rem;
   }
 
-  .sala-modal__bar span {
+  .sala-modal__copy span {
     display: block;
   }
 
@@ -1078,13 +1790,17 @@ html:has(.sala-page) body {
     gap: 0.45rem;
   }
 
-  .sala-ebook {
+  .sala-ebook__toggle {
     grid-template-columns: 2.85rem minmax(0, 1fr);
   }
 
   .sala-ebook-cover--card {
     width: 2.85rem;
-    min-height: 3.9rem;
+    min-height: 4.275rem;
+  }
+
+  .sala-ebook-cover--card.sala-ebook-cover--photo {
+    min-height: 4.275rem;
   }
 
   .sala-ebook__body {
@@ -1093,7 +1809,60 @@ html:has(.sala-page) body {
 
   .sala-ebook__body strong {
     font-size: 0.7rem;
-    white-space: normal;
+  }
+
+  .sala-ebook-expand {
+    padding: 0.5rem 0.45rem 0.65rem;
+  }
+
+  .sala-ebook-expand .sala-ebook-cover--hero.sala-ebook-cover--photo {
+    width: min(100%, 6.5rem);
+    max-height: min(9rem, 22vh);
+  }
+
+  .sala-ebook-table {
+    font-size: 0.72rem;
+  }
+
+  .sala-ebook-table th,
+  .sala-ebook-table td {
+    padding: 0.35rem 0.3rem;
+  }
+
+  .sala-library--reading .sala-library__list.is-reading {
+    position: relative;
+    overflow: hidden;
+    padding: 0;
+    gap: 0;
+  }
+
+  .sala-library--reading .sala-library__rest {
+    display: none;
+  }
+
+  .sala-library--reading .sala-ebook.is-open {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    display: flex;
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+    overflow: hidden;
+    flex-direction: column;
+    border: 0;
+    border-radius: 0;
+    background: var(--sala-bg);
+  }
+
+  .sala-library--reading .sala-ebook-reader__cover {
+    display: none;
+  }
+
+  .sala-library--reading .sala-ebook-expand {
+    flex: 1 1 0;
+    min-height: 0;
+    height: 100%;
   }
 }
 
@@ -1109,19 +1878,8 @@ html:has(.sala-page) body {
   .sala-scrim {
     display: none;
   }
-  .sala-modal__bar p,
-  .sala-modal__bar span {
-    display: none;
-  }
-
   .sala-modal__bar {
-    position: absolute;
-    top: 0;
-    right: 0;
-    z-index: 2;
-    padding: 0.4rem;
-    border: 0;
-    background: transparent;
+    display: none;
   }
 
   .sala-modal {
@@ -1146,10 +1904,6 @@ html:has(.sala-page) body {
     width: 100%;
     height: 100%;
     min-height: 0;
-  }
-
-  .sala--guest {
-    grid-template-columns: minmax(0, 1fr);
   }
 
   .sala-rail {
@@ -1279,9 +2033,37 @@ html:has(.sala-page) body {
     color: var(--sala-cyan);
   }
 
+  .sala-rail button.is-locked {
+    color: var(--sala-muted);
+  }
+
+  .sala-rail .sala-nav__ia.is-locked .sala-nav__ia-ring {
+    opacity: 0.55;
+    box-shadow: none;
+  }
+
+  .sala-rail .sala-nav__ia.is-locked .sala-nav__ia-label {
+    color: var(--sala-muted);
+  }
+
+  .sala-rail .sala-nav__lock {
+    right: -0.05rem;
+    bottom: -0.05rem;
+  }
+
+  .sala-rail .sala-nav__ia .sala-nav__lock {
+    right: 0.05rem;
+    bottom: 0.95rem;
+  }
+
   .sala-rail svg {
     width: 1.35rem;
     height: 1.35rem;
+  }
+
+  .sala-rail .sala-nav__lock svg {
+    width: 0.62rem;
+    height: 0.62rem;
   }
 
   .sala-tools {
@@ -1302,6 +2084,10 @@ html:has(.sala-page) body {
     grid-template-columns: minmax(20rem, 24.5rem) minmax(0, 1fr);
     min-height: 0;
     height: 100%;
+  }
+
+  .sala-body:has(.sala-library--reading) {
+    grid-template-columns: minmax(24rem, 32rem) minmax(0, 1fr);
   }
 
   .sala--closed .sala-body {
@@ -1327,7 +2113,7 @@ html:has(.sala-page) body {
     padding: 0.75rem 0.9rem;
   }
 
-  .sala-modal__bar span {
+  .sala-modal__copy span {
     display: block;
   }
 }

@@ -1,13 +1,46 @@
-export const TRADE_ROOM_URL = "https://trade.shiverbroker.com/traderoom";
+import { EBOOK_01_BODY } from "@/lib/ebook01";
+import { EBOOK_02_BODY } from "@/lib/ebook02";
+import { EBOOK_03_BODY } from "@/lib/ebook03";
+import { EBOOK_04_BODY } from "@/lib/ebook04";
+import { EBOOK_05_BODY } from "@/lib/ebook05";
+import { EBOOK_06_BODY } from "@/lib/ebook06";
+import { EBOOK_07_BODY } from "@/lib/ebook07";
+import { EBOOK_08_BODY } from "@/lib/ebook08";
+import { EBOOK_09_BODY } from "@/lib/ebook09";
+import { EBOOK_10_BODY } from "@/lib/ebook10";
+import { EBOOK_11_BODY } from "@/lib/ebook11";
+import { EBOOK_12_BODY } from "@/lib/ebook12";
+import { EBOOK_13_BODY } from "@/lib/ebook13";
+import { EBOOK_14_BODY } from "@/lib/ebook14";
+import { EBOOK_15_BODY } from "@/lib/ebook15";
+import { EBOOK_16_BODY } from "@/lib/ebook16";
+import { EBOOK_17_BODY } from "@/lib/ebook17";
+import type { Locale } from "@/lib/i18n/locale";
+import type { SalaEbookBlock } from "@/lib/salaEbook";
+
+export const TRADE_ROOM_ORIGIN = "https://trade.shiverbroker.com";
+export const TRADE_ROOM_URL = `${TRADE_ROOM_ORIGIN}/traderoom`;
+
+export const BROKER_SESSION_WAIT_KEY = "shiver-await-broker-session";
+
+export function tradeRoomUrl(locale: Locale): string {
+  switch (locale) {
+    case "pt":
+      return `${TRADE_ROOM_ORIGIN}/pt/traderoom`;
+    case "es":
+      return `${TRADE_ROOM_ORIGIN}/es/traderoom`;
+    default: {
+      const _never: never = locale;
+      return _never;
+    }
+  }
+}
 
 export const SALA_BOT_NAME = "Assistente Shiver";
 
 export type SalaEbookTone = "cyan" | "green" | "amber" | "violet";
 
-export type SalaEbookSection = {
-  heading?: string;
-  paragraphs: string[];
-};
+export type { SalaEbookBlock, SalaEbookCalloutTone, SalaEbookFigureId } from "@/lib/salaEbook";
 
 export type SalaEbook = {
   id: string;
@@ -17,117 +50,178 @@ export type SalaEbook = {
   coverLabel: string;
   coverTone: SalaEbookTone;
   coverSrc?: string;
-  body: SalaEbookSection[];
+  body: SalaEbookBlock[];
 };
 
 export const SALA_EBOOKS: SalaEbook[] = [
   {
     id: "timing",
-    title: "Timing de compra e venda",
-    subtitle: "Quando entrar e quando sair, com tendência e momentum.",
+    title: "100% por regras no M5",
+    subtitle: "Menos pressa, mais leitura.",
     kicker: "E-book 01",
-    coverLabel: "01",
+    coverLabel: "M5",
     coverTone: "cyan",
-    body: [
-      {
-        heading: "O que este texto cobre",
-        paragraphs: [
-          "Timing não é um botão mágico. É a leitura de tendência, momentum e volatilidade no mesmo painel, para você decidir se a hora de comprar ou vender faz sentido agora.",
-          "A ferramenta da Shiver auxilia essa leitura. Quem opera é você, no traderoom da corretora. Nenhuma ordem sai sozinha.",
-        ],
-      },
-      {
-        heading: "Tendência primeiro",
-        paragraphs: [
-          "Antes de olhar o gatilho, veja a direção maior. Comprar contra a tendência exige mais margem de erro. Vender no meio de um movimento a favor também.",
-          "Use o painel para marcar se o cenário está a favor, contra ou indefinido. Se estiver indefinido, esperar também é uma decisão.",
-        ],
-      },
-      {
-        heading: "Momentum e saída",
-        paragraphs: [
-          "Momentum diz se o movimento ainda tem força. Entrada sem força vira chase. Saída sem leitura vira corte cedo demais ou tarde demais.",
-          "Defina entrada, alvo e stop antes de clicar no iframe. O assistente dispara a leitura. A ordem continua sendo sua.",
-        ],
-      },
-    ],
+    coverSrc: "/images/ebooks/ebook-01-m5.png",
+    body: EBOOK_01_BODY,
   },
   {
-    id: "risco",
-    title: "Gestão de risco",
-    subtitle: "Stop, alvo e tamanho da posição — quem opera é você.",
+    id: "indicadores",
+    title: "Para que servem os indicadores de trade?",
+    subtitle: "O preço decide. O indicador confirma.",
     kicker: "E-book 02",
-    coverLabel: "02",
+    coverLabel: "IND",
     coverTone: "green",
-    body: [
-      {
-        heading: "Risco cabe na conta",
-        paragraphs: [
-          "Gestão de risco não é o sinal. É quanto você aceita perder se a leitura estiver errada. Sem esse número, qualquer card de compra ou venda vira aposta.",
-          "Negociar envolve perda. A ferramenta auxilia a leitura e não garante resultado.",
-        ],
-      },
-      {
-        heading: "Stop, alvo e tamanho",
-        paragraphs: [
-          "Stop é o ponto em que a tese caiu. Alvo é onde a tese se confirma o bastante para realizar. Tamanho da posição é o que cabe entre os dois sem quebrar a conta.",
-          "Se o stop precisa ser largo demais para o tamanho que você quer, reduza a posição. Não alargue o stop para caber o ego.",
-        ],
-      },
-      {
-        heading: "Na sala",
-        paragraphs: [
-          "O assistente mostra a leitura. O traderoom executa só o que você mandar. Não misture os dois papéis: informação à esquerda, ordem à direita.",
-        ],
-      },
-    ],
+    coverSrc: "/images/ebooks/ebook-02-indicadores.png",
+    body: EBOOK_02_BODY,
   },
   {
-    id: "painel",
-    title: "Leitura do painel",
-    subtitle: "Tendência, momentum e volatilidade no mesmo lugar.",
+    id: "diario",
+    title: "Diário do trader",
+    subtitle: "Organização que sustenta a performance.",
     kicker: "E-book 03",
-    coverLabel: "03",
+    coverLabel: "LOG",
     coverTone: "amber",
-    body: [
-      {
-        heading: "Três camadas, uma tela",
-        paragraphs: [
-          "Tendência responde à direção. Momentum responde à força. Volatilidade responde ao espaço que o preço pode percorrer — e ao ruído que pode te tirar da posição.",
-          "Olhar só uma camada gera falsa precisão. As três juntas mostram se o cenário está limpo, esticado ou parado.",
-        ],
-      },
-      {
-        heading: "Como usar sem operar no automático",
-        paragraphs: [
-          "O painel não dispara ordem. Ele organiza o que você já deveria perguntar antes de clicar em comprar ou vender no traderoom.",
-          "Se tendência e momentum discordam, a leitura é de espera. Se a volatilidade explode, o tamanho da posição precisa caber no stop mais largo.",
-        ],
-      },
-    ],
+    coverSrc: "/images/ebooks/ebook-03-diario.png",
+    body: EBOOK_03_BODY,
   },
   {
-    id: "sala",
-    title: "Operar na sala",
-    subtitle: "O disparo é leitura. A ordem sai no traderoom.",
+    id: "consistencia",
+    title: "Como de fato ganhar dinheiro no mercado financeiro?",
+    subtitle: "Consistência vence ganhos rápidos.",
     kicker: "E-book 04",
-    coverLabel: "04",
+    coverLabel: "RISCO",
     coverTone: "violet",
-    body: [
-      {
-        heading: "Dois espaços, um trader",
-        paragraphs: [
-          "Na sala, o assistente entrega sinais e contexto. O iframe é o ambiente da corretora Shiver, onde você entra, sai e gerencia a posição.",
-          "Nada do Telegram, do chat ou deste e-book deve clicar no gráfico por você. A arquitetura é proposital: informação de um lado, execução manual do outro.",
-        ],
-      },
-      {
-        heading: "Fluxo prático",
-        paragraphs: [
-          "Abra a sala, faça login na corretora, leia o disparo, confira tendência e risco, e só então opere no traderoom.",
-          "Se o assistente estiver reconectando, não force a ordem. Sem leitura clara, a melhor ação pode ser não operar.",
-        ],
-      },
-    ],
+    coverSrc: "/images/ebooks/ebook-04-consistencia.png",
+    body: EBOOK_04_BODY,
+  },
+  {
+    id: "horarios",
+    title: "Melhores horários para investir e operar no mercado",
+    subtitle: "Sessão certa, liquidez certa.",
+    kicker: "E-book 05",
+    coverLabel: "24H",
+    coverTone: "cyan",
+    coverSrc: "/images/ebooks/ebook-05-horarios.png",
+    body: EBOOK_05_BODY,
+  },
+  {
+    id: "psicologia",
+    title: "Psicologia do trader nas binárias",
+    subtitle: "Domine a mente antes do mercado.",
+    kicker: "E-book 06",
+    coverLabel: "MIND",
+    coverTone: "green",
+    coverSrc: "/images/ebooks/ebook-06-psicologia.png",
+    body: EBOOK_06_BODY,
+  },
+  {
+    id: "golpes",
+    title: "Como evitar golpes e promessas falsas",
+    subtitle: "Conhecimento para operar com segurança.",
+    kicker: "E-book 07",
+    coverLabel: "ALERT",
+    coverTone: "amber",
+    coverSrc: "/images/ebooks/ebook-07-golpes.png",
+    body: EBOOK_07_BODY,
+  },
+  {
+    id: "plano",
+    title: "Plano de operações nas binárias",
+    subtitle: "Antes, durante e depois da operação.",
+    kicker: "E-book 08",
+    coverLabel: "PLAN",
+    coverTone: "violet",
+    coverSrc: "/images/ebooks/ebook-08-plano.png",
+    body: EBOOK_08_BODY,
+  },
+  {
+    id: "recuperacao",
+    title: "Estratégias de recuperação de loss",
+    subtitle: "Técnicas para gerenciar perdas com disciplina.",
+    kicker: "E-book 09",
+    coverLabel: "LOSS",
+    coverTone: "cyan",
+    coverSrc: "/images/ebooks/ebook-09-recuperacao.png",
+    body: EBOOK_09_BODY,
+  },
+  {
+    id: "banca",
+    title: "Gestão de banca para contas pequenas",
+    subtitle: "Disciplina, paciência e foco no longo prazo.",
+    kicker: "E-book 10",
+    coverLabel: "1%",
+    coverTone: "green",
+    coverSrc: "/images/ebooks/ebook-10-banca.png",
+    body: EBOOK_10_BODY,
+  },
+  {
+    id: "timeframes",
+    title: "Estratégias de M1, M5 e M15",
+    subtitle: "Escolher o tempo certo muda a leitura.",
+    kicker: "E-book 11",
+    coverLabel: "TF",
+    coverTone: "amber",
+    coverSrc: "/images/ebooks/ebook-11-timeframes.png",
+    body: EBOOK_11_BODY,
+  },
+  {
+    id: "origem",
+    title: "Como o mercado financeiro surgiu?",
+    subtitle: "Educativo — para iniciantes.",
+    kicker: "E-book 12",
+    coverLabel: "ORIGEM",
+    coverTone: "violet",
+    coverSrc: "/images/ebooks/ebook-12-origem.png",
+    body: EBOOK_12_BODY,
+  },
+  {
+    id: "pares",
+    title: "O que são pares de moedas e suas correlações?",
+    subtitle: "Entenda a base do trade.",
+    kicker: "E-book 13",
+    coverLabel: "FX",
+    coverTone: "cyan",
+    coverSrc: "/images/ebooks/ebook-13-pares.png",
+    body: EBOOK_13_BODY,
+  },
+  {
+    id: "rotina",
+    title: "Como operar com pouco tempo por dia",
+    subtitle: "Estratégias para quem tem rotina apertada.",
+    kicker: "E-book 14",
+    coverLabel: "30M",
+    coverTone: "green",
+    coverSrc: "/images/ebooks/ebook-14-rotina.png",
+    body: EBOOK_14_BODY,
+  },
+  {
+    id: "mindset",
+    title: "Mindset de consistência nas binárias",
+    subtitle: "Disciplina mental aplicada ao trading.",
+    kicker: "E-book 15",
+    coverLabel: "MIND",
+    coverTone: "amber",
+    coverSrc: "/images/ebooks/ebook-15-mindset.png",
+    body: EBOOK_15_BODY,
+  },
+  {
+    id: "suporte",
+    title: "O que são suporte e resistência?",
+    subtitle: "A base para qualquer estratégia.",
+    kicker: "E-book 16",
+    coverLabel: "S/R",
+    coverTone: "violet",
+    coverSrc: "/images/ebooks/ebook-16-suporte.png",
+    body: EBOOK_16_BODY,
+  },
+  {
+    id: "tendencia",
+    title: "Como usar linhas de tendência corretamente?",
+    subtitle: "Entenda na prática agora.",
+    kicker: "E-book 17",
+    coverLabel: "TREND",
+    coverTone: "cyan",
+    coverSrc: "/images/ebooks/ebook-17-tendencia.png",
+    body: EBOOK_17_BODY,
   },
 ];

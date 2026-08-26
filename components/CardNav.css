@@ -25,6 +25,11 @@
     0 0 40px rgba(83, 109, 254, 0.08);
 }
 
+.blob-nav__extra {
+  margin-right: 3.35rem;
+  margin-left: auto;
+}
+
 .blob-nav__brand a {
   display: flex;
   align-items: center;

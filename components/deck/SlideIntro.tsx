@@ -1,31 +1,30 @@
+"use client";
+
 import IntroVisual from "@/components/deck/IntroVisual";
-import { CTA_HREF, CTA_LABEL } from "@/lib/cta";
+import { useI18n } from "@/components/i18n/LocaleProvider";
+import CtaLink from "@/components/CtaLink";
 
 export default function SlideIntro() {
+  const { t } = useI18n();
+
   return (
     <section id="inicio" data-slide="0" className="deck-slide deck-slide--intro">
       <div className="deck-slide__layout">
         <div className="deck-slide__copy">
-          <p className="deck-eyebrow deck-enter">Corretora Shiver</p>
+          <p className="deck-eyebrow deck-enter">{t.intro.eyebrow}</p>
           <h2 className="deck-title">
-            <span className="sr-only">
-              Mercado com clareza: tendência, momentum e volatilidade no mesmo
-              painel.{" "}
-            </span>
-            <span className="deck-title__fill">Mercado</span>
-            <span className="deck-title__outline">Clareza</span>
+            <span className="sr-only">{t.intro.sr} </span>
+            <span className="deck-title__fill">{t.intro.fill}</span>
+            <span className="deck-title__outline">{t.intro.outline}</span>
           </h2>
-          <p className="deck-lead deck-enter">
-            Tendência, momentum e volatilidade em um só painel. A ferramenta
-            auxilia a hora de compra e venda — quem opera é você.
-          </p>
+          <p className="deck-lead deck-enter">{t.intro.lead}</p>
         </div>
 
         <IntroVisual />
 
-        <a href={CTA_HREF} className="deck-cta btn-shine deck-enter">
-          {CTA_LABEL}
-        </a>
+        <CtaLink className="deck-cta btn-shine deck-enter">
+          {t.cta}
+        </CtaLink>
       </div>
     </section>
   );

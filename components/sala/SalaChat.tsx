@@ -1,9 +1,9 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { SALA_BOT_NAME } from "@/lib/sala";
 import { IconPanel } from "@/components/sala/SalaIcons";
 import SalaSignalDebug from "@/components/sala/SalaSignalDebug";
+import { useI18n } from "@/components/i18n/LocaleProvider";
 import type { SignalConnectionStatus, SignalDirection, TradingSignal } from "@/lib/signals/types";
 
 type SalaChatProps = {
@@ -18,12 +18,12 @@ function assertNever(value: never): never {
   throw new Error(`Direção de sinal não tratada: ${String(value)}`);
 }
 
-function directionLabel(direction: SignalDirection): string {
+function directionLabel(direction: SignalDirection, buy: string, sell: string): string {
   switch (direction) {
     case "BUY":
-      return "Compra";
+      return buy;
     case "SELL":
-      return "Venda";
+      return sell;
     default:
       return assertNever(direction);
   }
@@ -40,17 +40,17 @@ function directionMark(direction: SignalDirection): string {
   }
 }
 
-function formatExpiration(value: string): string {
+function formatExpiration(value: string, minute: string, minutes: (amount: number) => string): string {
   const match = value.trim().match(/^(\d+)\s*M$/i);
   if (!match) {
     return value;
   }
 
   const amount = Number(match[1]);
-  return amount === 1 ? "1 minuto" : `${amount} minutos`;
+  return amount === 1 ? minute : minutes(amount);
 }
 
-function formatEntry(signal: TradingSignal): string {
+function formatEntry(signal: TradingSignal, locale: string): string {
   if (signal.entryTime) {
     return signal.entryTime;
   }
@@ -60,52 +60,57 @@ function formatEntry(signal: TradingSignal): string {
     return "--:--";
   }
 
-  return date.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" });
+  return date.toLocaleTimeString(locale, { hour: "2-digit", minute: "2-digit" });
 }
 
-function statusCopy(status: SignalConnectionStatus): string {
+function statusCopy(
+  status: SignalConnectionStatus,
+  copy: { connecting: string; online: string; reconnecting: string },
+): string {
   switch (status) {
     case "connecting":
-      return "Conectando ao assistente...";
+      return copy.connecting;
     case "connected":
-      return "Assistente online";
+      return copy.online;
     case "reconnecting":
     case "disconnected":
-      return "Reconectando ao assistente...";
+      return copy.reconnecting;
     default:
       return assertNever(status);
   }
 }
 
 function SignalBlock({ signal }: { signal: TradingSignal }) {
+  const { locale, t } = useI18n();
   const buy = signal.direction === "BUY";
+  const htmlLocale = locale === "es" ? "es" : "pt-BR";
 
   return (
     <div className={buy ? "sala-signal sala-signal--buy" : "sala-signal sala-signal--sell"}>
       <p className="sala-signal__tag">
-        <span>Nova leitura</span>
-        <time dateTime={signal.createdAt}>{formatEntry(signal)}</time>
+        <span>{t.sala.newRead}</span>
+        <time dateTime={signal.createdAt}>{formatEntry(signal, htmlLocale)}</time>
       </p>
       <p className="sala-signal__asset">{signal.asset}</p>
       <p className="sala-signal__side">
-        {directionMark(signal.direction)} {directionLabel(signal.direction)}
+        {directionMark(signal.direction)} {directionLabel(signal.direction, t.sala.buy, t.sala.sell)}
       </p>
       <dl>
         {signal.expiration ? (
           <div>
-            <dt>Expiração</dt>
-            <dd>{formatExpiration(signal.expiration)}</dd>
+            <dt>{t.sala.expiration}</dt>
+            <dd>{formatExpiration(signal.expiration, t.sala.minute, t.sala.minutes)}</dd>
           </div>
         ) : null}
         {signal.timeframe ? (
           <div>
-            <dt>Tempo</dt>
+            <dt>{t.sala.timeframe}</dt>
             <dd>{signal.timeframe}</dd>
           </div>
         ) : null}
         <div>
-          <dt>Entrada</dt>
-          <dd>{formatEntry(signal)}</dd>
+          <dt>{t.sala.entry}</dt>
+          <dd>{formatEntry(signal, htmlLocale)}</dd>
         </div>
       </dl>
     </div>
@@ -119,6 +124,7 @@ export default function SalaChat({
   debug,
   onClose,
 }: SalaChatProps) {
+  const { t } = useI18n();
   const scrollerRef = useRef<HTMLDivElement>(null);
   const online = connectionStatus === "connected";
 
@@ -131,25 +137,25 @@ export default function SalaChat({
   }, [signals]);
 
   return (
-    <section className="sala-chat" id="sala-chat" aria-label="Disparos do assistente">
+    <section className="sala-chat" id="sala-chat" aria-label={t.sala.chatAria}>
       <header className="sala-chat__head">
         <div>
           <p className="sala-chat__title">
-            <span className="sala-chat__name">{SALA_BOT_NAME}</span>
+            <span className="sala-chat__name">{t.sala.botName}</span>
             <span className="sala-chat__bot">BOT</span>
           </p>
           <p
             className={`sala-chat__status ${online ? "sala-chat__status--online" : ""}`}
           >
             <span aria-hidden />
-            {statusCopy(connectionStatus)}
-            {online ? <em className="sala-chat__status-extra"> · só disparos</em> : null}
+            {statusCopy(connectionStatus, t.sala)}
+            {online ? <em className="sala-chat__status-extra">{t.sala.onlySignals}</em> : null}
           </p>
         </div>
         <button
           type="button"
           className="sala-icon-btn sala-chat__toggle"
-          aria-label="Fechar chat"
+          aria-label={t.sala.closeChat}
           aria-expanded="true"
           aria-controls="sala-chat"
           onClick={onClose}
@@ -166,7 +172,7 @@ export default function SalaChat({
       >
         {error ? <p className="sala-chat__wait">{error}</p> : null}
         {signals.length === 0 ? (
-          <p className="sala-chat__wait">Aguardando uma nova leitura de mercado...</p>
+          <p className="sala-chat__wait">{t.sala.waiting}</p>
         ) : (
           signals.map((signal) => (
             <article key={signal.id} className="sala-msg">

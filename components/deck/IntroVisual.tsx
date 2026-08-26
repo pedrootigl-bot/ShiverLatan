@@ -1,8 +1,12 @@
-import Image from "next/image";
+"use client";
+
 import IntroRings from "@/components/deck/IntroRings";
-import { MOCK_INTRO_CHIPS } from "@/lib/mock-market-data";
+import { useI18n } from "@/components/i18n/LocaleProvider";
+import Image from "next/image";
 
 export default function IntroVisual() {
+  const { t } = useI18n();
+
   return (
     <div className="intro-visual">
       <div className="intro-visual__rings" aria-hidden>
@@ -25,12 +29,12 @@ export default function IntroVisual() {
       </div>
 
       <p className="intro-visual__chip intro-visual__chip--top deck-enter">
-        {MOCK_INTRO_CHIPS[0].label}
-        <strong>{MOCK_INTRO_CHIPS[0].value}</strong>
+        {t.intro.chips[0].label}
+        <strong>{t.intro.chips[0].value}</strong>
       </p>
       <p className="intro-visual__chip intro-visual__chip--side deck-enter">
-        {MOCK_INTRO_CHIPS[1].label}
-        <strong>{MOCK_INTRO_CHIPS[1].value}</strong>
+        {t.intro.chips[1].label}
+        <strong>{t.intro.chips[1].value}</strong>
       </p>
     </div>
   );

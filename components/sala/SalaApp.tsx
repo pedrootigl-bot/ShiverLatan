@@ -2,15 +2,14 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { useI18n } from "@/components/i18n/LocaleProvider";
 import SalaChat from "@/components/sala/SalaChat";
-import SalaEbookReader from "@/components/sala/SalaEbookReader";
-import { IconBooks, IconRobot, IconRuler } from "@/components/sala/SalaIcons";
+import { IconBooks, IconLock, IconRobot, IconRuler } from "@/components/sala/SalaIcons";
 import SalaLibrary from "@/components/sala/SalaLibrary";
 import SalaModal from "@/components/sala/SalaModal";
 import { useBrokerSession } from "@/components/sala/useBrokerSession";
 import { useTradingSignals } from "@/components/sala/useTradingSignals";
 import { ROUTES } from "@/lib/config";
-import type { SalaEbook } from "@/lib/sala";
 import "./Sala.css";
 
 type SalaTool = "chat" | "ruler" | "books";
@@ -22,19 +21,34 @@ function assertNever(value: never): never {
 
 function SalaNav({
   active,
+  locked,
   onSelect,
 }: {
   active: SalaTool | null;
+  locked: boolean;
   onSelect: (tool: SalaTool) => void;
 }) {
+  const { t } = useI18n();
+  const className = (tool: SalaTool, extra?: string) => {
+    const names = extra ? [extra] : [];
+    if (active === tool && !locked) {
+      names.push("is-active");
+    }
+    if (locked) {
+      names.push("is-locked");
+    }
+    return names.join(" ") || undefined;
+  };
+
   return (
     <>
       <button
         type="button"
-        className={active === "chat" ? "sala-nav__ia is-active" : "sala-nav__ia"}
-        aria-label="IA — Sala de Sinais"
-        aria-pressed={active === "chat"}
+        className={className("chat", "sala-nav__ia")}
+        aria-label={locked ? t.sala.chatLocked : t.sala.chat}
+        aria-pressed={locked ? false : active === "chat"}
         aria-controls="sala-chat"
+        aria-disabled={locked}
         onClick={() => onSelect("chat")}
       >
         <span className="sala-nav__ia-ring">
@@ -42,43 +56,60 @@ function SalaNav({
         </span>
         <span className="sala-nav__ia-label">IA</span>
         <span className="sala-nav__name">Sala de Sinais</span>
+        {locked ? (
+          <span className="sala-nav__lock" aria-hidden>
+            <IconLock />
+          </span>
+        ) : null}
       </button>
       <button
         type="button"
-        className={active === "ruler" ? "is-active" : undefined}
-        aria-label="Métricas"
-        aria-pressed={active === "ruler"}
+        className={className("ruler")}
+        aria-label={locked ? t.sala.rulerLocked : t.sala.ruler}
+        aria-pressed={locked ? false : active === "ruler"}
         aria-haspopup="dialog"
+        aria-disabled={locked}
         onClick={() => onSelect("ruler")}
       >
         <IconRuler />
-        <span className="sala-nav__name">Métricas</span>
+        <span className="sala-nav__name">{t.sala.ruler}</span>
+        {locked ? (
+          <span className="sala-nav__lock" aria-hidden>
+            <IconLock />
+          </span>
+        ) : null}
       </button>
       <button
         type="button"
-        className={active === "books" ? "is-active" : undefined}
-        aria-label="E-books"
-        aria-pressed={active === "books"}
+        className={className("books")}
+        aria-label={locked ? t.sala.booksLocked : t.sala.books}
+        aria-pressed={locked ? false : active === "books"}
         aria-controls="sala-library"
+        aria-disabled={locked}
         onClick={() => onSelect("books")}
       >
         <IconBooks />
-        <span className="sala-nav__name">E-books</span>
+        <span className="sala-nav__name">{t.sala.books}</span>
+        {locked ? (
+          <span className="sala-nav__lock" aria-hidden>
+            <IconLock />
+          </span>
+        ) : null}
       </button>
     </>
   );
 }
 
 export default function SalaApp() {
+  const { t } = useI18n();
   const { signals, connectionStatus, error } = useTradingSignals();
-  const { authed, onFrameLoad } = useBrokerSession();
+  const { authed, onFrameLoad, resetSession, markResume } = useBrokerSession();
   const [sideOpen, setSideOpen] = useState(false);
   const [panel, setPanel] = useState<SidePanel>("chat");
   const [soonOpen, setSoonOpen] = useState(false);
-  const [notice, setNotice] = useState({ title: "", text: "" });
+  const [notice, setNotice] = useState({ kicker: "", title: "", text: "" });
   const [active, setActive] = useState<SalaTool | null>(null);
   const [debugSignals, setDebugSignals] = useState(false);
-  const [ebook, setEbook] = useState<SalaEbook | null>(null);
 
   const closeSoon = () => {
     setSoonOpen(false);
@@ -98,9 +129,14 @@ export default function SalaApp() {
     setActive((current) => (current === "ruler" ? current : null));
   };
 
-  const closeEbook = () => {
-    setEbook(null);
-  };
+  useEffect(() => {
+    if (authed) {
+      return;
+    }
+    setSideOpen(false);
+    setActive(null);
+    setSoonOpen(false);
+  }, [authed]);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -110,16 +146,12 @@ export default function SalaApp() {
   }, []);
 
   useEffect(() => {
-    if (!soonOpen && !ebook) {
+    if (!soonOpen) {
       return;
     }
 
     const onKey = (event: KeyboardEvent) => {
       if (event.key !== "Escape") {
-        return;
-      }
-      if (ebook) {
-        closeEbook();
         return;
       }
       closeSoon();
@@ -132,32 +164,37 @@ export default function SalaApp() {
       document.body.style.overflow = previousOverflow;
       window.removeEventListener("keydown", onKey);
     };
-  }, [soonOpen, ebook, sideOpen, panel]);
+  }, [soonOpen, sideOpen, panel]);
 
   const selectTool = (tool: SalaTool) => {
     if (!authed) {
+      setNotice({
+        kicker: t.sala.blockedKicker,
+        title: t.sala.blockedTitle,
+        text: t.sala.blockedText,
+      });
+      setSoonOpen(true);
       return;
     }
 
     switch (tool) {
       case "chat":
         setSoonOpen(false);
-        setEbook(null);
         setPanel("chat");
         setSideOpen(true);
         setActive("chat");
         return;
       case "ruler":
         setNotice({
-          title: "Ferramenta em atualização",
-          text: "Com novas atualizações essa ferramenta estará disponível.",
+          kicker: t.sala.soonKicker,
+          title: t.sala.soonTitle,
+          text: t.sala.soonText,
         });
         setSoonOpen(true);
         setActive("ruler");
         return;
       case "books":
         setSoonOpen(false);
-        setEbook(null);
         setPanel("library");
         setSideOpen(true);
         setActive("books");
@@ -165,11 +202,6 @@ export default function SalaApp() {
       default:
         return assertNever(tool);
     }
-  };
-
-  const openEbook = (next: SalaEbook) => {
-    setSoonOpen(false);
-    setEbook(next);
   };
 
   let side: "chat" | "library" | "closed";
@@ -183,30 +215,26 @@ export default function SalaApp() {
 
   return (
     <div className={`sala sala--${side}${authed ? "" : " sala--guest"}`}>
-      {authed ? (
-        <aside className="sala-rail" aria-label="Navegação da sala">
-          <Link href={ROUTES.home} className="sala-rail__brand" aria-label="Shiver — início">
-            S
-          </Link>
-          <nav>
-            <SalaNav active={active} onSelect={selectTool} />
-          </nav>
-        </aside>
-      ) : null}
+      <aside className="sala-rail" aria-label={t.sala.railAria}>
+        <Link href={ROUTES.home} className="sala-rail__brand" aria-label={t.sala.homeAria}>
+          S
+        </Link>
+        <nav>
+          <SalaNav active={active} locked={!authed} onSelect={selectTool} />
+        </nav>
+      </aside>
 
       <div className="sala-shell">
-        {authed ? (
-          <nav className="sala-tools" aria-label="Ferramentas da sala">
-            <SalaNav active={active} onSelect={selectTool} />
-          </nav>
-        ) : null}
+        <nav className="sala-tools" aria-label={t.sala.toolsAria}>
+          <SalaNav active={active} locked={!authed} onSelect={selectTool} />
+        </nav>
 
         <div className="sala-body">
           {side === "closed" ? null : (
             <button
               type="button"
               className="sala-scrim"
-              aria-label="Fechar painel"
+              aria-label={t.sala.closePanel}
               onClick={closeSide}
             />
           )}
@@ -220,15 +248,18 @@ export default function SalaApp() {
             />
           ) : null}
           {side === "library" ? (
-            <SalaLibrary onClose={closeSide} onOpenEbook={openEbook} />
+            <SalaLibrary onClose={closeSide} />
           ) : null}
           <div className="sala-stage">
-            <SalaModal onFrameLoad={onFrameLoad} />
+            <SalaModal
+              resumeOnReturn={!authed}
+              onFrameLoad={onFrameLoad}
+              onFrameReset={resetSession}
+              onResume={markResume}
+            />
           </div>
         </div>
       </div>
-
-      {ebook ? <SalaEbookReader ebook={ebook} onClose={closeEbook} /> : null}
 
       {soonOpen ? (
         <div
@@ -245,17 +276,17 @@ export default function SalaApp() {
           >
             <header className="sala-soon__head">
               <span className="sala-soon__mark" aria-hidden>
-                <IconRuler />
+                {notice.kicker === t.sala.blockedKicker ? <IconLock /> : <IconRuler />}
               </span>
               <div>
-                <p className="sala-soon__kicker">Em breve</p>
+                <p className="sala-soon__kicker">{notice.kicker}</p>
                 <h2 id="sala-soon-title">{notice.title}</h2>
               </div>
             </header>
             <p className="sala-soon__text">{notice.text}</p>
             <footer className="sala-soon__foot">
               <button type="button" onClick={closeSoon}>
-                Entendi
+                {t.sala.understood}
               </button>
             </footer>
           </div>

@@ -42,6 +42,21 @@ export function IconBooks() {
   );
 }
 
+export function IconLock() {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden>
+      <path
+        d="M8 11V8.2A4 4 0 0 1 12 4a4 4 0 0 1 4 4.2V11M7 11h10v9H7z"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.7"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
 export function IconPanel() {
   return (
     <svg viewBox="0 0 24 24" aria-hidden>

@@ -1,3 +1,6 @@
+"use client";
+
+import { useI18n } from "@/components/i18n/LocaleProvider";
 import { PLANS, type Plan } from "@/lib/plans";
 
 function PlanCheck() {
@@ -17,6 +20,8 @@ function PlanCheck() {
 }
 
 function PlanCard({ plan }: { plan: Plan }) {
+  const { t } = useI18n();
+  const copy = t.plans.items[plan.id];
   const featured = plan.featured;
 
   return (
@@ -24,18 +29,18 @@ function PlanCard({ plan }: { plan: Plan }) {
       className={`plan-card deck-enter${featured ? " plan-card--vip" : " plan-card--free"}`}
     >
       <div className="plan-card__content">
-        {plan.badge ? <p className="plan-card__badge">{plan.badge}</p> : null}
+        {copy.badge ? <p className="plan-card__badge">{copy.badge}</p> : null}
 
         <div className="plan-card__head">
-          <h3 className="plan-card__name">{plan.name}</h3>
+          <h3 className="plan-card__name">{copy.name}</h3>
           <p className="plan-card__price">
             {plan.price}
-            <span> / {plan.cadence}</span>
+            <span> / {copy.cadence}</span>
           </p>
         </div>
 
         <ul className="plan-card__list">
-          {plan.features.map((feature) => (
+          {copy.features.map((feature) => (
             <li key={feature}>
               <PlanCheck />
               <span>{feature}</span>
@@ -47,7 +52,7 @@ function PlanCard({ plan }: { plan: Plan }) {
           href={plan.href}
           className={`plan-card__cta${featured ? " plan-card__cta--solid btn-shine" : " plan-card__cta--ghost"}`}
         >
-          {plan.cta}
+          {copy.cta}
         </a>
       </div>
     </article>
@@ -55,17 +60,17 @@ function PlanCard({ plan }: { plan: Plan }) {
 }
 
 export default function SlidePlans() {
+  const { t } = useI18n();
+
   return (
     <section id="planos" data-slide="6" className="deck-slide deck-slide--plans">
       <div className="deck-slide__layout">
         <div className="deck-slide__copy">
-          <p className="deck-eyebrow deck-enter">Planos</p>
+          <p className="deck-eyebrow deck-enter">{t.plans.eyebrow}</p>
           <h2 className="deck-title deck-title--compact">
-            <span className="sr-only">
-              Planos Grátis e VIP da ferramenta Shiver para traders.{" "}
-            </span>
-            <span className="deck-title__fill">Dois</span>
-            <span className="deck-title__outline">Acessos</span>
+            <span className="sr-only">{t.plans.sr} </span>
+            <span className="deck-title__fill">{t.plans.fill}</span>
+            <span className="deck-title__outline">{t.plans.outline}</span>
           </h2>
         </div>
 
@@ -75,10 +80,7 @@ export default function SlidePlans() {
           ))}
         </div>
 
-        <p className="deck-lead deck-enter">
-          Grátis para entrar no painel. VIP para ler o cenário com mais
-          contexto. Nos dois, a ferramenta auxilia — quem opera é você.
-        </p>
+        <p className="deck-lead deck-enter">{t.plans.lead}</p>
       </div>
     </section>
   );

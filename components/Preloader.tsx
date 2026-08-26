@@ -3,6 +3,7 @@
 import { useLayoutEffect, useState, type ReactNode } from "react";
 import { isSearchCrawler } from "@/lib/crawler";
 import { PRELOADER } from "@/lib/config";
+import { useI18n } from "@/components/i18n/LocaleProvider";
 import "./Preloader.css";
 
 type PreloaderProps = {
@@ -28,6 +29,7 @@ const CANDLES = [
 ] as const;
 
 export default function Preloader({ children }: PreloaderProps) {
+  const { t } = useI18n();
   const [visible, setVisible] = useState(true);
   const [exiting, setExiting] = useState(false);
 
@@ -86,7 +88,7 @@ export default function Preloader({ children }: PreloaderProps) {
           }
           role="status"
           aria-live="polite"
-          aria-label="Preparando o painel"
+          aria-label={t.splash.aria}
           aria-hidden={exiting}
         >
           <div className="shiver-splash__bg" aria-hidden>
@@ -94,28 +96,26 @@ export default function Preloader({ children }: PreloaderProps) {
           </div>
 
           <div className="shiver-splash__stage">
-            <p className="shiver-splash__eyebrow">Ferramenta</p>
+            <p className="shiver-splash__eyebrow">{t.splash.eyebrow}</p>
 
             <div className="shiver-splash__brand">
               <span className="shiver-splash__mark">S</span>
               <h2 className="shiver-splash__title">
                 <span className="shiver-splash__fill">Shiver</span>
-                <span className="shiver-splash__outline">clareza</span>
+                <span className="shiver-splash__outline">{t.splash.outline}</span>
               </h2>
             </div>
 
-            <p className="shiver-splash__lead">
-              Tendência, momentum e volatilidade no mesmo painel.
-            </p>
+            <p className="shiver-splash__lead">{t.splash.lead}</p>
 
             <ul className="shiver-splash__axes">
-              {AXES.map((axis) => (
+              {AXES.map((axis, index) => (
                 <li
-                  key={axis.label}
+                  key={axis.tone}
                   className="shiver-splash__axis"
                   data-tone={axis.tone}
                 >
-                  {axis.label}
+                  {t.splash.axes[index]}
                 </li>
               ))}
             </ul>
@@ -156,9 +156,7 @@ export default function Preloader({ children }: PreloaderProps) {
               <span className="shiver-splash__scan" />
             </div>
 
-            <p className="shiver-splash__kicker">
-              A ferramenta mostra o cenário. Quem opera é você.
-            </p>
+            <p className="shiver-splash__kicker">{t.splash.kicker}</p>
           </div>
 
           <span className="shiver-splash__bar" aria-hidden />
