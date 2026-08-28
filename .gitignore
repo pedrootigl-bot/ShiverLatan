@@ -15,3 +15,9 @@ Thumbs.db
 backend/screenshots/*.png
 backend/playwright-report/
 backend/test-results/
+
+# Next.js / landing (reforço)
+**/coverage/
+**/.vercel/
+**/*.tsbuildinfo
+**/next-env.d.ts
