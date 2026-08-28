@@ -1,0 +1,22 @@
+{
+  "name": "shiver-backend",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Backend da Fase 1: cadastro automático de usuários na Shiver via Playwright.",
+  "main": "src/server.js",
+  "scripts": {
+    "dev": "node --watch src/server.js",
+    "start": "node src/server.js",
+    "inspect:shiver": "node src/automation/shiver/inspectShiverPage.js",
+    "postinstall": "npx playwright install chromium"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "playwright": "^1.62.1"
+  }
+}

@@ -1,0 +1,17 @@
+.DS_Store
+*.log
+Thumbs.db
+
+# Dependências e builds (reforço; subpastas têm .gitignore próprio)
+**/node_modules/
+**/.next/
+**/out/
+
+# Segredos
+**/.env
+!**/.env.example
+
+# Playwright / backend
+backend/screenshots/*.png
+backend/playwright-report/
+backend/test-results/

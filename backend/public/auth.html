@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Entrar — Shiver Broker</title>
+    <link rel="stylesheet" href="/auth.css" />
+  </head>
+  <body>
+    <div class="page-body">
+      <main class="auth-card">
+        <h1 id="pageTitle">Entrar</h1>
+        <p class="auth-lead" id="pageLead" hidden></p>
+
+        <details class="dev-options">
+          <summary>Opções de desenvolvimento</summary>
+          <label class="dev-check">
+            <input id="dryRun" name="dryRun" type="checkbox" checked />
+            Simular (não enviar à Shiver)
+          </label>
+        </details>
+
+        <section class="auth-view is-active" data-view="login" id="view-login">
+          <form id="loginForm" autocomplete="on">
+            <div class="field">
+              <input
+                id="loginEmail"
+                name="email"
+                type="email"
+                required
+                autocomplete="email"
+                placeholder="E-mail"
+              />
+            </div>
+            <div class="field">
+              <input
+                id="loginPassword"
+                name="password"
+                type="password"
+                required
+                autocomplete="current-password"
+                placeholder="Senha"
+              />
+            </div>
+            <button type="submit" class="btn-primary">Entrar</button>
+          </form>
+          <div class="footer-links">
+            <a href="/esqueci-senha" class="text-link" data-nav="/esqueci-senha">Esqueceu a senha?</a>
+            <p class="account-line">
+              É novo?
+              <a href="/cadastro" class="text-link" data-nav="/cadastro">Inscreva-se</a>
+            </p>
+          </div>
+        </section>
+
+        <section class="auth-view" data-view="register" id="view-register">
+          <form id="registerForm" autocomplete="on">
+            <div class="field">
+              <input
+                id="registerFirstName"
+                name="firstName"
+                type="text"
+                required
+                autocomplete="given-name"
+                placeholder="Nome"
+              />
+            </div>
+            <div class="field">
+              <input
+                id="registerLastName"
+                name="lastName"
+                type="text"
+                required
+                autocomplete="family-name"
+                placeholder="Sobrenome"
+              />
+            </div>
+            <div class="field">
+              <input
+                id="registerEmail"
+                name="email"
+                type="email"
+                required
+                autocomplete="email"
+                placeholder="E-mail"
+              />
+            </div>
+            <div class="field">
+              <input
+                id="registerPassword"
+                name="password"
+                type="password"
+                required
+                autocomplete="new-password"
+                placeholder="Senha"
+              />
+            </div>
+            <div class="field">
+              <input
+                id="registerPhone"
+                name="phone"
+                type="tel"
+                required
+                autocomplete="tel"
+                placeholder="Número de telefone"
+              />
+            </div>
+            <button type="submit" class="btn-primary">Abrir uma conta gratis</button>
+          </form>
+          <div class="footer-links">
+            <p class="account-line">
+              Já tem uma conta?
+              <a href="/login" class="text-link" data-nav="/login">Entrar</a>
+            </p>
+          </div>
+        </section>
+
+        <section class="auth-view" data-view="forgot" id="view-forgot">
+          <form id="forgotForm" autocomplete="on">
+            <div class="field">
+              <input
+                id="forgotEmail"
+                name="email"
+                type="email"
+                required
+                autocomplete="email"
+                placeholder="E-mail"
+              />
+            </div>
+            <button type="submit" class="btn-primary">Enviar</button>
+          </form>
+          <div class="footer-links">
+            <a href="/login" class="text-link" data-nav="/login">Voltar ao login</a>
+          </div>
+        </section>
+
+        <aside class="risk-box" aria-label="Aviso de risco">
+          <p class="risk-title">AVISO DE RISCO:</p>
+          <p>
+            Toda negociação envolve risco. Apenas arrisque o capital que você está
+            preparado para perder.
+          </p>
+        </aside>
+
+        <div id="result" role="status" aria-live="polite"></div>
+      </main>
+    </div>
+
+    <script src="/auth.js"></script>
+  </body>
+</html>
