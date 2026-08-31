@@ -30,6 +30,8 @@ app.get("/", (_req, res) => {
       register: "POST /api/register",
       login: "POST /api/login",
       forgotPassword: "POST /api/forgot-password",
+      authStart: "POST /api/auth/start",
+      authComplete: "POST /api/auth/complete",
     },
     authBody: {
       email: "pedro@email.com",
@@ -53,6 +55,16 @@ app.get("/cadastro.html", (_req, res) => {
 
 app.get("/health", (_req, res) => {
   res.json({ ok: true, service: "shiver-backend" });
+});
+
+app.get("/api/config", (_req, res) => {
+  const shiverOrigin = process.env.SHIVER_ORIGIN || "https://trade.shiverbroker.com";
+  res.json({
+    salaUrl: process.env.SALA_URL || "http://localhost:3000/sala",
+    landingUrl: process.env.LANDING_URL || "http://localhost:3000",
+    shiverLoginUrl: process.env.SHIVER_LOGIN_URL || "https://trade.shiverbroker.com/pt/login",
+    shiverTraderoomUrl: process.env.SHIVER_TRADEROOM_URL || `${shiverOrigin}/pt/traderoom`,
+  });
 });
 
 app.use("/api", registerRoutes);

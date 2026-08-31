@@ -33,6 +33,12 @@ export function useBrokerSession() {
     lock();
   }, [lock]);
 
+  const unlockFromBackendAuth = useCallback(() => {
+    loadsRef.current = 2;
+    lastAtRef.current = Date.now();
+    unlock();
+  }, [unlock]);
+
   const onFrameLoad = () => {
     if (authedRef.current) {
       return;
@@ -59,5 +65,5 @@ export function useBrokerSession() {
     }
   };
 
-  return { authed, onFrameLoad, resetSession, markResume };
+  return { authed, onFrameLoad, resetSession, markResume, unlockFromBackendAuth };
 }

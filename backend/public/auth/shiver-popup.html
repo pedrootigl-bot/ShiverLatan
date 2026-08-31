@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <title>Login Shiver</title>
+  </head>
+  <body>
+    <p>Abrindo login da corretora…</p>
+    <script>
+      (function () {
+        var params = new URLSearchParams(window.location.search);
+        var loginUrl =
+          params.get("login") || "https://trade.shiverbroker.com/pt/login";
+        var doneUrl =
+          params.get("done") ||
+          window.location.origin + "/auth/shiver-done.html";
+
+        try {
+          var redirectPayload = JSON.stringify({ url: doneUrl, inner: true });
+          sessionStorage.setItem("shiver-auth-done", doneUrl);
+          localStorage.setItem("redirect", redirectPayload);
+        } catch (_err) {
+          // Ignora — redirect só funciona no domínio da Shiver.
+        }
+
+        window.location.replace(loginUrl);
+      })();
+    </script>
+  </body>
+</html>

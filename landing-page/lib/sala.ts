@@ -22,6 +22,8 @@ export const TRADE_ROOM_ORIGIN = "https://trade.shiverbroker.com";
 export const TRADE_ROOM_URL = `${TRADE_ROOM_ORIGIN}/traderoom`;
 
 export const BROKER_SESSION_WAIT_KEY = "shiver-await-broker-session";
+export const BROKER_BACKEND_AUTH_KEY = "shiver-backend-auth";
+export const BROKER_BACKEND_AUTH_RELOAD_KEY = "shiver-backend-auth-reload";
 
 export function tradeRoomUrl(locale: Locale): string {
   switch (locale) {

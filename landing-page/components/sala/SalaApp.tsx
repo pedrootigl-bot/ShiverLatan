@@ -10,6 +10,7 @@ import SalaModal from "@/components/sala/SalaModal";
 import { useBrokerSession } from "@/components/sala/useBrokerSession";
 import { useTradingSignals } from "@/components/sala/useTradingSignals";
 import { ROUTES } from "@/lib/config";
+import { BROKER_BACKEND_AUTH_KEY, BROKER_BACKEND_AUTH_RELOAD_KEY } from "@/lib/sala";
 import "./Sala.css";
 
 type SalaTool = "chat" | "ruler" | "books";
@@ -103,7 +104,8 @@ function SalaNav({
 export default function SalaApp() {
   const { t } = useI18n();
   const { signals, connectionStatus, error } = useTradingSignals();
-  const { authed, onFrameLoad, resetSession, markResume } = useBrokerSession();
+  const { authed, onFrameLoad, resetSession, markResume, unlockFromBackendAuth } =
+    useBrokerSession();
   const [sideOpen, setSideOpen] = useState(false);
   const [panel, setPanel] = useState<SidePanel>("chat");
   const [soonOpen, setSoonOpen] = useState(false);
@@ -137,6 +139,24 @@ export default function SalaApp() {
     setActive(null);
     setSoonOpen(false);
   }, [authed]);
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const fromAuth = params.get("fromAuth") === "1";
+    const storedAuth = window.sessionStorage.getItem(BROKER_BACKEND_AUTH_KEY) === "1";
+
+    if (fromAuth) {
+      window.sessionStorage.setItem(BROKER_BACKEND_AUTH_KEY, "1");
+      window.sessionStorage.setItem(BROKER_BACKEND_AUTH_RELOAD_KEY, "1");
+      unlockFromBackendAuth();
+      window.history.replaceState(null, "", ROUTES.sala);
+      return;
+    }
+
+    if (storedAuth) {
+      unlockFromBackendAuth();
+    }
+  }, [unlockFromBackendAuth]);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -252,10 +272,12 @@ export default function SalaApp() {
           ) : null}
           <div className="sala-stage">
             <SalaModal
+              authed={authed}
               resumeOnReturn={!authed}
               onFrameLoad={onFrameLoad}
               onFrameReset={resetSession}
               onResume={markResume}
+              onAuthSuccess={unlockFromBackendAuth}
             />
           </div>
         </div>

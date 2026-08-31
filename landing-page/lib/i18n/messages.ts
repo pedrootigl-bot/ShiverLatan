@@ -209,6 +209,18 @@ export type Messages = {
     roomSubtitle: string;
     opening: string;
     openTab: string;
+    authConnect: string;
+    authLoginOpen: string;
+    authBackToLogin: string;
+    authAlreadyDone: string;
+    authPopupBlocked: string;
+    authChecking: string;
+    authUpdated: string;
+    authUpdating: string;
+    authWaitingClose: string;
+    authWaitingAuto: string;
+    authCookieHint: string;
+    authTryAgain: string;
   };
   language: {
     group: string;
@@ -526,6 +538,22 @@ const pt: Messages = {
     roomSubtitle: "Ambiente da corretora · quem opera é você",
     opening: "Abrindo a sala da corretora…",
     openTab: "Se não carregar, abra em nova aba",
+    authConnect: "Conectar conta",
+    authLoginOpen: "Login aberto",
+    authBackToLogin: "Voltar para o login",
+    authAlreadyDone: "Já fiz login",
+    authPopupBlocked:
+      "Seu navegador bloqueou a janela de login. Permita pop-ups para continuar.",
+    authChecking: "Verificando sua sessão…",
+    authUpdated: "Plataforma atualizada.",
+    authUpdating: "Atualizando plataforma…",
+    authWaitingClose:
+      "Depois de entrar na Shiver, volte para esta aba ou clique em Já fiz login.",
+    authWaitingAuto:
+      "Faça login na janela da corretora. Ao concluir, validamos e fechamos o popup automaticamente.",
+    authCookieHint:
+      "Seu navegador pode estar bloqueando os cookies necessários para manter a sessão da corretora dentro da plataforma.",
+    authTryAgain: "Tentar novamente",
   },
   language: {
     group: "Idioma do site",
@@ -843,6 +871,22 @@ const es: Messages = {
     roomSubtitle: "Entorno del bróker · quien opera eres tú",
     opening: "Abriendo la sala del bróker…",
     openTab: "Si no carga, ábrelo en una pestaña nueva",
+    authConnect: "Conectar cuenta",
+    authLoginOpen: "Login abierto",
+    authBackToLogin: "Volver al login",
+    authAlreadyDone: "Ya inicié sesión",
+    authPopupBlocked:
+      "Tu navegador bloqueó la ventana de login. Permite pop-ups para continuar.",
+    authChecking: "Verificando tu sesión…",
+    authUpdated: "Plataforma actualizada.",
+    authUpdating: "Actualizando plataforma…",
+    authWaitingClose:
+      "Después de entrar en Shiver, vuelve a esta pestaña o pulsa Ya inicié sesión.",
+    authWaitingAuto:
+      "Inicia sesión en la ventana de la corretora. Al terminar, validamos y cerramos el popup automáticamente.",
+    authCookieHint:
+      "Tu navegador puede estar bloqueando las cookies necesarias para mantener la sesión del bróker dentro de la plataforma.",
+    authTryAgain: "Intentar de nuevo",
   },
   language: {
     group: "Idioma del sitio",

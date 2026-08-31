@@ -3,53 +3,78 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Entrar — Shiver Broker</title>
+    <title>Conectar conta — Shiver Broker</title>
     <link rel="stylesheet" href="/auth.css" />
   </head>
   <body>
     <div class="page-body">
       <main class="auth-card">
-        <h1 id="pageTitle">Entrar</h1>
+        <h1 id="pageTitle" class="auth-page-title">Conectar conta</h1>
         <p class="auth-lead" id="pageLead" hidden></p>
 
         <details class="dev-options">
           <summary>Opções de desenvolvimento</summary>
           <label class="dev-check">
-            <input id="dryRun" name="dryRun" type="checkbox" checked />
-            Simular (não enviar à Shiver)
+            <input id="dryRun" name="dryRun" type="checkbox" />
+            Simular cadastro/recuperação (não enviar à Shiver)
           </label>
         </details>
 
-        <section class="auth-view is-active" data-view="login" id="view-login">
-          <form id="loginForm" autocomplete="on">
-            <div class="field">
-              <input
-                id="loginEmail"
-                name="email"
-                type="email"
-                required
-                autocomplete="email"
-                placeholder="E-mail"
-              />
+        <section class="auth-view connect-view is-active" data-view="login" id="view-login">
+          <div class="connect-card">
+            <button type="button" class="connect-card__close" id="connectClose" aria-label="Voltar">
+              ×
+            </button>
+
+            <div class="connect-card__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none">
+                <path
+                  d="M7 11V8a5 5 0 0 1 10 0v3"
+                  stroke="currentColor"
+                  stroke-width="1.6"
+                  stroke-linecap="round"
+                />
+                <rect
+                  x="5"
+                  y="11"
+                  width="14"
+                  height="10"
+                  rx="2"
+                  stroke="currentColor"
+                  stroke-width="1.6"
+                />
+              </svg>
             </div>
-            <div class="field">
-              <input
-                id="loginPassword"
-                name="password"
-                type="password"
-                required
-                autocomplete="current-password"
-                placeholder="Senha"
-              />
-            </div>
-            <button type="submit" class="btn-primary">Entrar</button>
-          </form>
-          <div class="footer-links">
-            <a href="/esqueci-senha" class="text-link" data-nav="/esqueci-senha">Esqueceu a senha?</a>
-            <p class="account-line">
-              É novo?
-              <a href="/cadastro" class="text-link" data-nav="/cadastro">Inscreva-se</a>
+
+            <h2 class="connect-card__title">Conectar sua conta</h2>
+            <p class="connect-card__lead">
+              Para continuar, faça login na corretora em uma janela segura.
             </p>
+
+            <ul class="connect-card__points">
+              <li>
+                <span class="connect-card__point-icon" aria-hidden="true">🛡</span>
+                <span>Seus dados ficam protegidos com criptografia de ponta.</span>
+              </li>
+              <li>
+                <span class="connect-card__point-icon" aria-hidden="true">↻</span>
+                <span>Após o login, validamos e abrimos a sala automaticamente.</span>
+              </li>
+            </ul>
+
+            <button type="button" id="openShiverLoginBtn" class="btn-connect">
+              <span class="btn-connect__icon" aria-hidden="true">↗</span>
+              Abrir login da corretora
+            </button>
+
+            <p class="connect-card__secure">
+              <span aria-hidden="true">🔒</span> Ambiente 100% seguro
+            </p>
+          </div>
+
+          <div id="loginActions" class="login-actions" hidden>
+            <button type="button" id="focusPopupBtn" class="btn-ghost">Voltar para o login</button>
+            <button type="button" id="doneLoginBtn" class="btn-secondary">Já fiz login</button>
           </div>
         </section>
 
@@ -134,7 +159,7 @@
           </div>
         </section>
 
-        <aside class="risk-box" aria-label="Aviso de risco">
+        <aside class="risk-box auth-only-extra" aria-label="Aviso de risco">
           <p class="risk-title">AVISO DE RISCO:</p>
           <p>
             Toda negociação envolve risco. Apenas arrisque o capital que você está
@@ -146,6 +171,9 @@
       </main>
     </div>
 
+    <script src="/shiver-popup.js"></script>
+    <script src="/shiver-popup-monitor.js"></script>
+    <script src="/shiver-session-watch.js"></script>
     <script src="/auth.js"></script>
   </body>
 </html>
