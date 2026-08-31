@@ -50,6 +50,9 @@
   let sessionPollRef = null;
   let probeInFlight = false;
   let finishingAuth = false;
+  let loginPopupOpened = false;
+  let popupOpenedAt = 0;
+  let popupClosed = false;
   let stopPopupMonitor = null;
   let stopMessageListener = null;
   let currentView = "login";
@@ -161,7 +164,7 @@
       return;
     }
     sessionPollRef = setInterval(function () {
-      if (!ShiverPopup.isPopupOpen(popupRef) || finishingAuth) {
+      if (finishingAuth) {
         return;
       }
       void runSessionProbe();
@@ -272,23 +275,30 @@
       }
 
       clearPopupTimer();
-      clearWatchers();
       popupRef = null;
+      popupClosed = true;
 
       void (async function () {
+        showResult(
+          "is-wait",
+          "Validando login…",
+          "Confirmando se existe sessão real na corretora.",
+        );
+
         if (typeof ShiverSessionWatch !== "undefined" && shiverTraderoomUrl) {
-          const ok = await ShiverSessionWatch.probeTraderoomSession(shiverTraderoomUrl);
+          var ok = await ShiverSessionWatch.probeTraderoomSession(shiverTraderoomUrl);
           if (ok) {
             await finishAuthFlow(true);
             return;
           }
         }
+
         setConnectButtonState("open");
         setLoginActionsVisible(true);
         showResult(
-          "is-ok",
-          "Janela fechada",
-          "Se você concluiu o login na Shiver, clique em Já fiz login para abrir a sala.",
+          "is-err",
+          "Login não detectado",
+          "Faça login na janela da corretora e clique em Já fiz login depois de entrar.",
         );
       })();
     }, ShiverPopup.POPUP_POLL_MS);
@@ -302,6 +312,7 @@
 
     finishingAuth = false;
     authId = await startAuthSession();
+    loginPopupOpened = false;
 
     popupRef = ShiverPopup.openCenteredPopup(
       popupLauncherUrl(),
@@ -320,6 +331,10 @@
       );
       return false;
     }
+
+    loginPopupOpened = true;
+    popupClosed = false;
+    popupOpenedAt = Date.now();
 
     clearResult();
     setConnectButtonState("waiting");
@@ -351,6 +366,71 @@
   }
 
   async function handleDoneLogin() {
+    if (finishingAuth) {
+      return;
+    }
+
+    if (!loginPopupOpened && !ShiverPopup.isPopupOpen(popupRef)) {
+      showResult(
+        "is-err",
+        "Abra o login primeiro",
+        "Abra o login da corretora, entre na sua conta e depois clique em Já fiz login.",
+      );
+      return;
+    }
+
+    showResult(
+      "is-wait",
+      "Validando login…",
+      "Verificando se você realmente entrou na corretora.",
+    );
+    setConnectButtonState("waiting");
+
+    if (!authId) {
+      authId = await startAuthSession();
+    }
+
+    var sessionDetected = false;
+    if (typeof ShiverSessionWatch !== "undefined" && shiverTraderoomUrl) {
+      sessionDetected = await ShiverSessionWatch.probeTraderoomSession(
+        shiverTraderoomUrl,
+      );
+    }
+
+    if (sessionDetected) {
+      await finishAuthFlow(true);
+      return;
+    }
+
+    var stillOpen = ShiverPopup.isPopupOpen(popupRef);
+    var duration = popupOpenedAt === 0 ? 0 : Date.now() - popupOpenedAt;
+    var minMs =
+      typeof ShiverSessionWatch !== "undefined" && ShiverSessionWatch.MIN_LOGIN_MS
+        ? ShiverSessionWatch.MIN_LOGIN_MS
+        : 15000;
+
+    if (stillOpen) {
+      setConnectButtonState("waiting");
+      setLoginActionsVisible(true);
+      showResult(
+        "is-err",
+        "Feche a janela da corretora",
+        "Depois de fazer login, feche o popup e clique em Já fiz login.",
+      );
+      return;
+    }
+
+    if (!popupClosed || duration < minMs) {
+      setConnectButtonState("open");
+      setLoginActionsVisible(true);
+      showResult(
+        "is-err",
+        "Login incompleto",
+        "Conclua o login na corretora (leve alguns segundos), feche a janela e tente de novo.",
+      );
+      return;
+    }
+
     await finishAuthFlow(true);
   }
 

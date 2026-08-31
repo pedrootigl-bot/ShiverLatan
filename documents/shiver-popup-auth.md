@@ -18,14 +18,12 @@ Configure `SHIVER_LOGIN_URL`, `SHIVER_TRADEROOM_URL`, `SALA_URL` e `LANDING_URL`
 ## Fluxo via popup (sala)
 
 1. Usuário clica **Conectar conta** na sala.
-2. `window.open()` abre popup real com `https://trade.shiverbroker.com/{locale}/login`.
-3. Usuário faz login (email/senha ou Google) no domínio oficial da Shiver.
-4. Usuário fecha o popup (ou clica **Já fiz login**).
-5. Site A detecta fechamento via `popup.closed` (polling a cada 500 ms).
-6. Iframe recarrega (`iframeKey++`).
-7. Se cookies third-party forem permitidos, o iframe reconhece a sessão (`ssid` em `.shiverbroker.com`).
-
-A página principal **nunca** navega para a Shiver.
+2. Popup abre o login oficial da Shiver.
+3. Usuário faz login e **fecha o popup**.
+4. Validação:
+   - se o traderoom detectar sessão → libera na hora;
+   - se o iframe não enxergar cookies (3P), **Já fiz login** libera só com popup fechado e ≥ ~15s no fluxo (abrir o card e clicar na hora **não** libera).
+5. Iframe recarrega e o menu da sala é liberado.
 
 ## Arquivos
 
@@ -53,9 +51,9 @@ Ou `popup_blocked` se o navegador bloquear pop-ups.
 
 ## Limitações
 
-- **Cookies third-party:** Site A e Shiver estão em domínios diferentes. Se o navegador bloquear cookies de terceiros, o iframe pode continuar deslogado mesmo após login válido no popup. Nesse caso aparece aviso discreto + **Tentar novamente** (apenas recarrega o iframe).
-- **Sem confirmação de login:** O Site A não acessa cookies, DOM ou tokens cross-origin. Não afirmamos "login realizado com sucesso" — apenas "Plataforma atualizada."
-- **Detecção heurística:** `useBrokerSession` infere autenticação pelo padrão de recargas do iframe, não por leitura de sessão Shiver.
+- **Cookies third-party:** Site A (`localhost` / domínio próprio) e Shiver estão em origens diferentes. O login no **popup** grava cookies em `trade.shiverbroker.com` (first-party). O **iframe** na sala é third-party e o navegador pode bloquear esses cookies — o iframe continua deslogado mesmo após login válido.
+- **Detecção automática:** o Site A não lê URL/DOM/cookies cross-origin do popup. Por isso o fechamento automático só ocorre quando o probe do traderoom consegue ver sessão, ou quando o usuário clica **Já fiz login** (após abrir o popup oficial).
+- **Já fiz login:** exige ter aberto o login oficial **e** sessão detectada no traderoom. Só abrir o popup/card sem entrar na conta **não** libera o acesso.
 
 ## Segurança (não implementado / proibido)
 

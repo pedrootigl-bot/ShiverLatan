@@ -220,6 +220,10 @@ export type Messages = {
     authWaitingClose: string;
     authWaitingAuto: string;
     authCookieHint: string;
+    authNotLoggedIn: string;
+    authOpenLoginFirst: string;
+    authClosePopupFirst: string;
+    authNeedMoreTime: string;
     authTryAgain: string;
   };
   language: {
@@ -550,9 +554,17 @@ const pt: Messages = {
     authWaitingClose:
       "Depois de entrar na Shiver, volte para esta aba ou clique em Já fiz login.",
     authWaitingAuto:
-      "Faça login na janela da corretora. Ao concluir, validamos e fechamos o popup automaticamente.",
+      "Faça login na janela da corretora, feche-a e clique em Já fiz login. Abrir sem entrar não libera a sala.",
     authCookieHint:
       "Seu navegador pode estar bloqueando os cookies necessários para manter a sessão da corretora dentro da plataforma.",
+    authNotLoggedIn:
+      "Login não confirmado. Faça login no popup, feche a janela e clique em Já fiz login.",
+    authOpenLoginFirst:
+      "Abra o login da corretora, entre na conta e depois confirme.",
+    authClosePopupFirst:
+      "Feche a janela da corretora depois de fazer login e clique em Já fiz login.",
+    authNeedMoreTime:
+      "Conclua o login na corretora (leve uns segundos), feche a janela e tente de novo.",
     authTryAgain: "Tentar novamente",
   },
   language: {
@@ -883,9 +895,17 @@ const es: Messages = {
     authWaitingClose:
       "Después de entrar en Shiver, vuelve a esta pestaña o pulsa Ya inicié sesión.",
     authWaitingAuto:
-      "Inicia sesión en la ventana de la corretora. Al terminar, validamos y cerramos el popup automáticamente.",
+      "Inicia sesión en la ventana de la corretora, ciérrala y pulsa Ya inicié sesión. Abrir sin entrar no libera la sala.",
     authCookieHint:
       "Tu navegador puede estar bloqueando las cookies necesarias para mantener la sesión del bróker dentro de la plataforma.",
+    authNotLoggedIn:
+      "Login no confirmado. Inicia sesión en el popup, cierra la ventana y pulsa Ya inicié sesión.",
+    authOpenLoginFirst:
+      "Abre el login de la corretora, entra en la cuenta y después confirma.",
+    authClosePopupFirst:
+      "Cierra la ventana de la corretora después de iniciar sesión y pulsa Ya inicié sesión.",
+    authNeedMoreTime:
+      "Completa el login en la corretora (toma unos segundos), cierra la ventana e inténtalo de nuevo.",
     authTryAgain: "Intentar de nuevo",
   },
   language: {

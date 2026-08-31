@@ -1,12 +1,18 @@
 const GUEST_BOUNCE_MS = 2500;
 const LOGIN_GAP_MS = 3000;
 const RELOAD_GAP_MS = 3200;
+const STABILITY_MS = 2200;
 const PROBE_TIMEOUT_MS = 45000;
 
 export const AUTH_PROBE_INTERVAL_MS = 4500;
 
 /**
- * Mesma heurística do useBrokerSession: 2ª carga com intervalo típico pós-login.
+ * Detecta sessão no traderoom sem ler cookies cross-origin.
+ *
+ * Convidado: traderoom redireciona rápido para /login (bounce).
+ * Autenticado: 2ª carga estável sem bounce para login.
+ *
+ * Navegations extras lentas (SPA) NÃO invalidam — só bounce rápido.
  */
 export function probeTraderoomSession(traderoomUrl: string): Promise<boolean> {
   if (typeof document === "undefined") {
@@ -17,6 +23,8 @@ export function probeTraderoomSession(traderoomUrl: string): Promise<boolean> {
     let loads = 0;
     let lastAt = 0;
     let settled = false;
+    let candidate = false;
+    let stabilityTimer: ReturnType<typeof setTimeout> | null = null;
 
     const iframe = document.createElement("iframe");
     iframe.setAttribute("aria-hidden", "true");
@@ -29,6 +37,10 @@ export function probeTraderoomSession(traderoomUrl: string): Promise<boolean> {
         return;
       }
       settled = true;
+      if (stabilityTimer !== null) {
+        clearTimeout(stabilityTimer);
+        stabilityTimer = null;
+      }
       clearTimeout(timeout);
       iframe.remove();
       resolve(ok);
@@ -36,27 +48,47 @@ export function probeTraderoomSession(traderoomUrl: string): Promise<boolean> {
 
     const timeout = window.setTimeout(() => finish(false), PROBE_TIMEOUT_MS);
 
+    const armStability = () => {
+      if (stabilityTimer !== null) {
+        clearTimeout(stabilityTimer);
+      }
+      candidate = true;
+      stabilityTimer = setTimeout(() => {
+        stabilityTimer = null;
+        if (settled) {
+          return;
+        }
+        finish(candidate);
+      }, STABILITY_MS);
+    };
+
     iframe.onload = () => {
       loads += 1;
       const now = Date.now();
       const gap = lastAt === 0 ? 0 : now - lastAt;
       lastAt = now;
 
+      // Bounce rápido = sem sessão (traderoom → login).
+      if (loads >= 2 && gap < GUEST_BOUNCE_MS) {
+        candidate = false;
+        finish(false);
+        return;
+      }
+
       if (loads === 1) {
         window.setTimeout(() => {
+          if (settled) {
+            return;
+          }
           const join = traderoomUrl.includes("?") ? "&" : "?";
           iframe.src = `${traderoomUrl}${join}_probe=${Date.now()}`;
         }, RELOAD_GAP_MS);
         return;
       }
 
-      if (gap < GUEST_BOUNCE_MS) {
-        finish(false);
-        return;
-      }
-
+      // 2ª+ carga com intervalo longo: candidata a autenticado.
       if (gap >= LOGIN_GAP_MS) {
-        finish(true);
+        armStability();
         return;
       }
 

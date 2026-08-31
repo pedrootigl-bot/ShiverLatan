@@ -6,6 +6,7 @@ import {
   SHIVER_POPUP_DEFAULT_WIDTH,
   SHIVER_POPUP_NAME,
 } from "@/config/shiver";
+import { probeTraderoomSession } from "@/lib/shiver/authProbe";
 import {
   listenForAuthComplete,
   watchPopupForLogin,
@@ -20,9 +21,27 @@ export type ShiverAuthState =
   | "ready"
   | "popup_blocked";
 
+export type ConfirmLoginResult = {
+  unlocked: boolean;
+  sessionDetected: boolean;
+  needsLoginPopup: boolean;
+  /** Popup ainda aberto — peça para fechar após o login. */
+  needsClosePopup: boolean;
+  /** Fechou rápido demais sem tempo de login real. */
+  needsMoreTime: boolean;
+};
+
 const POPUP_POLL_MS = 500;
-const STATUS_CLEAR_MS = 4000;
-const SESSION_POLL_MS = 4500;
+const STATUS_CLEAR_MS = 6000;
+const SESSION_POLL_MS = 5000;
+const CONFIRM_SESSION_WAIT_MS = 1200;
+const POST_CLOSE_PROBE_MS = 20000;
+/**
+ * Tempo mínimo com o popup aberto antes de aceitar "Já fiz login"
+ * quando o iframe não enxerga cookies (bloqueio 3P).
+ * Impede liberar só abrindo o card e clicando na hora.
+ */
+const MIN_LOGIN_MS = 15000;
 
 type WatchLoginOptions = {
   traderoomUrl: string;
@@ -38,8 +57,12 @@ export function useShiverPopupAuth(loginUrl: string) {
   const popupRef = useRef<Window | null>(null);
   const popupTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const sessionPollRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const postCloseTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const probeInFlightRef = useRef(false);
   const completingRef = useRef(false);
+  const loginPopupOpenedRef = useRef(false);
+  const popupOpenedAtRef = useRef(0);
+  const popupClosedRef = useRef(false);
   const statusTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const watchOptionsRef = useRef<WatchLoginOptions | null>(null);
   const stopPopupMonitorRef = useRef<(() => void) | null>(null);
@@ -59,13 +82,21 @@ export function useShiverPopupAuth(loginUrl: string) {
     }
   }, []);
 
+  const clearPostCloseTimer = useCallback(() => {
+    if (postCloseTimerRef.current !== null) {
+      clearTimeout(postCloseTimerRef.current);
+      postCloseTimerRef.current = null;
+    }
+  }, []);
+
   const clearWatchers = useCallback(() => {
     stopPopupMonitorRef.current?.();
     stopPopupMonitorRef.current = null;
     stopMessageListenerRef.current?.();
     stopMessageListenerRef.current = null;
     clearSessionPoll();
-  }, [clearSessionPoll]);
+    clearPostCloseTimer();
+  }, [clearPostCloseTimer, clearSessionPoll]);
 
   const clearStatusTimer = useCallback(() => {
     if (statusTimerRef.current !== null) {
@@ -110,38 +141,55 @@ export function useShiverPopupAuth(loginUrl: string) {
 
     try {
       await options.onValidated();
+      loginPopupOpenedRef.current = false;
+      popupOpenedAtRef.current = 0;
+      popupClosedRef.current = false;
       return true;
     } finally {
       completingRef.current = false;
     }
   }, [clearPopupTimer, clearWatchers]);
 
-  const tryCompleteSession = useCallback(() => {
-    const options = watchOptionsRef.current;
-    if (!options?.isSessionReady?.()) {
-      return false;
+  const openDurationMs = useCallback(() => {
+    if (popupOpenedAtRef.current === 0) {
+      return 0;
     }
-    void finishValidated();
-    return true;
-  }, [finishValidated]);
+    return Date.now() - popupOpenedAtRef.current;
+  }, []);
 
   const runSessionProbe = useCallback(async () => {
     const options = watchOptionsRef.current;
     if (!options?.traderoomUrl || probeInFlightRef.current || completingRef.current) {
-      return;
+      return false;
     }
 
     probeInFlightRef.current = true;
     try {
-      const { probeTraderoomSession } = await import("@/lib/shiver/authProbe");
       const ok = await probeTraderoomSession(options.traderoomUrl);
       if (ok) {
         await finishValidated();
+        return true;
       }
+      return false;
     } finally {
       probeInFlightRef.current = false;
     }
   }, [finishValidated]);
+
+  const startSessionPoll = useCallback(() => {
+    clearSessionPoll();
+    const options = watchOptionsRef.current;
+    if (!options?.traderoomUrl) {
+      return;
+    }
+
+    sessionPollRef.current = setInterval(() => {
+      if (completingRef.current) {
+        return;
+      }
+      void runSessionProbe();
+    }, SESSION_POLL_MS);
+  }, [clearSessionPoll, runSessionProbe]);
 
   const startLoginWatchers = useCallback(() => {
     clearWatchers();
@@ -160,34 +208,48 @@ export function useShiverPopupAuth(loginUrl: string) {
       void finishValidated();
     });
 
-    const options = watchOptionsRef.current;
-    options?.onReloadSession?.();
+    // Não sonda na abertura (ainda sem login). Espera um ciclo.
+    startSessionPoll();
+  }, [clearWatchers, finishValidated, startSessionPoll]);
 
-    if (options?.traderoomUrl || options?.isSessionReady) {
-      void runSessionProbe();
-      sessionPollRef.current = setInterval(() => {
-        if (!isPopupOpen(popupRef.current) || completingRef.current) {
-          return;
-        }
-        if (tryCompleteSession()) {
-          return;
-        }
-        if (options.traderoomUrl) {
-          void runSessionProbe();
-        }
-      }, SESSION_POLL_MS);
-    }
-  }, [clearWatchers, finishValidated, runSessionProbe, tryCompleteSession]);
-
-  const beginPopupClose = useCallback(
-    (onClosed: () => void) => {
-      clearPopupTimer();
-      clearWatchers();
-      popupRef.current = null;
+  const handlePopupClosed = useCallback(
+    async (onClosed: () => void) => {
+      const options = watchOptionsRef.current;
+      popupClosedRef.current = true;
       setAuthState("checking");
-      onClosed();
+
+      options?.onReloadSession?.();
+
+      await new Promise<void>((resolve) => {
+        window.setTimeout(resolve, CONFIRM_SESSION_WAIT_MS);
+      });
+
+      if (completingRef.current) {
+        return;
+      }
+
+      if (options?.traderoomUrl) {
+        const probed = await runSessionProbe();
+        if (probed) {
+          return;
+        }
+      }
+
+      // Sem cookies no iframe: não libera no chute. Usuário usa "Já fiz login"
+      // depois de fechar o popup (com tempo mínimo de login).
+      setAuthState("waiting_for_login");
+      startSessionPoll();
+      clearPostCloseTimer();
+      postCloseTimerRef.current = setTimeout(() => {
+        postCloseTimerRef.current = null;
+        if (completingRef.current) {
+          return;
+        }
+        clearSessionPoll();
+        onClosed();
+      }, POST_CLOSE_PROBE_MS);
     },
-    [clearPopupTimer, clearWatchers],
+    [clearPostCloseTimer, clearSessionPoll, runSessionProbe, startSessionPoll],
   );
 
   const watchPopupClose = useCallback(
@@ -200,31 +262,11 @@ export function useShiverPopupAuth(loginUrl: string) {
         }
 
         clearPopupTimer();
-        clearWatchers();
         popupRef.current = null;
-
-        void (async () => {
-          const options = watchOptionsRef.current;
-          options?.onReloadSession?.();
-          if (tryCompleteSession()) {
-            return;
-          }
-          if (
-            options?.traderoomUrl &&
-            typeof options.onValidated === "function"
-          ) {
-            const { probeTraderoomSession } = await import("@/lib/shiver/authProbe");
-            const ok = await probeTraderoomSession(options.traderoomUrl);
-            if (ok) {
-              await finishValidated();
-              return;
-            }
-          }
-          beginPopupClose(onClosed);
-        })();
+        void handlePopupClosed(onClosed);
       }, POPUP_POLL_MS);
     },
-    [beginPopupClose, clearPopupTimer, clearWatchers, finishValidated, tryCompleteSession],
+    [clearPopupTimer, handlePopupClosed],
   );
 
   const openLoginPopup = useCallback(
@@ -234,6 +276,10 @@ export function useShiverPopupAuth(loginUrl: string) {
 
       if (isPopupOpen(popupRef.current)) {
         popupRef.current.focus();
+        loginPopupOpenedRef.current = true;
+        if (popupOpenedAtRef.current === 0) {
+          popupOpenedAtRef.current = Date.now();
+        }
         setAuthState("waiting_for_login");
         if (watchOptions) {
           startLoginWatchers();
@@ -260,6 +306,9 @@ export function useShiverPopupAuth(loginUrl: string) {
       }
 
       popupRef.current = popup;
+      loginPopupOpenedRef.current = true;
+      popupClosedRef.current = false;
+      popupOpenedAtRef.current = Date.now();
       setAuthState("waiting_for_login");
       watchPopupClose(onClosed);
       if (watchOptions) {
@@ -277,11 +326,83 @@ export function useShiverPopupAuth(loginUrl: string) {
     }
   }, []);
 
+  /**
+   * Liberação:
+   * 1) sessão detectada no traderoom → libera;
+   * 2) senão, só se o popup oficial foi aberto, ficou >= 15s e já foi fechado
+   *    (login real costuma passar disso; abrir o card e clicar na hora não).
+   */
   const confirmLoginDone = useCallback(
-    (_onClosed: () => void) => {
-      void finishValidated();
+    async (watchOptions?: WatchLoginOptions): Promise<ConfirmLoginResult> => {
+      const empty = {
+        unlocked: false,
+        sessionDetected: false,
+        needsLoginPopup: false,
+        needsClosePopup: false,
+        needsMoreTime: false,
+      };
+
+      if (watchOptions) {
+        watchOptionsRef.current = watchOptions;
+      }
+
+      const options = watchOptionsRef.current;
+      if (!options?.traderoomUrl || completingRef.current) {
+        return { ...empty, needsLoginPopup: true };
+      }
+
+      if (!loginPopupOpenedRef.current && !isPopupOpen(popupRef.current)) {
+        return { ...empty, needsLoginPopup: true };
+      }
+
+      clearStatusTimer();
+      clearPostCloseTimer();
+      setAuthState("checking");
+
+      probeInFlightRef.current = true;
+      let sessionDetected = false;
+      try {
+        sessionDetected = await probeTraderoomSession(options.traderoomUrl);
+      } finally {
+        probeInFlightRef.current = false;
+      }
+
+      if (sessionDetected) {
+        const unlocked = await finishValidated();
+        return {
+          unlocked,
+          sessionDetected: true,
+          needsLoginPopup: false,
+          needsClosePopup: false,
+          needsMoreTime: false,
+        };
+      }
+
+      const stillOpen = isPopupOpen(popupRef.current);
+      const duration = openDurationMs();
+      const closed = popupClosedRef.current && !stillOpen;
+
+      if (stillOpen) {
+        setAuthState("waiting_for_login");
+        return { ...empty, needsClosePopup: true };
+      }
+
+      if (!closed || duration < MIN_LOGIN_MS) {
+        setAuthState("waiting_for_login");
+        return { ...empty, needsMoreTime: true };
+      }
+
+      // Fluxo completo (abriu, tempo de login, fechou) com iframe sem cookies 3P.
+      const unlocked = await finishValidated();
+      return {
+        unlocked,
+        sessionDetected: false,
+        needsLoginPopup: false,
+        needsClosePopup: false,
+        needsMoreTime: false,
+      };
     },
-    [finishValidated],
+    [clearPostCloseTimer, clearStatusTimer, finishValidated, openDurationMs],
   );
 
   const setReadyStatus = useCallback(
@@ -298,6 +419,15 @@ export function useShiverPopupAuth(loginUrl: string) {
     setStatusMessage(message);
   }, []);
 
+  const setFailedStatus = useCallback(
+    (message: string) => {
+      setAuthState(loginPopupOpenedRef.current ? "waiting_for_login" : "idle");
+      setStatusMessage(message);
+      scheduleStatusClear();
+    },
+    [scheduleStatusClear],
+  );
+
   const resetAuthUi = useCallback(() => {
     clearPopupTimer();
     clearStatusTimer();
@@ -305,9 +435,32 @@ export function useShiverPopupAuth(loginUrl: string) {
     closePopupSilently();
     watchOptionsRef.current = null;
     completingRef.current = false;
+    loginPopupOpenedRef.current = false;
+    popupOpenedAtRef.current = 0;
+    popupClosedRef.current = false;
     setAuthState("idle");
     setStatusMessage("");
   }, [clearPopupTimer, clearStatusTimer, clearWatchers, closePopupSilently]);
+
+  useEffect(() => {
+    if (authState !== "waiting_for_login") {
+      return;
+    }
+
+    const onReturn = () => {
+      if (document.visibilityState !== "visible" || completingRef.current) {
+        return;
+      }
+      void runSessionProbe();
+    };
+
+    document.addEventListener("visibilitychange", onReturn);
+    window.addEventListener("focus", onReturn);
+    return () => {
+      document.removeEventListener("visibilitychange", onReturn);
+      window.removeEventListener("focus", onReturn);
+    };
+  }, [authState, runSessionProbe]);
 
   useEffect(() => {
     return () => {
@@ -327,6 +480,7 @@ export function useShiverPopupAuth(loginUrl: string) {
     finishValidated,
     setReadyStatus,
     setCheckingStatus,
+    setFailedStatus,
     resetAuthUi,
     isWaitingForLogin:
       authState === "opening" ||

@@ -76,17 +76,11 @@ export default function ShiverPlatform({
     openLoginPopup,
     focusLoginPopup,
     confirmLoginDone,
-    finishValidated,
     setReadyStatus,
     setCheckingStatus,
+    setFailedStatus,
     isWaitingForLogin,
   } = useShiverPopupAuth(loginUrl);
-
-  useEffect(() => {
-    if (isWaitingForLogin && authed) {
-      void finishValidated();
-    }
-  }, [authed, finishValidated, isWaitingForLogin]);
 
   const refreshSessionAfterAuth = useCallback(() => {
     clearAuthReloadTimer();
@@ -131,6 +125,8 @@ export default function ShiverPlatform({
 
   const handleConnect = useCallback(() => {
     setShowCookieHint(false);
+    // Zera heurística antiga do iframe para não liberar sem login.
+    onResume();
     void (async () => {
       backendAuthIdRef.current = await startBackendAuthSession();
       openLoginPopup(handleAuthFlowComplete, {
@@ -141,12 +137,62 @@ export default function ShiverPlatform({
         isSessionReady: () => authedRef.current,
       });
     })();
-  }, [handleAuthFlowComplete, handleAuthValidated, loginUrl, openLoginPopup, src]);
+  }, [
+    handleAuthFlowComplete,
+    handleAuthValidated,
+    loginUrl,
+    onResume,
+    openLoginPopup,
+    reloadIframe,
+    src,
+  ]);
 
   const handleAlreadyLoggedIn = useCallback(() => {
-    setShowCookieHint(false);
-    confirmLoginDone(handleAuthFlowComplete);
-  }, [confirmLoginDone, handleAuthFlowComplete]);
+    void (async () => {
+      setShowCookieHint(false);
+      setCheckingStatus(t.sala.authChecking);
+
+      if (!backendAuthIdRef.current) {
+        backendAuthIdRef.current = await startBackendAuthSession();
+      }
+
+      const result = await confirmLoginDone({
+        traderoomUrl: src,
+        onValidated: handleAuthValidated,
+        onReloadSession: () =>
+          reloadIframe({ resetSession: false, showLoading: false }),
+        isSessionReady: () => authedRef.current,
+      });
+
+      if (!result.unlocked) {
+        const message = result.needsLoginPopup
+          ? t.sala.authOpenLoginFirst
+          : result.needsClosePopup
+            ? t.sala.authClosePopupFirst
+            : result.needsMoreTime
+              ? t.sala.authNeedMoreTime
+              : t.sala.authNotLoggedIn;
+        setFailedStatus(message);
+        return;
+      }
+
+      if (!result.sessionDetected) {
+        setShowCookieHint(true);
+      }
+    })();
+  }, [
+    confirmLoginDone,
+    handleAuthValidated,
+    reloadIframe,
+    setCheckingStatus,
+    setFailedStatus,
+    src,
+    t.sala.authChecking,
+    t.sala.authClosePopupFirst,
+    t.sala.authNeedMoreTime,
+    t.sala.authNotLoggedIn,
+    t.sala.authOpenLoginFirst,
+  ]);
 
   const handleTryAgain = useCallback(() => {
     setShowCookieHint(false);
@@ -296,7 +342,7 @@ export default function ShiverPlatform({
                 <button
                   type="button"
                   className="shiver-platform__btn shiver-platform__btn--secondary"
-                  disabled={authState === "opening"}
+                  disabled={authState === "opening" || authState === "checking"}
                   onClick={handleAlreadyLoggedIn}
                 >
                   {t.sala.authAlreadyDone}

@@ -4,6 +4,7 @@
   var GUEST_BOUNCE_MS = 2500;
   var LOGIN_GAP_MS = 3000;
   var RELOAD_GAP_MS = 3200;
+  var STABILITY_MS = 2200;
   var PROBE_TIMEOUT_MS = 45000;
 
   function probeTraderoomSession(traderoomUrl) {
@@ -11,6 +12,8 @@
       var loads = 0;
       var lastAt = 0;
       var settled = false;
+      var candidate = false;
+      var stabilityTimer = null;
       var iframe = document.createElement("iframe");
 
       iframe.setAttribute("aria-hidden", "true");
@@ -23,6 +26,10 @@
           return;
         }
         settled = true;
+        if (stabilityTimer !== null) {
+          clearTimeout(stabilityTimer);
+          stabilityTimer = null;
+        }
         clearTimeout(timeout);
         iframe.remove();
         resolve(ok);
@@ -32,27 +39,45 @@
         finish(false);
       }, PROBE_TIMEOUT_MS);
 
+      function armStability() {
+        if (stabilityTimer !== null) {
+          clearTimeout(stabilityTimer);
+        }
+        candidate = true;
+        stabilityTimer = setTimeout(function () {
+          stabilityTimer = null;
+          if (settled) {
+            return;
+          }
+          finish(candidate);
+        }, STABILITY_MS);
+      }
+
       iframe.onload = function () {
         loads += 1;
         var now = Date.now();
         var gap = lastAt === 0 ? 0 : now - lastAt;
         lastAt = now;
 
+        if (loads >= 2 && gap < GUEST_BOUNCE_MS) {
+          candidate = false;
+          finish(false);
+          return;
+        }
+
         if (loads === 1) {
           setTimeout(function () {
+            if (settled) {
+              return;
+            }
             var join = traderoomUrl.indexOf("?") >= 0 ? "&" : "?";
             iframe.src = traderoomUrl + join + "_probe=" + Date.now();
           }, RELOAD_GAP_MS);
           return;
         }
 
-        if (gap < GUEST_BOUNCE_MS) {
-          finish(false);
-          return;
-        }
-
         if (gap >= LOGIN_GAP_MS) {
-          finish(true);
+          armStability();
           return;
         }
 
@@ -70,6 +95,7 @@
 
   global.ShiverSessionWatch = {
     probeTraderoomSession: probeTraderoomSession,
-    POLL_MS: 4500,
+    POLL_MS: 5000,
+    MIN_LOGIN_MS: 15000,
   };
 })(window);
